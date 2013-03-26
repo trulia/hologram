@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Hologram::VERSION
   spec.authors       = ["JD Cantrell", "August Flanagan"]
   spec.email         = ["jdcantrell@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{Build doc type things}
+  spec.summary       = %q{Build document type things.}
   spec.homepage      = ""
   spec.license       = "TODO"
 
@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "sass", "~> 3.2.7"
 
   spec.files         = `git ls-files`.split($/)
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.executables   = ['hologram']
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
