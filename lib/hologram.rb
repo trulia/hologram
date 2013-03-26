@@ -5,6 +5,7 @@ require 'redcarpet'
 require 'yaml'
 
 require 'fileutils'
+require 'pathname'
 
 module Hologram
   def self.get_scss_code_doc(file)
@@ -72,8 +73,9 @@ module Hologram
     directories.each do |directory|
 
       Dir.foreach(directory) do |input_file|
+
         next unless input_file.end_with?('scss')
-        file, markdown = process_file("#{base_directory}/#{directory}#{input_file}")
+        file, markdown = process_file("#{directory}#{input_file}")
 
         if not markdown.nil?
 
@@ -95,6 +97,10 @@ module Hologram
   end
   def self.build(input_directory, output_directory)
 
+    input_directory = Pathname.new(input_directory).realpath
+    output_directory = Pathname.new(output_directory).realpath
+
+
     #collect the markdown pages all together by category
     pages = process_dir(input_directory)
 
@@ -102,11 +108,23 @@ module Hologram
     renderer = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(), {})
     pages.each do |file_name, markdown|
       fh = get_fh(output_directory, file_name)
-      #write header.html
+
+      if File.exists?("#{input_directory}/header.html")
+        fh.write(File.read("#{input_directory}/header.html"))
+      end
+      
       #generate doc nav html
       fh.write(renderer.render(markdown))
-      #footer.html
+      
+      if File.exists?("#{input_directory}/header.html")
+        fh.write(File.read("#{input_directory}/footer.html"))
+      end
+
       fh.close()
+    end
+
+    if Dir.exists?("#{input_directory}/_static")
+      `cp -R #{input_directory}/_static #{output_directory}/static`
     end
 
       #
