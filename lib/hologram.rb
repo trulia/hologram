@@ -40,10 +40,13 @@ module Hologram
   def self.process_file(file)
     doc = get_code_doc(file)
     return  nil, nil if doc.nil?
+
     output = ""
+    output_file = nil
 
     if (doc[:config]["type"] == 'component')
       output_file = get_file_name(doc[:config]['category'])
+
 
       #out anchor/heading
       output = "# #{doc[:config]['title']}"
@@ -63,12 +66,24 @@ module Hologram
     directories = Dir.glob("#{base_directory}/**/*/") 
     print directories
 
-    directories.each do |directory|
-      Dir.foreach(directory) do |file|
-        next unless file.end_with?('scss')
-        file, markdown = process_file("#{base_directory}/#{directory}#{file}")
+    #skins need the parent component's file
+    parent_file = nil
 
-        if not file.nil?
+    directories.each do |directory|
+
+      Dir.foreach(directory) do |input_file|
+        next unless input_file.end_with?('scss')
+        file, markdown = process_file("#{base_directory}/#{directory}#{input_file}")
+
+        if not markdown.nil?
+
+          #set correct file for skin classes
+          if file.nil? and directory.include?("skin")
+            file = parent_file
+          else
+            parent_file = file
+          end
+
           pages[file] = "" if pages[file].nil?
           pages[file] << markdown
         end
