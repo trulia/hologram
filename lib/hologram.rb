@@ -178,7 +178,7 @@ module Hologram
   class TruliaMarkdown < Redcarpet::Render::HTML
     def block_code(code, language)
       return unless language.include?('example')
-      code +  Pygments.highlight(code)
+      '<div class="codeExample">' + '<div class="exampleOutput">' + code + '</div>' + '<div class="codeBlock">' + Pygments.highlight(code) + '</div>' + '</div>'
     end
 
     def table(heading, body)
