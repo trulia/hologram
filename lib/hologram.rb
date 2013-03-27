@@ -48,7 +48,7 @@ module Hologram
 
   def self.process_file(file)
     doc = get_code_doc(file)
-    return  nil, nil if doc.nil?
+    return if doc.nil?
 
     output = ""
     output_file = nil
@@ -82,22 +82,24 @@ module Hologram
       Dir.foreach(directory) do |input_file|
 
         if is_supported_file_type?(input_file)
-          file, markdown = process_file("#{directory}/#{input_file}")
+          if input_file.end_with?('md')
+            pages[File.basename(input_file, '.md') + '.html'] = File.read("#{directory}/#{input_file}")
+          else
+            file, markdown = process_file("#{directory}/#{input_file}")
 
-          if not markdown.nil?
+            if not markdown.nil?
 
-            #set correct file for skin classes
-            if file.nil? and directory.include?("skin")
-              file = parent_file
-            else
-              parent_file = file
+              #set correct file for skin classes
+              if file.nil? and directory.include?("skin")
+                file = parent_file
+              else
+                parent_file = file
+              end
+
+              pages[file] = "" if pages[file].nil?
+              pages[file] << markdown
             end
-
-            pages[file] = "" if pages[file].nil?
-            pages[file] << markdown
           end
-        elsif input_file.end_with?('md')
-          pages[File.basename(input_file, '.md') + '.html'] = File.read("#{directory}/#{input_file}")
         end
       end
     end
@@ -109,7 +111,6 @@ module Hologram
   def self.build(config)
 
     # Create the output directory if it doesn't exist
-    puts config
     unless File.directory?(config['output_directory'])
       FileUtils.mkdir_p(config['output_directory'])
     end
@@ -128,7 +129,7 @@ module Hologram
       fh = get_fh(output_directory, file_name)
 
       if File.exists?("#{doc_assets}/header.html")
-        fh.write(File.read("#{doc_assetsy}/header.html"))
+        fh.write(File.read("#{doc_assets}/header.html"))
       end
       
       #generate doc nav html
