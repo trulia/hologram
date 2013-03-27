@@ -9,12 +9,13 @@ require 'pathname'
 
 module Hologram
   def self.get_scss_code_doc(file)
+
     node = Sass::Engine.for_file(file, {}).to_tree().children[0]
 
     return nil unless node.instance_of? Sass::Tree::CommentNode
 
     raw_text = node.value.first
-    match = /^---[,-:\d\w\s]*---$/.match(raw_text)
+    match = /^---[<>@,-:\d\w\s]*---$/.match(raw_text)
 
     return nil unless match
 
@@ -64,7 +65,7 @@ module Hologram
     end
       
     output << doc[:markdown]
-    return output_file, output
+    return output_file, output, (doc[:config]['type'] == 'skin')
   end
 
 
@@ -85,12 +86,12 @@ module Hologram
           if input_file.end_with?('md')
             pages[File.basename(input_file, '.md') + '.html'] = File.read("#{directory}/#{input_file}")
           else
-            file, markdown = process_file("#{directory}/#{input_file}")
+            file, markdown, skin = process_file("#{directory}/#{input_file}")
 
             if not markdown.nil?
 
               #set correct file for skin classes
-              if file.nil? and directory.include?("skin")
+              if skin
                 file = parent_file
               else
                 parent_file = file
@@ -124,7 +125,7 @@ module Hologram
     pages = process_dir(input_directory)
 
     #generate html from markdown
-    renderer = Redcarpet::Markdown.new(HTMLwithPygments, { :fenced_code_blocks => true })
+    renderer = Redcarpet::Markdown.new(TruliaMarkdown, { :fenced_code_blocks => true, :tables => true })
     pages.each do |file_name, markdown|
       fh = get_fh(output_directory, file_name)
 
@@ -154,7 +155,6 @@ module Hologram
       end
     end
 
-
   end
 
   def self.init(args)
@@ -175,12 +175,19 @@ module Hologram
 
 
 
-  class HTMLwithPygments < Redcarpet::Render::HTML
+  class TruliaMarkdown < Redcarpet::Render::HTML
     def block_code(code, language)
       return unless language.include?('example')
-      code + '<code>' + Pygments.highlight(code) + '</code>'
+      code +  Pygments.highlight(code)
     end
 
+    def table(heading, body)
+      return '<table class="table simpleTable"><thead>' + heading + '</thead><tbody>' + body + '</tbody></table>'
+    end
+
+    def table_row(content)
+      '<tr>' + content.gsub('<th>', '<th class="txtL">') + '</tr>'
+    end
   end
   # Your code goes here...
   # parse a sass file
