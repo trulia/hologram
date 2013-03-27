@@ -68,31 +68,32 @@ module Hologram
 
     #get all directories in our library folder
     directories = Dir.glob("#{base_directory}/**/*/")
-    puts directories
+    directories.unshift(base_directory)
 
     #skins need the parent component's file
     parent_file = nil
 
     directories.each do |directory|
-      puts directory
       Dir.foreach(directory) do |input_file|
 
-        next unless input_file.end_with?('scss')
-        file, markdown = process_file("#{directory}#{input_file}")
+        if input_file.end_with?('scss')
+          file, markdown = process_file("#{directory}#{input_file}")
 
-        if not markdown.nil?
+          if not markdown.nil?
 
-          #set correct file for skin classes
-          if file.nil? and directory.include?("skin")
-            file = parent_file
-          else
-            parent_file = file
+            #set correct file for skin classes
+            if file.nil? and directory.include?("skin")
+              file = parent_file
+            else
+              parent_file = file
+            end
+
+            pages[file] = "" if pages[file].nil?
+            pages[file] << markdown
           end
-
-          pages[file] = "" if pages[file].nil?
-          pages[file] << markdown
+        elsif input_file.end_with?('md')
+          pages[File.basename(input_file, '.md') + '.html'] = File.read("#{directory}/#{input_file}")
         end
-
       end
     end
 
@@ -110,7 +111,7 @@ module Hologram
     pages = process_dir(input_directory)
 
     #generate html from markdown
-    renderer = Redcarpet::Markdown.new(HTMLwithPygments.new(), { :fenced_code_blocks => true })
+    renderer = Redcarpet::Markdown.new(HTMLwithPygments, { :fenced_code_blocks => true })
     pages.each do |file_name, markdown|
       fh = get_fh(output_directory, file_name)
 
