@@ -3,7 +3,7 @@ require "hologram/version"
 require 'sass'
 require 'redcarpet'
 require 'yaml'
-
+require 'pygments'
 require 'fileutils'
 
 module Hologram
@@ -32,10 +32,12 @@ module Hologram
     str.gsub!(' ', '_').downcase! + '.html'
   end
 
+
   def self.get_fh(output_directory, output_file)
     FileUtils.mkdir_p(output_directory)
     File.open("#{output_directory}/#{output_file}", 'w')
   end
+
 
   def self.process_file(file)
     doc = get_code_doc(file)
@@ -59,20 +61,22 @@ module Hologram
     return output_file, output
   end
 
+
   def self.process_dir(base_directory)
     pages = {}
 
     #get all directories in our library folder
-    directories = Dir.glob("#{base_directory}/**/*/") 
-    print directories
+    directories = Dir.glob("#{base_directory}/**/*/")
+    puts directories
 
     #skins need the parent component's file
     parent_file = nil
 
     directories.each do |directory|
-
+      puts directory
       Dir.foreach(directory) do |input_file|
         next unless input_file.end_with?('scss')
+        
         file, markdown = process_file("#{base_directory}/#{directory}#{input_file}")
 
         if not markdown.nil?
@@ -93,23 +97,30 @@ module Hologram
 
     return pages
   end
+
+
   def self.build(input_directory, output_directory)
 
     #collect the markdown pages all together by category
     pages = process_dir(input_directory)
 
     #generate html from markdown
-    renderer = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(), {})
+    renderer = Redcarpet::Markdown.new(HTMLwithPygments.new(), { :fenced_code_blocks => true })
     pages.each do |file_name, markdown|
       fh = get_fh(output_directory, file_name)
-      #write header.html
-      #generate doc nav html
       fh.write(renderer.render(markdown))
-      #footer.html
       fh.close()
     end
+  end
 
-      #
+
+
+
+  class HTMLwithPygments < Redcarpet::Render::HTML
+    def block_code(code, language)
+      return unless language.include?('example')
+      code + '<code>' + Pygments.highlight(code) + '</code>'
+    end
   end
   # Your code goes here...
   # parse a sass file
