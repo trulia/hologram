@@ -124,6 +124,7 @@ module Hologram
     end
 
     if Dir.exists?("#{input_directory}/_static")
+      `rm -rf #{output_directory}/static`
       `cp -R #{input_directory}/_static #{output_directory}/static`
     end
 
