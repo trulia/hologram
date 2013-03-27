@@ -129,14 +129,16 @@ module Hologram
     pages.each do |file_name, markdown|
       fh = get_fh(output_directory, file_name)
 
+      # generate doc nav html
       if File.exists?("#{doc_assets}/header.html")
         fh.write(File.read("#{doc_assets}/header.html"))
       end
       
-      #generate doc nav html
+      # write the docs
       fh.write(renderer.render(markdown))
       
-      if File.exists?("#{doc_assets}/header.html")
+      # write the footer
+      if File.exists?("#{doc_assets}/footer.html")
         fh.write(File.read("#{doc_assets}/footer.html"))
       end
 
@@ -144,7 +146,7 @@ module Hologram
     end
 
     if Dir.exists?("#{static_assets}")
-      `rm -rf #{output_directory}/static`
+      `rm -rf #{output_directory}/#{static_assets.basename}`
       `cp -R #{static_assets} #{output_directory}/#{static_assets.basename}`
     end
 
