@@ -146,6 +146,15 @@ module Hologram
       `rm -rf #{output_directory}/static`
       `cp -R #{static_assets} #{output_directory}/#{static_assets.basename}`
     end
+
+    Dir.foreach(doc_assets) do |file|
+      if file.start_with?('_')
+        `rm -rf #{output_directory}/#{file.sub('_', '')}`
+        `cp -R #{doc_assets}/#{file} #{output_directory}/#{file.sub('_', '')}`
+      end
+    end
+
+
   end
 
   def self.init(args)
