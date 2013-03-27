@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 require 'hologram'
 
-Hologram::build(ARGV[0], ARGV[1])
+Hologram::init(ARGV)

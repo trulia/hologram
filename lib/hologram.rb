@@ -14,19 +14,26 @@ module Hologram
     return nil unless node.instance_of? Sass::Tree::CommentNode
 
     raw_text = node.value.first
-    yaml = /^---[,-:\d\w\s]*---$/.match(raw_text)[0]
+    match = /^---[,-:\d\w\s]*---$/.match(raw_text)
+
+    return nil unless match
+
+    yaml = match[0] 
+
     markdown = raw_text.sub(yaml, '').sub('/*', '').sub('*/', '')
     
     return {config: YAML::load(yaml), markdown: markdown}
   end
 
-
+  # This can turn into a more generic switch method for supporting multiple types of doc files
+  # TODO add js as a file type
   def self.get_code_doc(file_name)
-    #find if there is a comment block in the file
-    #pull out yaml
-    #pull out markdown
+    case File.extname(file_name)
+    when '.scss'
     get_scss_code_doc(file_name)
-    #return yaml, markdown
+    when '.js'
+      #TODO
+    end
   end
 
   def self.get_file_name(str)
@@ -35,7 +42,6 @@ module Hologram
 
 
   def self.get_fh(output_directory, output_file)
-    FileUtils.mkdir_p(output_directory)
     File.open("#{output_directory}/#{output_file}", 'w')
   end
 
@@ -49,7 +55,6 @@ module Hologram
 
     if (doc[:config]["type"] == 'component')
       output_file = get_file_name(doc[:config]['category'])
-
 
       #out anchor/heading
       output = "# #{doc[:config]['title']}"
@@ -76,8 +81,8 @@ module Hologram
     directories.each do |directory|
       Dir.foreach(directory) do |input_file|
 
-        if input_file.end_with?('scss')
-          file, markdown = process_file("#{directory}#{input_file}")
+        if is_supported_file_type?(input_file)
+          file, markdown = process_file("#{directory}/#{input_file}")
 
           if not markdown.nil?
 
@@ -101,11 +106,18 @@ module Hologram
   end
 
 
-  def self.build(input_directory, output_directory)
+  def self.build(config)
 
-    input_directory = Pathname.new(input_directory).realpath
-    output_directory = Pathname.new(output_directory).realpath
+    # Create the output directory if it doesn't exist
+    puts config
+    unless File.directory?(config['output_directory'])
+      FileUtils.mkdir_p(config['output_directory'])
+    end
 
+    input_directory  = Pathname.new(config['source_directory']).realpath
+    output_directory = Pathname.new(config['output_directory']).realpath
+    doc_assets       = Pathname.new(config['doc_assets']).realpath
+    static_assets    = Pathname.new(config['static_assets']).realpath
 
     #collect the markdown pages all together by category
     pages = process_dir(input_directory)
@@ -115,24 +127,40 @@ module Hologram
     pages.each do |file_name, markdown|
       fh = get_fh(output_directory, file_name)
 
-      if File.exists?("#{input_directory}/header.html")
-        fh.write(File.read("#{input_directory}/header.html"))
+      if File.exists?("#{doc_assets}/header.html")
+        fh.write(File.read("#{doc_assetsy}/header.html"))
       end
       
       #generate doc nav html
       fh.write(renderer.render(markdown))
       
-      if File.exists?("#{input_directory}/header.html")
-        fh.write(File.read("#{input_directory}/footer.html"))
+      if File.exists?("#{doc_assets}/header.html")
+        fh.write(File.read("#{doc_assets}/footer.html"))
       end
 
       fh.close()
     end
 
-    if Dir.exists?("#{input_directory}/_static")
+    if Dir.exists?("#{static_assets}")
       `rm -rf #{output_directory}/static`
-      `cp -R #{input_directory}/_static #{output_directory}/static`
+      `cp -R #{static_assets} #{output_directory}/#{static_assets.basename}`
     end
+  end
+
+  def self.init(args)
+    config = args ? YAML::load_file(args[0]) : YAML::load_file('hologram_config.yml')
+    current_path = Dir.pwd
+    base_path = Pathname.new(args[0])
+    Dir.chdir(base_path.dirname)
+    self.build(config)
+    Dir.chdir(current_path)
+  end
+
+
+
+  def self.is_supported_file_type?(file)
+    supported_extensions = ['.scss', '.js', '.md', '.markdown' ]
+    supported_extensions.include?(File.extname(file))
   end
 
 
