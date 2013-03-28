@@ -14,7 +14,8 @@ module Hologram
     return nil unless node.instance_of? Sass::Tree::CommentNode
 
     raw_text = node.value.first
-    match = /^---[<>@,-:\d\w\s]*---$/.match(raw_text)
+    match = /^---[\(\)<>@,-:\d\w\s]*---$/.match(raw_text)
+
     return nil unless match
 
     yaml = match[0] 
