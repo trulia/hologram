@@ -11,16 +11,13 @@ module Hologram
   def self.get_scss_code_doc(file)
 
     node = Sass::Engine.for_file(file, {}).to_tree().children[0]
-
     return nil unless node.instance_of? Sass::Tree::CommentNode
 
     raw_text = node.value.first
     match = /^---[<>@,-:\d\w\s]*---$/.match(raw_text)
-
     return nil unless match
 
     yaml = match[0] 
-
     markdown = raw_text.sub(yaml, '').sub('/*', '').sub('*/', '')
     
     return {config: YAML::load(yaml), markdown: markdown}
@@ -31,7 +28,6 @@ module Hologram
   def self.get_code_doc(file_name)
     case File.extname(file_name)
     when '.scss'
-    puts file_name
     get_scss_code_doc(file_name)
     when '.js'
       #TODO
@@ -51,7 +47,6 @@ module Hologram
   def self.process_file(file)
     doc = get_code_doc(file)
     return if doc.nil?
-
     output = ""
     output_file = nil
 
@@ -59,10 +54,10 @@ module Hologram
       output_file = get_file_name(doc[:config]['category'])
 
       #out anchor/heading
-      output = "# #{doc[:config]['title']}"
+      output = "\n\n# #{doc[:config]['title']}"
       #out docs
     else
-      output << "## #{doc[:config]['title']}"
+      output << "\n\n## #{doc[:config]['title']}"
     end
       
     output << doc[:markdown]
@@ -89,8 +84,7 @@ module Hologram
           else
             file, markdown, skin = process_file("#{directory}/#{input_file}")
 
-            if not markdown.nil?
-
+            if markdown
               #set correct file for skin classes
               if skin
                 file = parent_file
