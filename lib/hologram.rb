@@ -31,6 +31,7 @@ module Hologram
   def self.get_code_doc(file_name)
     case File.extname(file_name)
     when '.scss'
+    puts file_name
     get_scss_code_doc(file_name)
     when '.js'
       #TODO
@@ -81,7 +82,7 @@ module Hologram
 
     directories.each do |directory|
       Dir.foreach(directory) do |input_file|
-
+        
         if is_supported_file_type?(input_file)
           if input_file.end_with?('md')
             pages[File.basename(input_file, '.md') + '.html'] = File.read("#{directory}/#{input_file}")
@@ -184,7 +185,7 @@ module Hologram
     end
 
     def table(heading, body)
-      return '<table class="table simpleTable"><thead>' + heading + '</thead><tbody>' + body + '</tbody></table>'
+      return '<table class="table tableBasic"><thead>' + heading + '</thead><tbody>' + body + '</tbody></table>'
     end
 
     def table_row(content)
