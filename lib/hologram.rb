@@ -36,7 +36,8 @@ module Hologram
   end
 
   def self.get_file_name(str)
-    str.gsub!(' ', '_').downcase! + '.html'
+    str.gsub!(' ', '_')
+    str.downcase! + '.html'
   end
 
 
@@ -122,6 +123,7 @@ module Hologram
 
     #generate html from markdown
     renderer = Redcarpet::Markdown.new(TruliaMarkdown, { :fenced_code_blocks => true, :tables => true })
+    pages
     pages.each do |file_name, markdown|
       fh = get_fh(output_directory, file_name)
 
@@ -134,8 +136,8 @@ module Hologram
       fh.write(renderer.render(markdown))
       
       # only include the init javascript on the javascript page
-      if filename.eql?('javascript_component.html') and File.exists?("#{doc_assets}/footer_includes.html")
-        fh.write(File.read("#{doc_assets}/footer_includes.html"))
+      if File.exists?("#{doc_assets}/#{file_name}_footer.html")
+        fh.write(File.read("#{doc_assets}/#{file_name}_footer.html"))
       end
 
       # write the footer
