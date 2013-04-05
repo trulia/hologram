@@ -8,36 +8,42 @@ require 'fileutils'
 require 'pathname'
 
 module Hologram
-  def self.get_scss_code_doc(file)
-
-    node = Sass::Engine.for_file(file, {}).to_tree().children[0]
-    return nil unless node.instance_of? Sass::Tree::CommentNode
-
-    raw_text = node.value.first
-    match = /^---[\(\)<>@,-:\d\w\s]*---$/.match(raw_text)
-
-    return nil unless match
-
-    yaml = match[0] 
-    markdown = raw_text.sub(yaml, '').sub('/*', '').sub('*/', '')
-    
-    return {config: YAML::load(yaml), markdown: markdown}
-  end
-
-  # This can turn into a more generic switch method for supporting multiple types of doc files
-  # TODO add js as a file type
-  def self.get_code_doc(file_name)
-    case File.extname(file_name)
+  
+  def self.get_code_doc(file)
+    case File.extname(file)
     when '.scss'
-    get_scss_code_doc(file_name)
+      get_scss_code_doc(file)
     when '.js'
-      #TODO
+      get_js_code_doc(file)
     end
   end
 
+  def self.get_scss_code_doc(file)
+    node = Sass::Engine.for_file(file, {}).to_tree().children[0]
+    return nil unless node.instance_of? Sass::Tree::CommentNode
+    return self.parse_comment_block(node.value.first)
+  end
+
+  def self.get_js_code_doc(file)
+    text = File.read(file)
+    comment_block = /^\/*[^*]*\*\//.match(text).to_s
+    return nil unless comment_block
+    return self.parse_comment_block(comment_block)
+  end
+
+  def self.parse_comment_block(comment_block)
+    match = /^---[\(\)<>@,-:\d\w\s]*---$/.match(comment_block)
+    return nil unless match
+    yaml = match[0]
+    markdown = comment_block.sub(yaml, '').sub('/*', '').sub('*/', '')
+    return nil unless markdown
+
+    return {config: YAML::load(yaml), markdown: markdown}
+  end
+  
+
   def self.get_file_name(str)
-    str.gsub!(' ', '_')
-    str.downcase! + '.html'
+    str = str.gsub(' ', '_').downcase + '.html'
   end
 
 
