@@ -1,6 +1,6 @@
 require "hologram/version"
 
-require 'sass'
+# require 'sass'
 require 'redcarpet'
 require 'yaml'
 require 'pygments'
@@ -10,36 +10,43 @@ require 'pathname'
 module Hologram
   
   def self.get_code_doc(file)
-    case File.extname(file)
-    when '.scss'
-      get_scss_code_doc(file)
-    when '.js'
-      get_js_code_doc(file)
-    end
-  end
-
-  def self.get_scss_code_doc(file)
-    node = Sass::Engine.for_file(file, {}).to_tree().children[0]
-    return nil unless node.instance_of? Sass::Tree::CommentNode
-    return self.parse_comment_block(node.value.first)
-  end
-
-  def self.get_js_code_doc(file)
-    text = File.read(file)
-    comment_block = /^\/*[^*]*\*\//.match(text).to_s
-    return nil unless comment_block
-    return self.parse_comment_block(comment_block)
-  end
-
-  def self.parse_comment_block(comment_block)
-    match = /^---[\(\)<>@,-:\d\w\s]*---$/.match(comment_block)
+    
+    file = File.read(file)
+    comment_match = /^\/\*(.*)\*\//m.match(file)
+    return nil unless comment_match
+    comment_block = comment_match[0]
+    match = /^---\s(.*)\s---$/m.match(comment_block)
     return nil unless match
+  
     yaml = match[0]
     markdown = comment_block.sub(yaml, '').sub('/*', '').sub('*/', '')
-    return nil unless markdown
 
-    return {config: YAML::load(yaml), markdown: markdown}
+    {config: YAML::load(yaml), markdown: markdown}
   end
+
+  # def self.get_scss_code_doc(file)
+  #   node = Sass::Engine.for_file(file, {}).to_tree().children[0]
+  #   return nil unless node.instance_of? Sass::Tree::CommentNode
+  #   return self.parse_comment_block(node.value.first)
+  # end
+
+  # def self.get_js_code_doc(file)
+  #   text = File.read(file)
+  #   comment_block = /^\/*[^*]*\*\//.match(text).to_s
+  #   return nil unless comment_block
+  #   puts comment_block
+  #   return self.parse_comment_block(comment_block)
+  # end
+
+  # def self.parse_comment_block(comment_block)
+  #   match = /^---[\(\)<>@,-:\d\w\s]*---$/.match(comment_block)
+  #   return nil unless match
+  #   yaml = match[0]
+  #   markdown = comment_block.sub(yaml, '').sub('/*', '').sub('*/', '')
+  #   return nil unless markdown
+
+  #   return {config: YAML::load(yaml), markdown: markdown}
+  # end
   
 
   def self.get_file_name(str)
@@ -129,7 +136,7 @@ module Hologram
 
     #generate html from markdown
     renderer = Redcarpet::Markdown.new(TruliaMarkdown, { :fenced_code_blocks => true, :tables => true })
-    pages
+  
     pages.each do |file_name, markdown|
       fh = get_fh(output_directory, file_name)
 
@@ -188,8 +195,15 @@ module Hologram
 
   class TruliaMarkdown < Redcarpet::Render::HTML
     def block_code(code, language)
-      return unless language.include?('example')
-      '<div class="codeExample">' + '<div class="exampleOutput">' + code + '</div>' + '<div class="codeBlock">' + Pygments.highlight(code) + '</div>' + '</div>'
+      if language and language.include?('example')
+        if language.include?('js')
+          '<script>' + code + '</script><div class="codeBlock">' + Pygments.highlight(code) + '</div>'
+        else
+          '<div class="codeExample">' + '<div class="exampleOutput">' + code + '</div>' + '<div class="codeBlock">' + Pygments.highlight(code) + '</div>' + '</div>'
+        end
+      else
+        '<div class="codeBlock">' + Pygments.highlight(code) + '</div>'
+      end      
     end
 
     def table(heading, body)
