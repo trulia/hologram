@@ -12,10 +12,10 @@ module Hologram
   def self.get_code_doc(file)
     
     file = File.read(file)
-    comment_match = /^\/\*(.*)\*\//m.match(file)
+    comment_match = /^\/\*(.*?)\*\//m.match(file)
     return nil unless comment_match
     comment_block = comment_match[0]
-    match = /^---\s(.*)\s---$/m.match(comment_block)
+    match = /^---\s(.*?)\s---$/m.match(comment_block)
     return nil unless match
   
     yaml = match[0]
