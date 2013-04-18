@@ -7,6 +7,29 @@ require 'pygments'
 require 'fileutils'
 require 'pathname'
 
+class String
+  # colorization
+  def colorize(color_code)
+    "\e[#{color_code}m#{self}\e[0m"
+  end
+
+  def red
+    colorize(31)
+  end
+
+  def green
+    colorize(32)
+  end
+
+  def yellow
+    colorize(33)
+  end
+
+  def pink
+    colorize(35)
+  end
+end
+
 module Hologram
   
   def self.get_code_doc(file)
@@ -24,30 +47,6 @@ module Hologram
     {config: YAML::load(yaml), markdown: markdown}
   end
 
-  # def self.get_scss_code_doc(file)
-  #   node = Sass::Engine.for_file(file, {}).to_tree().children[0]
-  #   return nil unless node.instance_of? Sass::Tree::CommentNode
-  #   return self.parse_comment_block(node.value.first)
-  # end
-
-  # def self.get_js_code_doc(file)
-  #   text = File.read(file)
-  #   comment_block = /^\/*[^*]*\*\//.match(text).to_s
-  #   return nil unless comment_block
-  #   puts comment_block
-  #   return self.parse_comment_block(comment_block)
-  # end
-
-  # def self.parse_comment_block(comment_block)
-  #   match = /^---[\(\)<>@,-:\d\w\s]*---$/.match(comment_block)
-  #   return nil unless match
-  #   yaml = match[0]
-  #   markdown = comment_block.sub(yaml, '').sub('/*', '').sub('*/', '')
-  #   return nil unless markdown
-
-  #   return {config: YAML::load(yaml), markdown: markdown}
-  # end
-  
 
   def self.get_file_name(str)
     str = str.gsub(' ', '_').downcase + '.html'
@@ -89,6 +88,7 @@ module Hologram
 
     #skins need the parent component's file
     parent_file = nil
+    last_directory = nil
 
     directories.each do |directory|
       Dir.foreach(directory) do |input_file|
@@ -107,6 +107,10 @@ module Hologram
                 parent_file = file
               end
 
+              if file.nil?
+                raise "Could not save output for " + "#{input_file}".yellow + ", did you intend to set type: component?"
+              end
+
               pages[file] = "" if pages[file].nil?
               pages[file] << markdown
             end
@@ -120,16 +124,26 @@ module Hologram
 
 
   def self.build(config)
-
-    # Create the output directory if it doesn't exist
-    unless File.directory?(config['output_directory'])
-      FileUtils.mkdir_p(config['output_directory'])
+    if  !config.key?('source')
+      raise "No source directory specified in the config file"
     end
 
-    input_directory  = Pathname.new(config['source_directory']).realpath
-    output_directory = Pathname.new(config['output_directory']).realpath
-    doc_assets       = Pathname.new(config['doc_assets']).realpath
-    static_assets    = Pathname.new(config['static_assets']).realpath
+    if  !config.key?('destination')
+      raise "No destination directory specified in the config"
+    end
+
+    if  !config.key?('documentation_assets')
+      raise "No documentation assets directory specified"
+    end
+
+    # Create the output directory if it doesn't exist
+    unless File.directory?(config['source'])
+      FileUtils.mkdir_p(config['source'])
+    end
+
+    input_directory  = Pathname.new(config['source']).realpath
+    output_directory = Pathname.new(config['destination']).realpath
+    doc_assets       = Pathname.new(config['documentation_assets']).realpath
 
     #collect the markdown pages all together by category
     pages = process_dir(input_directory)
@@ -161,9 +175,12 @@ module Hologram
       fh.close()
     end
 
-    if Dir.exists?("#{static_assets}")
-      `rm -rf #{output_directory}/#{static_assets.basename}`
-      `cp -R #{static_assets} #{output_directory}/#{static_assets.basename}`
+    config['additional_assets'].each do |dir|
+      dirpath  = Pathname.new(dir).realpath
+      if Dir.exists?("#{dir}")
+        `rm -rf #{output_directory}/#{dirpath.basename}`
+        `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
+      end
     end
 
     Dir.foreach(doc_assets) do |file|
@@ -175,13 +192,23 @@ module Hologram
 
   end
 
+
   def self.init(args)
-    config = args ? YAML::load_file(args[0]) : YAML::load_file('hologram_config.yml')
-    current_path = Dir.pwd
-    base_path = Pathname.new(args[0])
-    Dir.chdir(base_path.dirname)
-    self.build(config)
-    Dir.chdir(current_path)
+    begin 
+      config = args ? YAML::load_file(args[0]) : YAML::load_file('hologram_config.yml')
+      current_path = Dir.pwd
+      base_path = Pathname.new(args[0])
+      Dir.chdir(base_path.dirname)
+      self.build(config)
+      Dir.chdir(current_path)
+      puts "Build successful. (-: ".green
+    rescue Errno::ENOENT
+      puts "(╯°□°）╯".green + "︵ ┻━┻ ".yellow + " Build not complete.".red 
+      puts " Could not load config file."
+    rescue RuntimeError => e
+      puts "(╯°□°）╯".green + "︵ ┻━┻ ".yellow + " Build not complete.".red 
+      puts " #{e}"
+    end
   end
 
 
@@ -213,15 +240,14 @@ module Hologram
     def table_row(content)
       '<tr>' + content.gsub('<th>', '<th class="txtL">') + '</tr>'
     end
+
+    def list(contents, list_type)
+      if list_type.to_s.eql?("ordered")
+        '<ol class="listOrdered">' + contents + '</ol>'
+      else
+        '<li class="listBulleted">' + contents + '</li>'
+      end
+    end
   end
-  # Your code goes here...
-  # parse a sass file
-  #  - get yaml config
-  #  - find any markdown
-  # parse skin files
-  # table doc output
-  # add markdown doc to output for component
-  # add markdown doc to output for skins
-  #
-  # initialize markdown engine setup the custom same time
+
 end
