@@ -203,14 +203,13 @@ module Hologram
       Dir.chdir(current_path)
       puts "Build successful. (-: ".green
     rescue Errno::ENOENT
-      puts "(╯°□°）╯".green + "︵ ┻━┻ ".yellow + " Build not complete.".red 
+      puts "(\u{256F}\u{00B0}\u{25A1}\u{00B0}\u{FF09}\u{256F}".green + "\u{FE35} \u{253B}\u{2501}\u{253B} ".yellow + " Build not complete.".red 
       puts " Could not load config file."
     rescue RuntimeError => e
-      puts "(╯°□°）╯".green + "︵ ┻━┻ ".yellow + " Build not complete.".red 
+      puts "(\u{256F}\u{00B0}\u{25A1}\u{00B0}\u{FF09}\u{256F}".green + "\u{FE35} \u{253B}\u{2501}\u{253B} ".yellow + " Build not complete.".red 
       puts " #{e}"
     end
   end
-
 
 
   def self.is_supported_file_type?(file)
@@ -219,7 +218,9 @@ module Hologram
   end
 
 
-
+  #This needs to be a runtime config that can be passed in to hologram
+  #instead of being part of it. This should get moved to the oocss docs
+  #in that case
   class TruliaMarkdown < Redcarpet::Render::HTML
     def block_code(code, language)
       if language and language.include?('example')
