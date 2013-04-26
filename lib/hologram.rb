@@ -83,7 +83,7 @@ module Hologram
     pages = {}
 
     #get all directories in our library folder
-    directories = Dir.glob("#{base_directory}/**/*/")
+    directories = Dir.glob("#{base_directory}/**/*/").sort
     directories.unshift(base_directory)
 
     #skins need the parent component's file
