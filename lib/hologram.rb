@@ -83,7 +83,7 @@ module Hologram
     pages = {}
 
     #get all directories in our library folder
-    directories = Dir.glob("#{base_directory}/**/*/")
+    directories = Dir.glob("#{base_directory}/**/*/").sort
     directories.unshift(base_directory)
 
     #skins need the parent component's file
@@ -95,9 +95,9 @@ module Hologram
       # need to sort the directories for linux systems
       sorted_directories = []
       Dir.foreach(directory) do |file|
-        sorted_directory << file
+        sorted_directories << file
       end
-      sorted_directory.sort!
+      sorted_directories.sort!
 
       sorted_directories.each do |input_file|      
         if is_supported_file_type?(input_file)
