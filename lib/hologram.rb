@@ -91,8 +91,15 @@ module Hologram
     last_directory = nil
 
     directories.each do |directory|
-      Dir.foreach(directory) do |input_file|
-        
+
+      # need to sort the directories for linux systems
+      sorted_directories = []
+      Dir.foreach(directory) do |file|
+        sorted_directory << file
+      end
+      sorted_directory.sort!
+
+      sorted_directories.each do |input_file|      
         if is_supported_file_type?(input_file)
           if input_file.end_with?('md')
             pages[File.basename(input_file, '.md') + '.html'] = File.read("#{directory}/#{input_file}")
@@ -161,11 +168,6 @@ module Hologram
       
       # write the docs
       fh.write(renderer.render(markdown))
-      
-      # only include the init javascript on the javascript page
-      if File.exists?("#{doc_assets}/#{file_name}_footer.html")
-        fh.write(File.read("#{doc_assets}/#{file_name}_footer.html"))
-      end
 
       # write the footer
       if File.exists?("#{doc_assets}/footer.html")
