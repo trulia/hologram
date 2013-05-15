@@ -11,30 +11,35 @@ require 'hologram_markdown_renderer'
 module Hologram
 
   class DocumentBlock
-    attr_accessor :name, :parent, :children, :title, :category, :output, :output_file, :config
+    attr_accessor :name, :parent, :children, :title, :category, :markdown, :output_file, :config
 
-    def initialize(file)
-      file = File.read(file)
+    def initialize(input_file)
+      file = File.read(input_file)
       comment_match = /^\/\*(.*?)\*\//m.match(file)
       return false unless comment_match
+
       comment_block = comment_match[0]
-      match = /^---\s(.*?)\s---$/m.match(comment_block)
-      return false unless match
+      yaml_match = /^---\s(.*?)\s---$/m.match(comment_block)
+      return false unless yaml_match
     
-      yaml = match[0]
+      yaml = yaml_match[0]
       markdown = comment_block.sub(yaml, '').sub('/*', '').sub('*/', '')
 
       @config   = YAML::load(yaml)
-      @parent   = @config['parent']
-      @children = {}
-      @name     = @config['name']
-      @category = @config['category']
-      @title    = @config['title']
-      @output   = markdown
+      if config['name']
+        @name     = @config['name']
+        @parent   = @config['parent']
+        @children = {}
+        @category = @config['category']
+        @title    = @config['title']
+        @markdown = markdown
+      else
+        puts "A DocumentBlock in the following file is missing a name. It will be skipped. \n #{input_file}"
+      end
     end
 
     def has_block?
-      @config && @output
+      @config && @markdown
     end
   end
 
@@ -145,15 +150,12 @@ module Hologram
         end
 
         @doc_blocks[doc_block.name] = doc_block;
-        doc_block.output = "\n\n# #{doc_block.title}" + doc_block.output
+        doc_block.markdown = "\n\n# #{doc_block.title}" + doc_block.markdown
       else
         # child file
         parent_doc_block = @doc_blocks[doc_block.parent]
-
         doc_block.output_file = parent_doc_block.output_file
-        doc_block.output = "\n\n## #{doc_block.title}" + doc_block.output
-
-        # TODO: don't want to use name
+        doc_block.markdown = "\n\n## #{doc_block.title}" + doc_block.markdown
         parent_doc_block.children[doc_block.name] = doc_block
       end
     end
@@ -162,7 +164,7 @@ module Hologram
     def build_pages_from_doc_blocks(doc_blocks)
       doc_blocks.each do |key, doc_block|
         @pages[doc_block.output_file] ||= ""
-        @pages[doc_block.output_file] << doc_block.output
+        @pages[doc_block.output_file] << doc_block.markdown
         build_pages_from_doc_blocks(doc_block.children) if doc_block.children
       end
     end
