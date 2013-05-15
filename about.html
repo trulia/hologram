@@ -2,22 +2,53 @@
 <html>
   <head>
     <title>Hologram: Style Documentation Build System</title>
+    <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
-    <h1>What is Hologram?</h1>
-    <p>Hologram is ruby script that takes a directory of css, sass
-    and/or javascript files and creates a style guide for you from
-    comments found inside your source files.</p>
+    <section>
+      <h1>Hologram</h1>
+      <h2>What is Hologram?</h2>
+      <p>Hologram is ruby script that takes an OOCSS project and generates
+      a style guide for you based on comments found within the
+      project. You can find an example project that uses hologram at
+      github.
+      </p>
 
-    <h1>Why would I use it?</h1>
-    <p>There are other style sheet documentation systems (such as Kneath
-    Style Sheets and styledocco), but they have their own set of
-    limitations or rules that make it difficult to get up and running.
-    To use Hologram all you need to know is markdown, a little bit of
-    yaml, and you can be off and running.</p>
+      <p>
+        <a href="images/screenshot.png"><img style="width:650px;" src="images/screenshot.png"></a>
+      </p>
 
-    <h1>Where can I get it?</h1>
-    <p>Hologram can be found on github, feel free to send pull requests
-    or open issues as well.</p>
+      <h2>Why would I use it?</h2>
+      <p>Hologram was written to make building a style guide as easy as
+      maintaining you css. Documentation is written in your css files
+      using a combination of YAML and Markdown. By using Markdown you
+      can easily format your docs however you wish, and fall back to raw
+      html for those tricky parts that every style guide has. 
+      </p>
+      <p>An important part of any style guide are code examples
+      alongside the visual output. Hologram makes this easy by extending
+      Markdown to code blocks that can be marked as examples:
+
+        <pre>
+```html_example
+&lt;h1&gt;This is an example that should be displayed on the page and
+    as code&lt;/h1&gt;
+```
+        </pre>
+      </p>
+
+      <h2>Where can I get it?</h2>
+      <p>Hologram can be installed by using <code>gem install
+      hologram</code>
+      </p>
+
+      <p>Additionally, Hologram is open source (licensed as XXX) and can
+      be found on <a href="http://github.com/trulia/hologram">GitHub</a>.
+      Feel free to open any pull requests or issues (-:
+      </p>
+    </section>
   </body>
+  <footer>
+    <span class="lead">Trulia Open Source</span>
+  </footer>
 </html>
