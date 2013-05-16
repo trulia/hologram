@@ -6,58 +6,40 @@ require 'yaml'
 require 'pygments'
 require 'fileutils'
 require 'pathname'
-
-class String
-  # colorization
-  def colorize(color_code)
-    "\e[#{color_code}m#{self}\e[0m"
-  end
-
-  def red
-    colorize(31)
-  end
-
-  def green
-    colorize(32)
-  end
-
-  def yellow
-    colorize(33)
-  end
-
-  def pink
-    colorize(35)
-  end
-end
-
+require 'hologram_markdown_renderer'
 
 module Hologram
 
   class DocumentBlock
-    attr_accessor :name, :parent, :title, :category, :output, :output_file, :config
+    attr_accessor :name, :parent, :children, :title, :category, :markdown, :output_file, :config
 
-    def initialize(file)
-      file = File.read(file)
+    def initialize(input_file)
+      file = File.read(input_file)
       comment_match = /^\/\*(.*?)\*\//m.match(file)
       return false unless comment_match
+
       comment_block = comment_match[0]
-      match = /^---\s(.*?)\s---$/m.match(comment_block)
-      return false unless match
+      yaml_match = /^---\s(.*?)\s---$/m.match(comment_block)
+      return false unless yaml_match
     
-      yaml = match[0]
+      yaml = yaml_match[0]
       markdown = comment_block.sub(yaml, '').sub('/*', '').sub('*/', '')
 
       @config   = YAML::load(yaml)
-      @parent   = @config['parent']
-      @name     = @config['name']
-      @category = @config['category']
-      @title    = @config['title']
-
-      @output   = markdown
+      if config['name']
+        @name     = @config['name']
+        @parent   = @config['parent']
+        @children = {}
+        @category = @config['category']
+        @title    = @config['title']
+        @markdown = markdown
+      else
+        puts "A DocumentBlock in the following file is missing a name. It will be skipped. \n #{input_file}"
+      end
     end
 
     def has_block?
-      @config && @output
+      @config && @markdown
     end
   end
 
@@ -72,7 +54,7 @@ module Hologram
         @config = args ? YAML::load_file(args[0]) : YAML::load_file('hologram_config.yml')
         validate_config
 
-        # TODO: maybe this should move into build_docs
+        #TODO: maybe this should move into build_docs
         current_path = Dir.pwd
         base_path = Pathname.new(args[0])
         Dir.chdir(base_path.dirname)
@@ -100,6 +82,8 @@ module Hologram
 
       #collect the markdown pages all together by category
       process_dir(input_directory)
+
+      build_pages_from_doc_blocks(@doc_blocks)
 
       renderer = get_markdown_renderer
       write_docs(output_directory, doc_assets, renderer)
@@ -137,6 +121,7 @@ module Hologram
         files.sort!
 
         process_files(files, directory)
+
       end
     end
 
@@ -146,11 +131,7 @@ module Hologram
         if input_file.end_with?('md')
           @pages[File.basename(input_file, '.md') + '.html'] = File.read("#{directory}/#{input_file}")
         else
-          doc_block = process_file("#{directory}/#{input_file}")
-          if doc_block
-            @pages[doc_block.output_file] ||= ""
-            @pages[doc_block.output_file] << doc_block.output
-          end
+          process_file("#{directory}/#{input_file}")
         end
       end
     end
@@ -169,13 +150,23 @@ module Hologram
         end
 
         @doc_blocks[doc_block.name] = doc_block;
-        doc_block.output = "\n\n# #{doc_block.title}" + doc_block.output
+        doc_block.markdown = "\n\n# #{doc_block.title}" + doc_block.markdown
       else
-        #child file
-        doc_block.output_file = @doc_blocks[doc_block.parent].output_file
-        doc_block.output = "\n\n## #{doc_block.title}" + doc_block.output
+        # child file
+        parent_doc_block = @doc_blocks[doc_block.parent]
+        doc_block.output_file = parent_doc_block.output_file
+        doc_block.markdown = "\n\n## #{doc_block.title}" + doc_block.markdown
+        parent_doc_block.children[doc_block.name] = doc_block
       end
-      doc_block
+    end
+
+
+    def build_pages_from_doc_blocks(doc_blocks)
+      doc_blocks.each do |key, doc_block|
+        @pages[doc_block.output_file] ||= ""
+        @pages[doc_block.output_file] << doc_block.markdown
+        build_pages_from_doc_blocks(doc_block.children) if doc_block.children
+      end
     end
 
 
@@ -203,12 +194,12 @@ module Hologram
 
     def get_markdown_renderer
       if config['custom_markdown'].nil?
-        renderer = Redcarpet::Markdown.new({ :fenced_code_blocks => true, :tables => true })
+        renderer = Redcarpet::Markdown.new(HologramMarkdownRenderer, { :fenced_code_blocks => true, :tables => true })
       else
         begin
           load config['custom_markdown']
           renderer_class = File.basename(config['custom_markdown'], '.rb').split(/_/).map(&:capitalize).join
-          puts "Using #{renderer_class} markdown renderer."
+          puts "Custom markdown renderer #{renderer_class} loaded."
           renderer = Redcarpet::Markdown.new(Module.const_get(renderer_class), { :fenced_code_blocks => true, :tables => true })
         rescue LoadError => e
           display_error("Could not load #{config['custom_markdown']}.")
@@ -257,5 +248,28 @@ module Hologram
     end
   end
 
+end
 
+
+class String
+  # colorization
+  def colorize(color_code)
+    "\e[#{color_code}m#{self}\e[0m"
+  end
+
+  def red
+    colorize(31)
+  end
+
+  def green
+    colorize(32)
+  end
+
+  def yellow
+    colorize(33)
+  end
+
+  def pink
+    colorize(35)
+  end
 end
