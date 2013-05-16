@@ -74,7 +74,7 @@ module Hologram
     private
     def build_docs
       # Create the output directory if it doesn't exist
-      @FileUtils.mkdir_p(config['source']) unless File.directory?(config['source'])
+      FileUtils.mkdir_p(config['destination']) unless File.directory?(config['destination'])
 
       input_directory  = Pathname.new(config['source']).realpath
       output_directory = Pathname.new(config['destination']).realpath
