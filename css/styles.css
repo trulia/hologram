@@ -22,6 +22,8 @@ select,
 textarea,
 button {
   font-family: OpenSans, sans-serif;
+  background-color: #5eab1f;
+  color: #fff;
 }
 
 
@@ -52,7 +54,7 @@ h2 {
 }
 
 footer {
-  background-color: #5eab1f;
+  background-color: #222;
   color: #fff;
   padding: 15px;
   text-align: center;
@@ -61,4 +63,9 @@ footer {
 section {
   width: 650px;
   margin: auto;
+}
+
+a, a:visited {
+  font-weight: bold;
+  color: #fff;
 }
