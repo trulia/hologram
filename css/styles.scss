@@ -31,7 +31,8 @@ $blackTextShadow: 0 1px 0 rgba(0,0,0,0.15);
   -o-transition-delay: $delay;
 }
 
-// Fonts
+// Body font
+/*
 @font-face {
   font-family: "OpenSans";
   src: url("http://static.trulia-cdn.com/images/fonts/OpenSans/OpenSans-Regular-webfont.eot");
@@ -40,7 +41,19 @@ $blackTextShadow: 0 1px 0 rgba(0,0,0,0.15);
   font-style: normal;
 }
 
-//Entypo Github
+// Header font
+@font-face {
+    font-family: "RopaSans";
+    src: url('../fonts/RopaSans-Regular-webfont.eot');
+    src: url('../fonts/RopaSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/RopaSans-Regular-webfont.woff') format('woff'),
+         url('../fonts/RopaSans-Regular-webfont.ttf') format('truetype'),
+         url('../fonts/RopaSans-Regular-webfont.svg#RopaSansRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+} */
+
+//Entypo Github Icon
 
 .icon-github:before {
   content: '\e800';
@@ -78,8 +91,8 @@ $blackTextShadow: 0 1px 0 rgba(0,0,0,0.15);
 
 
 //Type
-$title-type: "Ropa Sans", sans-serif;
-$body-type: OpenSans, sans-serif;
+$title-type: 'Ropa Sans', sans-serif;
+$body-type: 'Open Sans', sans-serif;
 $icon-type: entypo;
 
 // CSS

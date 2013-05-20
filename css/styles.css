@@ -1,11 +1,4 @@
 @charset "UTF-8";
-@font-face {
-  font-family: "OpenSans";
-  src: url("http://static.trulia-cdn.com/images/fonts/OpenSans/OpenSans-Regular-webfont.eot");
-  src: url("http://static.trulia-cdn.com/images/fonts/OpenSans/OpenSans-Regular-webfont.eot?#iefix") format("embedded-opentype"), url("http://static.trulia-cdn.com/images/fonts/OpenSans/OpenSans-Regular-webfont.woff") format("woff"), url("http://static.trulia-cdn.com/images/fonts/OpenSans/OpenSans-Regular-webfont.ttf") format("truetype"), url("http://static.trulia-cdn.com/images/fonts/OpenSans/OpenSans-Regular-webfont.svg#OpenSansRegular") format("svg");
-  font-weight: 400;
-  font-style: normal; }
-
 .icon-github:before {
   content: '\e800'; }
 
@@ -38,7 +31,7 @@ body {
   background-color: #e5faee;
   color: #333333;
   margin: 0;
-  font-family: OpenSans, sans-serif;
+  font-family: "Open Sans", sans-serif;
   text-align: center; }
 
 header {
