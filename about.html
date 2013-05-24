@@ -21,7 +21,8 @@
       <h2>What is Hologram?</h2>
 
       <p>
-        Hologram is a small Ruby script which generates a style guide based on comments found within an OOCSS project.
+        Hologram is a small Ruby script which generates a style guide
+        based on comments found within an OOCSS project.
       </p>
 
       <p>
@@ -29,44 +30,60 @@
       </p>
 
       <p>
-        You can find an example project that uses hologram at github. <br/>
-        It is similar to <a href="https://github.com/kneath/kss">Kneath Style Sheets</a> and <a href="http://jacobrask.github.io/styledocco/">Styledocco</a>
+        You can find an example project that uses hologram at github.
+        <br/> It is similar to <a
+          href="https://github.com/kneath/kss">Kneath Style Sheets</a>
+        and <a
+          href="http://jacobrask.github.io/styledocco/">Styledocco</a>
       </p>
 
       <h3> Hologram helps you maintain beautiful living style guides. </h3>
         
-      <p>
-
-        <img style="width:700px;" src="images/screenshot.png" alt="Screenshot of Trulia OOCSS Library"/>
-
-      </p>
-
       <h2>Why would I use it?</h2>
 
       <p>
-        Hologram was written to make building a style guide as easy as maintaining your CSS. Your documentation is written right in your CSS files using a combination of YAML and Markdown. By using Markdown, you can easily format your docs however you wish and fall back to raw HTML for those tricky parts every styleguide has.
+        Hologram was written to make building a style guide as easy as
+        maintaining your CSS. Your documentation is written inside in
+        your CSS (or sass) files using a combination of <a
+          href="http://www.yaml.org/">YAML</a> and <a
+          href="http://daringfireball.net/projects/markdown/">Markdown</a>.
+        By using Markdown, you can easily format your docs however you
+        wish and fall back to raw HTML for those tricky parts every
+        styleguide has.
       </p>
       
       <p>
-        An important part of any style guide are code examples accompanying the visual output. Hologram makes this easy by extending Markdown code blocks that can be marked as examples.
+        An important part of any style guide are code examples
+        accompanying the visual output. Hologram makes this easy by
+        extending Markdown code blocks that can be marked as examples.<br><br>
+
+        So some comments that look like this:
+
 
       <div class="pre-container">
         
         <pre>
+/*
+---
+title: Buttons
+name: button
+category: Base CSS
+---
+
+Button styles can be applied to any element. Typically you'll want to
+use either a `&lt;button&gt;` or an `&lt;a&gt;` element:
 
 ```html_example
-&lt;h1&gt;This is an example that should be displayed on the page and
-    as code&lt;/h1&gt;
+&lt;button class="btn btnDefault"&gt;Click&lt;/button&gt;
+&lt;a class="btn btnDefault" href="trulia.com"&gt;Trulia!&lt;/a&gt;
 ```
-
-```js_example
-&lt;h1&gt;This is an example that should be displayed on the page and
-    as code&lt;/h1&gt;
-```
+*/
         </pre>
 
       </div>
 
+      will be transformed into something that looks like this:<br><br>
+        <img style="width:700px;" src="images/screenshot.png" alt="Screenshot of Trulia OOCSS Library"/>
       </p>
 
       <h2>Where can I get it?</h2>
@@ -76,13 +93,13 @@
       </p>
 
       <p>
-        Additionally, Hologram is open source (licensed as XXX) and can
+      Additionally, Hologram is open source (licensed under the <a href="http://opensource.org/licenses/MIT">MIT license</a>) and can
         be found on <a href="http://github.com/trulia/hologram">GitHub</a>.
         Feel free to open any pull requests or issues (-:
       </p>
 
       <p class="hasBtn">
-        <a class="tealBtn"> <i class="icon-github"></i> Fork on Github</a>
+        <a href="http://github.com/trulia/hologram" class="tealBtn"> <i class="icon-github"></i> Fork on Github</a>
       </p>
 
     </section>
