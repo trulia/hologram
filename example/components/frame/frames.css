@@ -1,0 +1,29 @@
+/*
+---
+title: Frames
+name: frame
+category: Components
+---
+
+A frame is a simple border around some content, usually an image but
+other content can be used as well. The different skin classes generally
+change the intensity and padding size of the frame.
+
+*/
+
+
+.frameThumb, .frameSmall, .frameStandard, .frameStacked {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  *border: 1px solid #e9e9e9;
+  -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+.frameThumb img, .frameSmall img, .frameStandard img, .frameStacked img {
+  display: block;
+}
+.frameThumb .polaroid, .frameSmall .polaroid, .frameStandard .polaroid, .frameStacked .polaroid {
+  margin-top: 5px;
+}

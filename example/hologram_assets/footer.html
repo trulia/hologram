@@ -1,0 +1,44 @@
+      </div>
+    </div>
+  </section>
+</div>
+<footer class="footer" role="contentinfo">
+  I'm a footer.
+</footer>
+
+
+<script>
+$(document).ready(function() {
+
+  // build sidebar navigation
+  var $headers = $('.main > h1');
+  var $componentList = $('.componentList');
+
+  $headers.each(function() {
+    var headerText = $(this).text();
+    $(this).attr('id', headerText);
+
+    $componentList.append(
+      '<li><a href="#' + headerText + '">' + headerText + '</a></li>'
+    );
+  });
+
+  // make navigation sticky
+  $('.componentMenu').sticky({ css: {top: '10px'} });
+
+  // set the active tab
+  var currentHref = document.location.pathname.substr(1);
+  if (currentHref)
+  {
+    $('.oocssDocNav').find('a[href^="' + currentHref + '"]').addClass('activeNavElem typeEmphasize');
+  }
+  else
+  {
+    $('.oocssDocNav').find('a').eq(0).addClass('activeNavElem typeEmphasize');
+  }
+
+
+});
+</script>
+</body>
+</html>

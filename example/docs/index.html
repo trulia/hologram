@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+
+    <title>Trulia OOCSS Style Guide</title>
+    <link rel="shortcut icon" href="doc_assets/brick.png" />
+
+    <!-- Documentation CSS -->
+    <link rel="stylesheet" href="doc_assets/css/doc.css">
+    <link rel="stylesheet" href="doc_assets/css/header.css">
+    <link rel="stylesheet" href="doc_assets/css/github.css">
+
+    <!-- Stylesheets we are documenting -->
+    <link rel="stylesheet" href="doc_assets/css/screen.css">
+
+    <!-- Main libraries -->
+    <script src="build/libs/script/jquery-1.8.2.min.js"></script>
+    <script src="build/libs/script/jquery.placeholder.js"></script>
+    <script src="build/libs/script/underscore-1.4.4.min.js"></script>
+    <!-- component js and init scripts -->
+    <script src="build/script/components.js"></script>
+  </head>
+
+  <body>
+    <a href="#main" class="hideVisually focusable skipLink">Skip to content</a>
+
+    <header class="hologramHeader" role="banner">
+      <div>
+        <div class="container">
+          <h1>Hologram Example Style Guide</h1>
+        </div>
+      </div>
+      <div class="hologramTopNav">
+        <div class="container">
+            <ul>
+              <li><a href="index.html">Intro</a></li>
+              <li><a href="base_css.html">Base CSS</a></li>
+              <li><a href="components.html">Components</a></li>
+              <li><a href="javascript.html">Javascript</a></li>
+            </ul>
+        </div>
+      </div>
+      <!-- //header/container -->
+    </header>
+
+    <div class="container">
+      <section class="content">
+          <div>
+            <div class="componentMenu box boxBasic backgroundBasic">
+              <div class="boxBody">
+                <ul class="componentList listBorderedHover">
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="hologramMain">
+
+
+
+<h1>Welcome to the example hologram style guide!</h1>
+
+<p>This style guide and the examples given within are based off of <a href="http://trulia.com">Trulia</a>&#39;s own css library and style guide.</p>
+
+<p>There are a couple of things to note as you poke around.</p>
+
+<ol>
+<li><p>The example css given is stripped from our own library. We use <a href="http://sass-lang.com">Sass</a> at Trulia and instead of making these examples depend on Sass we&#39;ve just included the compiled css for a couple of components. If the organization looks a little weird and the components don&#39;t seem to have exactly the css you would expect it&#39;s because they look nothing like the Sass that spawned them.</p></li>
+<li><p>The header and footer CSS is separated out from the CSS used to actually generate the code blocks. Feel free to use it if you&#39;d like, or eat your own dog food and use your own CSS to create a style guide that matches your site.</p></li>
+<li><p>This is a work in progress, please consider contributing to <a href="http://github.com/trulia/hologram">hologram</a>.</p></li>
+</ol>
+      </div>
+    </div>
+  </section>
+</div>
+<footer class="footer" role="contentinfo">
+  I'm a footer.
+</footer>
+
+
+<script>
+$(document).ready(function() {
+
+  // build sidebar navigation
+  var $headers = $('.main > h1');
+  var $componentList = $('.componentList');
+
+  $headers.each(function() {
+    var headerText = $(this).text();
+    $(this).attr('id', headerText);
+
+    $componentList.append(
+      '<li><a href="#' + headerText + '">' + headerText + '</a></li>'
+    );
+  });
+
+  // make navigation sticky
+  $('.componentMenu').sticky({ css: {top: '10px'} });
+
+  // set the active tab
+  var currentHref = document.location.pathname.substr(1);
+  if (currentHref)
+  {
+    $('.oocssDocNav').find('a[href^="' + currentHref + '"]').addClass('activeNavElem typeEmphasize');
+  }
+  else
+  {
+    $('.oocssDocNav').find('a').eq(0).addClass('activeNavElem typeEmphasize');
+  }
+
+
+});
+</script>
+</body>
+</html>

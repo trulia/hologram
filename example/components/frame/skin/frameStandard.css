@@ -1,0 +1,17 @@
+/*
+---
+parent: frame
+title: Standard Frame
+name: frameStandard
+---
+
+```html_example
+<div class="frameStandard">
+  <img alt="" src="http://placekitten.com/640/480">
+</div>
+```
+*/
+
+.frameStandard {
+  padding: 8px;
+}
