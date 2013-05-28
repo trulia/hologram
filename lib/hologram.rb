@@ -21,7 +21,7 @@ module Hologram
       comment_block = comment_match[0]
       yaml_match = /^---\s(.*?)\s---$/m.match(comment_block)
       return false unless yaml_match
-    
+
       yaml = yaml_match[0]
       markdown = comment_block.sub(yaml, '').sub('/*', '').sub('*/', '')
 
@@ -50,15 +50,15 @@ module Hologram
 
     def init(args)
       @doc_blocks, @pages = {}, {}
-      begin 
+      begin
         @config = args ? YAML::load_file(args[0]) : YAML::load_file('hologram_config.yml')
         validate_config
 
-        #TODO: maybe this should move into build_docs
+        # TODO: maybe this should move into build_docs
         current_path = Dir.pwd
         base_path = Pathname.new(args[0])
         Dir.chdir(base_path.dirname)
-        
+
         build_docs
 
         Dir.chdir(current_path)
@@ -88,21 +88,24 @@ module Hologram
       renderer = get_markdown_renderer
       write_docs(output_directory, doc_assets, renderer)
 
-      # TODO separate methods for these?
-      config['additional_assets'].each do |dir|
-        dirpath  = Pathname.new(dir).realpath
-        if Dir.exists?("#{dir}")
-          `rm -rf #{output_directory}/#{dirpath.basename}`
-          `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
+
+      # Copy over dependencies
+      if config['dependencies']
+        config['dependencies'].each do |dir|
+          dirpath  = Pathname.new(dir).realpath
+          if Dir.exists?("#{dir}")
+            `rm -rf #{output_directory}/#{dirpath.basename}`
+            `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
+          end
         end
       end
 
-      # TODO: let's just remove the _ on _doc_assets dir
-      Dir.foreach(doc_assets) do |file|
-        if file.start_with?('_')
-          `rm -rf #{output_directory}/#{file.sub('_', '')}`
-          `cp -R #{doc_assets}/#{file} #{output_directory}/#{file.sub('_', '')}`
-        end
+      # Copy over doc assets
+      Dir.foreach(doc_assets) do |item|
+        # ignore . and .. directories
+        next if item == '.' or item == '..'
+        `rm -rf #{output_directory}/#{item}`
+        `cp -R #{doc_assets}/#{item} #{output_directory}/#{item}`
       end
     end
 
@@ -127,7 +130,7 @@ module Hologram
 
 
     def process_files(files, directory)
-      files.each do |input_file|      
+      files.each do |input_file|
         if input_file.end_with?('md')
           @pages[File.basename(input_file, '.md') + '.html'] = File.read("#{directory}/#{input_file}")
         else
@@ -138,9 +141,9 @@ module Hologram
 
 
     def process_file(file)
-      doc_block = DocumentBlock.new(file)    
+      doc_block = DocumentBlock.new(file)
       return unless doc_block.has_block?
-      
+
       if doc_block.parent.nil?
         #parent file
         begin
@@ -171,7 +174,7 @@ module Hologram
 
 
     def write_docs(output_directory, doc_assets, renderer)
-      #generate html from markdown   
+      #generate html from markdown
       @pages.each do |file_name, markdown|
         fh = get_fh(output_directory, file_name)
 
@@ -179,7 +182,7 @@ module Hologram
         if File.exists?("#{doc_assets}/header.html")
           fh.write(File.read("#{doc_assets}/header.html"))
         end
-        
+
         # write the docs
         fh.write(renderer.render(markdown))
 
@@ -227,12 +230,12 @@ module Hologram
 
 
     def is_supported_file_type?(file)
-      supported_extensions = ['.scss', '.js', '.md', '.markdown' ]
+      supported_extensions = ['.css', '.scss', '.js', '.md', '.markdown' ]
       supported_extensions.include?(File.extname(file))
     end
 
     def display_error(message)
-        puts "(\u{256F}\u{00B0}\u{25A1}\u{00B0}\u{FF09}\u{256F}".green + "\u{FE35} \u{253B}\u{2501}\u{253B} ".yellow + " Build not complete.".red 
+        puts "(\u{256F}\u{00B0}\u{25A1}\u{00B0}\u{FF09}\u{256F}".green + "\u{FE35} \u{253B}\u{2501}\u{253B} ".yellow + " Build not complete.".red
         puts " #{message}"
         exit 1
     end

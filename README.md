@@ -24,21 +24,21 @@ Hologram looks in each css/scss/sass file for a comment at the beginning
 of the file with the following format:
 
     /*
-    --- 
-    title: Buttons 
-    name: button 
-    category: Base CSS 
+    ---
+    title: Buttons
+    name: button
+    category: Base CSS
     author: Derek Reynolds <dreynolds@trulia.com>
     ---
 
     Button styles can be applied to any element. Typically you'll want
     to use either a `<button>` or an `<a>` element:
 
-    ```html_example 
+    ```html_example
       <button class="btn btnDefault">Click</button>
-      <a class="btn btnDefault" href="trulia.com">Trulia!</a> 
+      <a class="btn btnDefault" href="trulia.com">Trulia!</a>
     ```
-    
+
     If your button is actually a link to another page, please use the
     `<a>` element, while if your button performs an action, such as
     submitting a form or triggering some javascript event, then use a
@@ -48,7 +48,7 @@ of the file with the following format:
 
 The first section of the comment is a yaml block that defines certain
 aspects of the this documentation block. The second part is simply
-markdown as defined by Redcarpet. 
+markdown as defined by Redcarpet.
 
 ###Document YAML section
 The yaml in the doc block can have any key value pair you deem important
@@ -58,7 +58,7 @@ but it specifically looks for the following keys:
 * **category**: This is the broad category for the component, all
   components in the same category will be displayed on a single page in
   Hologram's output.
-* **name**: Optional. This is used for grouping components, by assigning
+* **name**: This is used for grouping components, by assigning
   a name a component can be referenced in another component as a parent.
 * **parent**: Optional. If this is set the current component will be
   displayed as a section within the parent's documentation.
@@ -73,10 +73,10 @@ following key values:
 * **documentation_assets**: The path that contains supporting assets for
   the documentaiton page. This typically includes html fragments,
   css, javascript and any images.
-* **custom_markdown**: This is the filename of a class that extends 
+* **custom_markdown**: This is the filename of a class that extends
   RedCarpet::Render::HTML class. Use this for when you need
   additional classes or html tags for different parts of the page.
-* **additional_assets**: This is a list of folders to be copied into the
+* **dependencies**: This is a list of folders to be copied into the
   destination folder. Typically this will be where your style
   guide's css is built in to.
 
