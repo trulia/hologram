@@ -128,14 +128,15 @@ module Hologram
       return unless hologram_comments
 
       hologram_comments.each do |comment_block|
-        doc_block = generate_doc_block(comment_block[0])
-        add_doc_block_to_collection(doc_block)
+        doc_block = build_doc_block(comment_block[0])
+        add_doc_block_to_collection(doc_block) if doc_block
       end
     end
 
 
-    def generate_doc_block(comment_block)
+    def build_doc_block(comment_block)
       yaml_match = /^\s*---\s(.*?)\s---$/m.match(comment_block)
+      return unless yaml_match
       yaml = yaml_match[0]
       markdown = comment_block.sub(yaml, '')
       return doc_block = DocumentBlock.new(yaml, markdown)
