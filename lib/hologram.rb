@@ -14,22 +14,25 @@ module Hologram
   class DocumentBlock
     attr_accessor :name, :parent, :children, :title, :category, :markdown, :output_file, :config
 
-    def initialize(yaml, markdown)
-      @config   = YAML::load(yaml)
-      if config['name']
-        @name     = @config['name']
-        @parent   = @config['parent']
-        @children = {}
-        @category = @config['category']
-        @title    = @config['title']
-        @markdown = markdown
-      else
-        puts "A DocumentBlock in the following file is missing a name. It will be skipped. \n #{input_file}"
+    def initialize(config = nil, markdown = nil)
+      @children = {}
+      if config
+        set_members(config, markdown)
       end
+      # else
+      #   puts "A DocumentBlock in the following file is missing a name. It will be skipped. \n #{input_file}"
     end
 
-    def has_block?
-      @config && @markdown
+    def set_members(config, markdown)
+      @name     = config['name']
+      @parent   = config['parent']
+      @category = config['category']
+      @title    = config['title']
+      @markdown = markdown
+    end
+
+    def is_valid?
+      @name && @markdown
     end
   end
 
@@ -70,6 +73,7 @@ module Hologram
       doc_assets       = Pathname.new(config['documentation_assets']).realpath
 
       process_dir(input_directory)
+
       build_pages_from_doc_blocks(@doc_blocks)
       write_docs(output_directory, doc_assets)
 
@@ -134,23 +138,24 @@ module Hologram
     end
 
 
+    # this should throw an error if we have a match, but now yaml_match
     def build_doc_block(comment_block)
       yaml_match = /^\s*---\s(.*?)\s---$/m.match(comment_block)
       return unless yaml_match
-      yaml = yaml_match[0]
-      markdown = comment_block.sub(yaml, '')
-      return doc_block = DocumentBlock.new(yaml, markdown)
+      markdown = comment_block.sub(yaml_match[0], '')
+      config = YAML::load(yaml_match[0])
+      return doc_block = DocumentBlock.new(config, markdown)
     end
 
 
     def add_doc_block_to_collection(doc_block)
-      return unless doc_block.has_block?
+      return unless doc_block.is_valid?
       if doc_block.parent.nil?
         #parent file
         begin
           doc_block.output_file = get_file_name(doc_block.category)
         rescue NoMethodError => e
-          display_error("No output file specified for #{file}. Missing parent or name config?")
+          display_error("No output file specified. Missing category? \n #{doc_block.inspect}")
         end
 
         @doc_blocks[doc_block.name] = doc_block;
@@ -158,18 +163,24 @@ module Hologram
       else
         # child file
         parent_doc_block = @doc_blocks[doc_block.parent]
-        doc_block.output_file = parent_doc_block.output_file
-        doc_block.markdown = "\n\n## #{doc_block.title}" + doc_block.markdown
-        parent_doc_block.children[doc_block.name] = doc_block
+        if parent_doc_block
+          doc_block.markdown = "\n\n## #{doc_block.title}" + doc_block.markdown
+          parent_doc_block.children[doc_block.name] = doc_block
+        else
+          @doc_blocks[doc_block.parent] = DocumentBlock.new()
+        end
       end
     end
 
 
-    def build_pages_from_doc_blocks(doc_blocks)
-      doc_blocks.each do |key, doc_block|
-        @pages[doc_block.output_file] ||= ""
-        @pages[doc_block.output_file] << doc_block.markdown
-        build_pages_from_doc_blocks(doc_block.children) if doc_block.children
+    def build_pages_from_doc_blocks(doc_blocks, output_file = nil)
+      doc_blocks.sort.map do |key, doc_block|
+        output_file = doc_block.output_file || output_file
+        @pages[output_file] ||= ""
+        @pages[output_file] << doc_block.markdown
+        if doc_block.children
+          build_pages_from_doc_blocks(doc_block.children, output_file)
+        end
       end
     end
 
