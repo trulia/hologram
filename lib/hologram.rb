@@ -67,6 +67,7 @@ module Hologram
       input_directory  = Pathname.new(config['source']).realpath
       output_directory = Pathname.new(config['destination']).realpath
       doc_assets       = Pathname.new(config['documentation_assets']).realpath
+      dependencies     = Pathname.new(config['dependencies']).realpath
 
       process_dir(input_directory)
 
@@ -74,14 +75,9 @@ module Hologram
       write_docs(output_directory, doc_assets)
 
       # Copy over dependencies
-      if config['dependencies']
-        config['dependencies'].each do |dir|
-          dirpath  = Pathname.new(dir).realpath
-          if Dir.exists?("#{dir}")
-            `rm -rf #{output_directory}/#{dirpath.basename}`
-            `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
-          end
-        end
+      if dependencies
+        `rm -rf #{output_directory}/dependencies`
+        `cp -R #{dependencies} #{output_directory}/dependencies`
       end
 
       Dir.foreach(doc_assets) do |item|
@@ -126,7 +122,6 @@ module Hologram
       # get any comment blocks that match the pattern /*doc ... */
       hologram_comments = file_str.scan(/^\s*\/\*doc(.*?)\*\//m)
       return unless hologram_comments
-
       hologram_comments.each do |comment_block|
         doc_block = build_doc_block(comment_block[0])
         add_doc_block_to_collection(doc_block) if doc_block
