@@ -16,11 +16,7 @@ module Hologram
 
     def initialize(config = nil, markdown = nil)
       @children = {}
-      if config
-        set_members(config, markdown)
-      end
-      # else
-      #   puts "A DocumentBlock in the following file is missing a name. It will be skipped. \n #{input_file}"
+      set_members(config, markdown) if config and markdown
     end
 
     def set_members(config, markdown)
@@ -144,7 +140,11 @@ module Hologram
       return unless yaml_match
       markdown = comment_block.sub(yaml_match[0], '')
       config = YAML::load(yaml_match[0])
-      return doc_block = DocumentBlock.new(config, markdown)
+      if config['name'].nil?
+        puts "Missing required name config value. This hologram comment will be skipped. \n #{config.inspect}"
+      else
+        doc_block = DocumentBlock.new(config, markdown)
+      end
     end
 
 
