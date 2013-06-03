@@ -1,34 +1,66 @@
 # Hologram
 
-Hologram is style guide and code documentation build system. It uses
-yaml and markdown inside comment blocks in your code to allow easy
-updating and something. When combined with OOCSS it makes it so that
-maintaining documentation and updating css can all be done in a single
-file in a logical and clear manner.
+Hologram is a Ruby gem that parses comments in your CSS and turns them into a beautiful style guide.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'hologram', :git => 'https://github.com/trulia/hologram.git'
+    gem 'hologram'
 
 And then execute:
 
     $ bundle
+    
+If you don't use bundler you can run `gem install hologram`.
 
 ## Usage
 
+There are two things you need to do to start using hologram
+1. Setup a YAML config file
+
+2. Document a some code
+ 
+### Creating a config file
+
+Hologram needs a few configuration settings before it can begin to build
+your documentation for you. Once this is set up you can execute hologram by 
+simply running:
+
+    hologram path/to/your/config.yml
+    or (using bundler)
+    bundle exec hologram path/to/your/config.yml
+
+Your config file needs to contain the following key/value pairs
+
+* **source**: relative path to your source files
+
+* **destination**: relative path to where you want the documentation to be
+  built to
+
+* **documentation_assets**: The path that contains supporting assets for
+  the documentaiton page. This typically includes html fragments (header/footer, etc),
+  styleguide specific CSS, javascript and any images.
+
+* **custom_markdown**: (optional) this is the filename of a class that extends 
+  RedCarpet::Render::HTML class. Use this for when you need
+  additional classes or html tags for different parts of the page.
+
+* **dependencies**: a **list** of relative pathes to a folderes containing any dependencies your style guide has.
+These folders will be copied over into the documentation output directory. 
+PUT THE CSS/JS THAT IS ACTUALLY BEING DOCUMENTED HERE
+
+
 ###Documenting your styles
 
-Hologram looks in each css/scss/sass file for a comment at the beginning
-of the file with the following format:
+Hologram will scan any css/scss/less files within your **source** directory. 
+It will look for comments that match the following:
 
-    /*
+    /*doc
     --- 
     title: Buttons 
     name: button 
     category: Base CSS 
-    author: Derek Reynolds <dreynolds@trulia.com>
     ---
 
     Button styles can be applied to any element. Typically you'll want
@@ -50,35 +82,20 @@ The first section of the comment is a yaml block that defines certain
 aspects of the this documentation block. The second part is simply
 markdown as defined by Redcarpet. 
 
-###Document YAML section
+####Document YAML section
 The yaml in the doc block can have any key value pair you deem important
 but it specifically looks for the following keys:
 
 * **title**: The title to display in the documents
 * **category**: This is the broad category for the component, all
   components in the same category will be displayed on a single page in
-  Hologram's output.
-* **name**: Optional. This is used for grouping components, by assigning
-  a name a component can be referenced in another component as a parent.
+  Hologram's output (e.g. anything with the category "Base CSS" will end 
+up on a page called base_css.html).
+* **name**: This is used for organizing components, by assigning
+  a name a component can be referenced in another component as a **parent**.
 * **parent**: Optional. If this is set the current component will be
   displayed as a section within the parent's documentation.
 
-Hologram needs a few configuration settings before it can begin to build
-your documentation for you. This config file is a yaml file with the
-following key values:
-
-* **source**: relative path to your source files
-* **destination**: relative path to where you want the documentation to be
-  built to
-* **documentation_assets**: The path that contains supporting assets for
-  the documentaiton page. This typically includes html fragments,
-  css, javascript and any images.
-* **custom_markdown**: This is the filename of a class that extends 
-  RedCarpet::Render::HTML class. Use this for when you need
-  additional classes or html tags for different parts of the page.
-* **additional_assets**: This is a list of folders to be copied into the
-  destination folder. Typically this will be where your style
-  guide's css is built in to.
 
 ###Documentation Assets
 
