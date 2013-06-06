@@ -1,4 +1,4 @@
-Copyright (c) 2013 JD Cantrell
+Copyright (c) 2013 Trulia, Inc.
 
 MIT License
 

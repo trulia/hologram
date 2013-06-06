@@ -1,11 +1,14 @@
+# This software is licensed under the MIT License
+# Copyright (c) 2013 Trulia, Inc.
+
 require "hologram/version"
 
-# require 'sass'
 require 'redcarpet'
 require 'yaml'
 require 'pygments'
 require 'fileutils'
 require 'pathname'
+
 require 'hologram_markdown_renderer'
 
 module Hologram

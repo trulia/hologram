@@ -88,27 +88,29 @@ but it specifically looks for the following keys:
 
 * **title**: The title to display in the documents
 * **category**: This is the broad category for the component, all
-  components in the same category will be displayed on a single page in
-  Hologram's output (e.g. anything with the category "Base CSS" will end 
-up on a page called base_css.html).
-* **name**: This is used for organizing components, by assigning
-  a name a component can be referenced in another component as a **parent**.
+  components in the same category will be written to the same page.
+  (Usually named the same as the category but with spaces replaced with
+  underscores and lower cased).
+* **name**: This is used for grouping components, by assigning
+  a name a component can be referenced in another component as a parent.
 * **parent**: Optional. If this is set the current component will be
   displayed as a section within the parent's documentation.
 
 
 ###Documentation Assets
 
-Typically you'll want to have your own header and footer. T
-
-TBD
-
-
-
+The documentation assets folder contains the html, css, js and images
+you'll need for making your style guide look beautiful. Hologram doesn't
+pay too much attention to what is in here as it is intended to be custom
+for your style guide. It does look for two files called header.html and
+footer.html. These are html fragments that will be used when creating a
+new category page. `header.html` will be copied to the beginning to the
+page and `footer.html` will be copied to the bottom of the page. This
+gives you control of how you will navigate your docs and lets you
+include any css, disclaimer text, and whatever else you need on each
+page.
 
 ## Contributing
-
-TBD
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)

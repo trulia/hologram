@@ -1,3 +1,6 @@
+# This software is licensed under the MIT License
+# Copyright (c) 2013 Trulia, Inc.
+
 class HologramMarkdownRenderer < Redcarpet::Render::HTML
   def block_code(code, language)
     if language and language.include?('example')
