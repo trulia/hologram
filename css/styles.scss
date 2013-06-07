@@ -5,7 +5,7 @@ $mint: #e5faee;
 $green: #5eab1f;
 $teal: #1ca689;
 $lightblue: #9afce4;
-$blue: #00bdc9;
+$blue: #00a8b3;
 $seagreen: #daf5a8;
 $yellowgreen: #f2ec7d;
 $purple: #534d77;
@@ -89,7 +89,6 @@ $blackTextShadow: 0 1px 0 rgba(0,0,0,0.15);
   text-transform: none;
 }
 
-
 //Type
 $title-type: 'Ropa Sans', sans-serif;
 $body-type: 'Open Sans', sans-serif;
@@ -118,7 +117,7 @@ section {
   margin: 0 auto;
 
   img {
-    margin-left: -50px;
+    margin-left: -75px;
     margin-bottom: 20px;
   }
 
@@ -140,7 +139,7 @@ h1 {
 
 h2 {
   font-size: 20px;
-  font-size: 1.75rem;
+  font-size: 1.65rem;
   line-height: 1.4;
   margin: 5px 0;
 }
@@ -206,10 +205,10 @@ a.tealBtn {
   box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
   color: $seagreen;
   border-radius: 2px;
-  width: 600px;
-  margin-left: -50px;
+  width: 610px;
+  margin-left: -75px;
   margin-top: 20px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   //border: 1px solid $grey;
   padding: 0 20px;
 }
