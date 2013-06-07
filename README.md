@@ -16,7 +16,7 @@ If you don't use bundler you can run `gem install hologram`.
 
 ## Usage
 
-There are two things you need to do to start using hologram
+There are two things you need to do to start using hologram:
 
 1. Create a YAML config file for your project
 
@@ -142,7 +142,13 @@ css we use to style code blocks [here](https://github.com/trulia/hologram-exampl
 ## Contributing
 
 1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
+2. Create your feature/bug fix branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+
+## License
+[Hologram is licensed under the MIT License](https://github.com/trulia/hologram/blob/master/LICENSE.txt)
+
+
