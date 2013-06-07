@@ -17,19 +17,18 @@ If you don't use bundler you can run `gem install hologram`.
 ## Usage
 
 There are two things you need to do to start using hologram
-1. Setup a YAML config file
 
-2. Document a some code
+1. Create a YAML config file for your project
+
+2. Document yourself some code
  
-### Creating a config file
+### Creating a YAML config file
 
 Hologram needs a few configuration settings before it can begin to build
 your documentation for you. Once this is set up you can execute hologram by 
 simply running:
 
-    hologram path/to/your/config.yml
-    or (using bundler)
-    bundle exec hologram path/to/your/config.yml
+`hologram path/to/your/config.yml` or (using bundler) `bundle exec hologram path/to/your/config.yml`
 
 Your config file needs to contain the following key/value pairs
 
@@ -49,6 +48,26 @@ Your config file needs to contain the following key/value pairs
 * **dependencies**: a **list** of relative pathes to a folderes containing any dependencies your style guide has.
 These folders will be copied over into the documentation output directory. 
 PUT THE CSS/JS THAT IS ACTUALLY BEING DOCUMENTED HERE
+
+##### Example config file
+
+    # The directory containing the source files to parse
+    source: ../components
+
+    # The directory that hologram will build to
+    destination: ../docs
+
+    # The assets needed to build/style the docs (includes header.html, footer.html, etc)
+    documentation_assets: ../hologram_assets
+    
+    # A custom markdown renderer that extends `RedCarpet::Render::HTML class`
+    custom_markdown: trulia_markdown_renderer.rb
+
+    # Any other asset folders that need to be copied to the destination folder
+    # This is where the CSS/JS you are actually documenting should go
+    dependencies:
+        - ../build
+
 
 
 ###Documenting your styles
@@ -100,15 +119,25 @@ but it specifically looks for the following keys:
 ###Documentation Assets
 
 The documentation assets folder contains the html, css, js and images
-you'll need for making your style guide look beautiful. Hologram doesn't
-pay too much attention to what is in here as it is intended to be custom
-for your style guide. It does look for two files called header.html and
-footer.html. These are html fragments that will be used when creating a
-new category page. `header.html` will be copied to the beginning to the
-page and `footer.html` will be copied to the bottom of the page. This
-gives you control of how you will navigate your docs and lets you
-include any css, disclaimer text, and whatever else you need on each
-page.
+you'll need for making your style guide look beautiful. 
+
+Hologram doesn't care too much about to what is in here as it is intended 
+to be customfor your style guide. 
+
+However, it does look for two files called header.html and footer.html. 
+These are html fragments that will be used when creating anew category page. 
+`header.html` will be copied to the beginning to thepage and `footer.html`
+will be copied to the bottom of the page. This gives you control of how you 
+will navigate your docs and lets you include any css, disclaimer text, and 
+whatever else you need on each page.
+
+#####Styling Your Code Examples
+
+Hologram uses [pygments.rb](https://github.com/tmm1/pygments.rb) gem to provide 
+syntax highlighting for code examples. One of the assets that you probably want
+to include in your documentation assets folder is a css file that styles the
+"pygmentized" code examples. We use `github.css` which can be found along with the
+css we use to style code blocks [here](https://github.com/trulia/hologram-example/tree/gh-pages/hologram_assets/doc_assets/css).
 
 ## Contributing
 
