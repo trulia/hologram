@@ -7,11 +7,11 @@ Gem::Specification.new do |spec|
   spec.name          = "hologram"
   spec.version       = Hologram::VERSION
   spec.authors       = ["JD Cantrell", "August Flanagan"]
-  spec.email         = ["jdcantrell@gmail.com"]
+  spec.email         = ["jcantrell@trulia.com"]
   spec.description   = %q{Build doc type things}
   spec.summary       = %q{Build document type things.}
-  spec.homepage      = ""
-  spec.license       = "TODO"
+  spec.homepage      = "http://trulia.github.io/hologram"
+  spec.license       = "MIT"
 
   spec.add_dependency "redcarpet", "~> 2.2.2"
   spec.add_dependency "sass", "~> 3.2.7"
