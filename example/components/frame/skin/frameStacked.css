@@ -1,0 +1,51 @@
+/*
+---
+parent: frame
+title: Stacked frame with rotations
+name: frameStacked
+---
+
+```html_example
+<div class="frameStacked">
+  <img alt="" src="http://placekitten.com/640/480">
+</div>
+```
+*/
+
+.frameStacked {
+  padding: 8px;
+  position: relative;
+  background-color: #fff;
+}
+
+.frameStacked:before, .frameStacked:after {
+  -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -999;
+  content: "";
+  background-color: #f9f9f9;
+}
+
+.frameStacked:before {
+  left: 5px;
+  top: 0px;
+  -webkit-transform: rotate(1deg);
+  -moz-transform: rotate(1deg);
+  -ms-transform: rotate(1deg);
+  -o-transform: rotate(1deg);
+  transform: rotate(1deg);
+}
+
+.frameStacked:after {
+  right: 5px;
+  top: 0px;
+  -webkit-transform: rotate(-1deg);
+  -moz-transform: rotate(-1deg);
+  -ms-transform: rotate(-1deg);
+  -o-transform: rotate(-1deg);
+  transform: rotate(-1deg);
+}

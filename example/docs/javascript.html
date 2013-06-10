@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+
+    <title>Trulia OOCSS Style Guide</title>
+    <link rel="shortcut icon" href="doc_assets/brick.png" />
+
+    <!-- Documentation CSS -->
+    <link rel="stylesheet" href="doc_assets/css/doc.css">
+    <link rel="stylesheet" href="doc_assets/css/header.css">
+    <link rel="stylesheet" href="doc_assets/css/github.css">
+
+    <!-- Stylesheets we are documenting -->
+    <link rel="stylesheet" href="doc_assets/css/screen.css">
+
+    <!-- Main libraries -->
+    <script src="build/libs/script/jquery-1.8.2.min.js"></script>
+    <script src="build/libs/script/jquery.placeholder.js"></script>
+    <script src="build/libs/script/underscore-1.4.4.min.js"></script>
+    <!-- component js and init scripts -->
+    <script src="build/script/components.js"></script>
+  </head>
+
+  <body>
+    <a href="#main" class="hideVisually focusable skipLink">Skip to content</a>
+
+    <header class="hologramHeader" role="banner">
+      <div>
+        <div class="container">
+          <h1>Hologram Example Style Guide</h1>
+        </div>
+      </div>
+      <div class="hologramTopNav">
+        <div class="container">
+            <ul>
+              <li><a href="index.html">Intro</a></li>
+              <li><a href="base_css.html">Base CSS</a></li>
+              <li><a href="components.html">Components</a></li>
+              <li><a href="javascript.html">Javascript</a></li>
+            </ul>
+        </div>
+      </div>
+      <!-- //header/container -->
+    </header>
+
+    <div class="container">
+      <section class="content">
+          <div>
+            <div class="componentMenu box boxBasic backgroundBasic">
+              <div class="boxBody">
+                <ul class="componentList listBorderedHover">
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="hologramMain">
+
+
+
+<h1>Toggle</h1>
+
+<p>Toggles should be used display show/hide comment. For example, showing/hiding a additional information on the search results page.
+You can set the default as either active or inactive by specifying the class on the span to be either <code>toggleActive</code> or <code>toggleInactive</code>,
+and setting (or not setting) the class <code>hideVisually</code> on the container that you are toggling.</p>
+
+<p>Here&#39;s how you kick this off:</p>
+<div class="codeExample"><div class="exampleOutput"><a href="#toggleArrow1" class="toggle toggleArrow " data-toggle-text="Fewer Options">More Options</a>
+<div id="toggleArrow1" class="hideVisually">Yo, I got some content to show you. Lorem ipsum occaecat eiusmod Ut et sit sint quis qui labore in exercitation
+  esse. Lorem ipsum in aliquip esse anim aliquip ullamco sit dolor in deserunt eu labore. Lorem ipsum magna
+  officia in laborum fugiat proident cupidatat in ex aliquip velit officia nulla aliquip ut. Lorem ipsum
+  nostrud ad Ut nulla velit qui esse tempor Excepteur consectetur pariatur enim.
+</div>
+</div><div class="codeBlock"><div class="highlight"><pre><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#toggleArrow1&quot;</span> <span class="na">class=</span><span class="s">&quot;toggle toggleArrow &quot;</span> <span class="na">data-toggle-text=</span><span class="s">&quot;Fewer Options&quot;</span><span class="nt">&gt;</span>More Options<span class="nt">&lt;/a&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;toggleArrow1&quot;</span> <span class="na">class=</span><span class="s">&quot;hideVisually&quot;</span><span class="nt">&gt;</span>Yo, I got some content to show you. Lorem ipsum occaecat eiusmod Ut et sit sint quis qui labore in exercitation
+  esse. Lorem ipsum in aliquip esse anim aliquip ullamco sit dolor in deserunt eu labore. Lorem ipsum magna
+  officia in laborum fugiat proident cupidatat in ex aliquip velit officia nulla aliquip ut. Lorem ipsum
+  nostrud ad Ut nulla velit qui esse tempor Excepteur consectetur pariatur enim.
+<span class="nt">&lt;/div&gt;</span>
+</pre></div></div></div><script>$(document).ready(function () {
+  $('.toggle').truliaToggle();
+});
+</script>
+        <div class="codeBlock jsExample"><div class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.toggle&#39;</span><span class="p">).</span><span class="nx">truliaToggle</span><span class="p">();</span>
+<span class="p">});</span>
+</pre></div></div>
+<p>Below are some methods you can also call on the toggle component and events you can listen to:</p>
+
+<table><thead>
+<tr>
+<th>method</th>
+<th>description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code>toggle</code></td>
+<td>Toggle the tooltip. Optional boolean argument to force active. Example: <code>$(&#39;.toggle&#39;).truliaToggle(&#39;toggle&#39;, true)</code></td>
+</tr>
+<tr>
+<td><strong>events</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><code>toggle</code></td>
+<td>Listen to this event to perform an action when the toggle has changed state <code>$(&#39;.toggle&#39;).on(&#39;toggle&#39;, function (e, active) { if (active) console.log(&#39;I\m Active!&#39;) })</code></td>
+</tr>
+</tbody></table>
+      </div>
+    </div>
+  </section>
+</div>
+<footer class="footer" role="contentinfo">
+  I'm a footer.
+</footer>
+
+
+<script>
+$(document).ready(function() {
+
+  // build sidebar navigation
+  var $headers = $('.main > h1');
+  var $componentList = $('.componentList');
+
+  $headers.each(function() {
+    var headerText = $(this).text();
+    $(this).attr('id', headerText);
+
+    $componentList.append(
+      '<li><a href="#' + headerText + '">' + headerText + '</a></li>'
+    );
+  });
+
+  // make navigation sticky
+  $('.componentMenu').sticky({ css: {top: '10px'} });
+
+  // set the active tab
+  var currentHref = document.location.pathname.substr(1);
+  if (currentHref)
+  {
+    $('.oocssDocNav').find('a[href^="' + currentHref + '"]').addClass('activeNavElem typeEmphasize');
+  }
+  else
+  {
+    $('.oocssDocNav').find('a').eq(0).addClass('activeNavElem typeEmphasize');
+  }
+
+
+});
+</script>
+</body>
+</html>

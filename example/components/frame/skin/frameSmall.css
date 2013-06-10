@@ -1,0 +1,23 @@
+/*
+---
+parent: frame
+title: Small Frame
+name: frameSmall
+---
+
+A small frame using the `.polaroid` class to include some text along with the image. Note the use of the inline style to set the width.
+This is one of the only places where that is acceptable...
+
+```html_example
+<div class="frameSmall">
+  <img alt="" src="http://placekitten.com/180/135">
+  <div class="polaroid" style='width:180px;'>
+    <p class="mvn">Here's a little text below the image</p>
+  </div>
+</div>
+```
+*/
+
+.frameSmall {
+  padding: 6px;
+}

@@ -1,0 +1,17 @@
+/*
+---
+parent: frame
+title: Thumbnail Frame
+name: frameThumb
+---
+
+```html_example
+<div class="frameThumb">
+  <img alt="" src="http://placekitten.com/40/40">
+</div>
+```
+*/
+
+.frameThumb {
+  padding: 2px;
+}

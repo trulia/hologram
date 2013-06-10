@@ -1,0 +1,33 @@
+.toggle {
+  position: relative;
+  cursor: pointer;
+}
+
+.toggleArrow .before, .toggleArrow:before {
+  content: "\25BA";
+  display: inline-block;
+  width: 1.3em;
+  font-size: .9em;
+  text-align: center;
+}
+
+.toggleArrowActive:before {
+  content: "\25BC";
+}
+
+/* IE7 */
+.toggleArrow:hover .before {
+  text-decoration: none;
+}
+
+.toggleArrow .active, .toggleActive .inactive {
+  display: none;
+}
+
+.toggleActive .active {
+  display: inline-block;
+}
+
+.toggleActive .inactive {
+  display: none;
+}

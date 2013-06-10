@@ -1,0 +1,350 @@
+/*
+---
+title: Background Colors
+name: background
+category: Base CSS
+---
+
+We have a few background colors that can be used in various contexts.
+These are not for use as the entire page background but instead for
+specific components and modules on the page.
+
+<div class="line txtC">
+    <div style="width:200px" >
+      <div class="docSwatch backgroundLowlight"></div>
+      <code>backgroundLowlight</code>
+    </div>
+    <div style="width:200px" >
+      <div class="docSwatch backgroundHighlight"></div>
+      <code>backgroundHighlight</code>
+    </div>
+    <div style="width:200px" >
+      <div class="docSwatch backgroundBasic"></div>
+      <code>backgroundBasic</code>
+    </div>
+    <div style="width:200px">
+      <div class="docSwatch backgroundInverse"></div>
+      <code>backgroundInverse</code>
+    </div>
+</div>
+*/
+
+.backgroundBasic {
+  background-color: white;
+}
+
+.backgroundLowlight {
+  background-color: #f9f9f9;
+}
+
+.backgroundHighlight {
+  background-color: #5eab1f;
+}
+
+.backgroundInverse {
+  background-color: #222222;
+}
+
+/*
+---
+title: Buttons
+name: button
+category: Base CSS
+---
+
+Button styles can be applied to any element. Typically you'll want to
+use either a `<button>` or an `<a>` element:
+
+```html_example
+<button class="btn btnDefault">Click</button>
+<a class="btn btnDefault" href="trulia.com">Trulia!</a>
+```
+
+If your button is actually a link to another page, please use the
+`<a>` element, while if your button performs an action, such as submitting
+a form or triggering some javascript event, then use a `<button>` element.
+
+##Button Sizes
+There are three 3 sizes for buttons: Large, medium (default)
+and small. Simply apply the size modifier class for the desired size.
+There is also an additional modifier that will make the button take the
+full width of the container. It may be used with the any of the button
+size and style modifiers.
+
+Button                                                            | Modifier Class
+----------------------------------------------------------------- | -----------------
+<button class="btn btnDefault btnLrg">Large</button>              | `btn btnDefault btnLrg`
+<button class="btn btnDefault">Default</button>                   | `btn btnDefault`
+<button class="btn btnDefault btnSml">Small</button>              | `btn btnDefault btnSml`
+<button class="btn btnDefault btnFullWidth">Full width</button>   | `btn btnDefault btnFullWidth`
+
+*/
+
+button {
+  background: none;
+  border: 0;
+}
+
+/* Base button */
+.btn {
+  padding: .5em 1em;
+  margin: 0;
+  display: inline-block;
+  font-weight: normal;
+  line-height: normal;
+  font-size: 14px;
+  font-size: 0.875rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  background: none;
+  text-align: center;
+  border: 1px solid #cccccc;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+}
+
+/* Button sizes */
+.btnSml {
+  font-size: 10px;
+  font-size: 0.625rem;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.btnLrg {
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.btnFullWidth {
+  width: 100%;
+}
+
+
+/*
+---
+parent: button
+name: buttonSkins
+title: Button Styles
+---
+
+Button                                            | Class             | Description
+------------------------------------------------- | ----------------- | -----------
+<button class="btn btnDefault">Default</button>   | `btn btnDefault`  | This is what buttons look like, this is the go to button style.
+<button class="btn btnPrimary">Primary</button>   | `btn btnPrimary`  | Use this button as the primary call to action
+<button class="btn btnDanger">Delete</button>     | `btn btnDanger`   | This button is for delete actions, these actions should also have a confirmation dialog
+<button class="btn btnDisabled">Disabled</button> | `btn btnDisabled` | I'm afraid I can't let you do that, yet.
+<button class="btn btnLink">Link</button>         | `btn btnLink`     | Design Team: Should secondary actions use this or btnDefault?
+
+*/
+
+.btnDefault,
+a.btnDefault {
+  border: 1px #d7d7d7 solid;
+  background: #f3f3f3;
+  color: #222222;
+  text-shadow: 0 1px 0 white;
+  -webkit-box-shadow: 0 1px 0px #cccccc;
+  -moz-box-shadow: 0 1px 0px #cccccc;
+  box-shadow: 0 1px 0px #cccccc;
+}
+
+.btnDefault:hover,
+.btnDefault:focus {
+  background: #f6f6f6;
+}
+
+.btnDefault:active {
+  position: relative;
+  top: 1px;
+  -webkit-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btnPrimary,
+a.btnPrimary, .btnDanger,
+a.btnDanger {
+  color: white;
+  text-shadow: 0 0 0;
+}
+
+.btnPrimary,
+a.btnPrimary {
+  border: 1px #d14b00 solid;
+  background: #ff5c00;
+  -webkit-box-shadow: 0 1px 0px #d35500;
+  -moz-box-shadow: 0 1px 0px #d35500;
+  box-shadow: 0 1px 0px #d35500;
+}
+
+.btnPrimary:hover,
+.btnPrimary:focus {
+  background: #ff660f;
+}
+
+.btnPrimary:active {
+  position: relative;
+  top: 1px;
+  -webkit-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btnDanger,
+a.btnDanger {
+  border: 1px #a21a10 solid;
+  background: #cc2114;
+  -webkit-box-shadow: 0 1px 0px #d35500;
+  -moz-box-shadow: 0 1px 0px #d35500;
+  box-shadow: 0 1px 0px #d35500;
+}
+
+.btnDanger:hover,
+.btnDanger:focus {
+  background: #da2315;
+}
+
+.btnDanger:active {
+  position: relative;
+  top: 1px;
+  -webkit-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn[disabled],
+.btn[disabled]:hover,
+.btn[disabled]:focus
+.btn[disabled]:active,
+.btnDisabled,
+a.btnDisabled,
+.btnDisabled:hover,
+.btnDisabled:focus,
+.btnDisabled:active {
+  border: 0px;
+  background: #cccccc;
+  color: #999999;
+  text-shadow: 0 0 0;
+  cursor: default;
+}
+
+.btn[disabled]:active,
+.btnDisabled:active {
+  position: static;
+  color: #999999;
+  box-shadow: none;
+}
+
+.frameThumb, .frameSmall, .frameStandard, .frameStacked {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  *border: 1px solid #e9e9e9;
+  -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+.frameThumb img, .frameSmall img, .frameStandard img, .frameStacked img {
+  display: block;
+}
+.frameThumb .polaroid, .frameSmall .polaroid, .frameStandard .polaroid, .frameStacked .polaroid {
+  margin-top: 5px;
+}
+
+.frameThumb {
+  padding: 2px;
+}
+
+.frameSmall {
+  padding: 6px;
+}
+
+.frameStandard {
+  padding: 8px;
+}
+
+.frameStacked {
+  padding: 8px;
+  position: relative;
+  background-color: #fff;
+}
+
+.frameStacked:before, .frameStacked:after {
+  -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -999;
+  content: "";
+  background-color: #f9f9f9;
+}
+
+.frameStacked:before {
+  left: 5px;
+  top: 0px;
+  -webkit-transform: rotate(1deg);
+  -moz-transform: rotate(1deg);
+  -ms-transform: rotate(1deg);
+  -o-transform: rotate(1deg);
+  transform: rotate(1deg);
+}
+
+.frameStacked:after {
+  right: 5px;
+  top: 0px;
+  -webkit-transform: rotate(-1deg);
+  -moz-transform: rotate(-1deg);
+  -ms-transform: rotate(-1deg);
+  -o-transform: rotate(-1deg);
+  transform: rotate(-1deg);
+}
+
+.toggle {
+  position: relative;
+  cursor: pointer;
+}
+
+.toggleArrow .before, .toggleArrow:before {
+  content: "\25BA";
+  display: inline-block;
+  width: 1.3em;
+  font-size: .9em;
+  text-align: center;
+}
+
+.toggleArrowActive:before {
+  content: "\25BC";
+}
+
+/* IE7 */
+.toggleArrow:hover .before {
+  text-decoration: none;
+}
+
+.toggleArrow .active, .toggleActive .inactive {
+  display: none;
+}
+
+.toggleActive .active {
+  display: inline-block;
+}
+
+.toggleActive .inactive {
+  display: none;
+}

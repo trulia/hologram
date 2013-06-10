@@ -1,0 +1,84 @@
+/* basic font styling */
+@font-face {
+  font-family: "OpenSans";
+  src: url("http://static.trulia-cdn.com/images/fonts/OpenSans/OpenSans-Regular-webfont.eot");
+  src: url("http://static.trulia-cdn.com/images/fonts/OpenSans/OpenSans-Regular-webfont.eot?#iefix") format("embedded-opentype"), url("http://static.trulia-cdn.com/images/fonts/OpenSans/OpenSans-Regular-webfont.woff") format("woff"), url("http://static.trulia-cdn.com/images/fonts/OpenSans/OpenSans-Regular-webfont.ttf") format("truetype"), url("http://static.trulia-cdn.com/images/fonts/OpenSans/OpenSans-Regular-webfont.svg#OpenSansRegular") format("svg");
+  font-weight: 400;
+  font-style: normal;
+}
+
+body, input, select, textarea, button {
+  font-family: OpenSans, sans-serif;
+}
+
+/* Addresses margins handled incorrectly in IE 6/7. */
+body, ul, li {
+  margin: 0;
+  font-size: 14px;
+}
+
+h1, .h1 {
+  font-size: 36px;
+  font-size: 2.25rem;
+  line-height: 1.3;
+  margin: 5px 0;
+  font-weight: bold;
+}
+
+h2, .h2 {
+  font-size: 28px;
+  font-size: 1.75rem;
+  line-height: 1.4;
+  margin: 5px 0;
+}
+
+h3, .h3 {
+  font-size: 24px;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  margin: 5px 0;
+}
+
+
+.hologramHeader {
+  background-color: #222;
+  color: #fff;
+}
+
+.hologramHeader h1 {
+  margin: 0px 20px;
+  padding: 5px 0px;
+}
+
+.hologramTopNav {
+  padding: 5px 0px;
+  background-color: #ccc;
+}
+
+.hologramTopNav li {
+  display: inline-block;
+  list-style-type: none;
+  vertical-align: middle;
+  padding-right: 10px;
+}
+
+.hologramTopNav a, .hologramTopNav a:visited{
+  color: #1885f0;
+  text-decoration: none;
+}
+
+.hologramActiveNavElem {
+  color: #222;
+}
+
+/* Utility class for hiding things visually */
+.hideVisually {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
