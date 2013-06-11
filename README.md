@@ -122,11 +122,11 @@ The documentation assets folder contains the html, css, js and images
 you'll need for making your style guide look beautiful. 
 
 Hologram doesn't care too much about to what is in here as it is intended 
-to be customfor your style guide. 
+to be custom for your style guide. 
 
 However, it does look for two files called header.html and footer.html. 
-These are html fragments that will be used when creating anew category page. 
-`header.html` will be copied to the beginning to thepage and `footer.html`
+These are html fragments that will be used when creating a new category page. 
+`header.html` will be copied to the beginning to the page and `footer.html`
 will be copied to the bottom of the page. This gives you control of how you 
 will navigate your docs and lets you include any css, disclaimer text, and 
 whatever else you need on each page.
