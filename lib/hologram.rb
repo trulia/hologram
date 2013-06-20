@@ -103,7 +103,7 @@ module Hologram
       if config['dependencies']
         config['dependencies'].each do |dir|
           dirpath  = Pathname.new(dir).realpath
-          if Dir.exists?("#{dir}")
+          if File.directory?("#{dir}")
             `rm -rf #{output_directory}/#{dirpath.basename}`
             `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
           end
@@ -165,7 +165,13 @@ module Hologram
       yaml_match = /^\s*---\s(.*?)\s---$/m.match(comment_block)
       return unless yaml_match
       markdown = comment_block.sub(yaml_match[0], '')
-      config = YAML::load(yaml_match[0])
+
+      begin
+        config = YAML::load(yaml_match[1])
+      rescue
+        display_error("Could not parse YAML:\n#{yaml_match[1]}")
+      end
+
       if config['name'].nil?
         puts "Missing required name config value. This hologram comment will be skipped. \n #{config.inspect}"
       else
@@ -276,7 +282,11 @@ module Hologram
     end
 
     def display_error(message)
+      if RUBY_VERSION.to_f > 1.8 then
         puts "(\u{256F}\u{00B0}\u{25A1}\u{00B0}\u{FF09}\u{256F}".green + "\u{FE35} \u{253B}\u{2501}\u{253B} ".yellow + " Build not complete.".red
+      else
+        puts "Build not complete.".red
+      end
         puts " #{message}"
         exit 1
     end
