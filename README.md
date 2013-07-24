@@ -4,7 +4,7 @@ Hologram is a Ruby gem that parses comments in your CSS and helps you turns them
 
 There are two steps to building a great style guide: 1.) documenting your css and generating html examples, and 2.) actually styling the output of step 1.
 
-The hologram gem itself is only concerned with step 1. This means you are free to make your style guide look however you would like. If you don't feel like going through this process yourself you can take a look at the templates in our [example repository](https://github.com/trulia/hologram-example/tree/gh-pages/hologram_assets/doc_assets/css) and use the assets defined there instead.
+The hologram gem itself is only concerned with step 1. This means you are free to make your style guide look however you would like. If you don't feel like going through this process yourself you can take a look at the [templates](https://github.com/trulia/hologram-example/tree/master/templates) in our [example repository](https://github.com/trulia/hologram-example) and use the assets defined there instead.
 
 ## Installation
 
