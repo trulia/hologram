@@ -64,6 +64,8 @@ module Hologram
 
     def init(args)
       @doc_blocks, @pages = {}, {}
+      @supported_extensions = ['.css', '.scss', '.less', '.sass', '.styl', '.js', '.md', '.markdown' ]
+
       begin
         @config = args ? YAML::load_file(args[0]) : YAML::load_file('hologram_config.yml')
         validate_config
@@ -277,8 +279,7 @@ module Hologram
 
 
     def is_supported_file_type?(file)
-      supported_extensions = ['.css', '.scss', '.less', '.sass', '.js', '.md', '.markdown' ]
-      supported_extensions.include?(File.extname(file))
+      @supported_extensions.include?(File.extname(file))
     end
 
     def display_error(message)
