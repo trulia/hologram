@@ -92,7 +92,12 @@ module Hologram
 
       input_directory  = Pathname.new(config['source']).realpath
       output_directory = Pathname.new(config['destination']).realpath
-      doc_assets       = Pathname.new(config['documentation_assets']).realpath
+
+      doc_assets       = Pathname.new(config['documentation_assets']).realpath unless !File.directory?(config['documentation_assets'])
+
+      if doc_assets.nil?
+        display_warning "Could not find documentation assets at #{config['documentation_assets']}"
+      end
 
       process_dir(input_directory)
 
@@ -110,11 +115,13 @@ module Hologram
         end
       end
 
-      Dir.foreach(doc_assets) do |item|
-       # ignore . and .. directories
-       next if item == '.' or item == '..'
-       `rm -rf #{output_directory}/#{item}`
-       `cp -R #{doc_assets}/#{item} #{output_directory}/#{item}`
+      if !doc_assets.nil?
+        Dir.foreach(doc_assets) do |item|
+         # ignore . and .. directories
+         next if item == '.' or item == '..'
+         `rm -rf #{output_directory}/#{item}`
+         `cp -R #{doc_assets}/#{item} #{output_directory}/#{item}`
+        end
       end
     end
 
@@ -228,6 +235,8 @@ module Hologram
         # generate doc nav html
         if File.exists?("#{doc_assets}/header.html")
           fh.write(File.read("#{doc_assets}/header.html"))
+        else
+          display_warning "No header.html found in documentation assets. Without this your css/header will not be included on the generated pages."
         end
 
         # write the docs
@@ -236,6 +245,8 @@ module Hologram
         # write the footer
         if File.exists?("#{doc_assets}/footer.html")
           fh.write(File.read("#{doc_assets}/footer.html"))
+        else
+          display_warning "No footer.html found in documentation assets. This might be okay to ignore..."
         end
         fh.close()
       end
@@ -289,6 +300,10 @@ module Hologram
       end
         puts " #{message}"
         exit 1
+    end
+
+    def display_warning(message)
+      puts "Warning: ".yellow + message
     end
 
 
