@@ -49,6 +49,9 @@ Your config file needs to contain the following key/value pairs
   RedCarpet::Render::HTML class. Use this for when you need
   additional classes or html tags for different parts of the page.
 
+* **index**: (optional) this is a category that will be used as the
+  index.html. 
+
 * **dependencies**: a **list** of relative pathes to a folderes containing any dependencies your style guide has.
 These folders will be copied over into the documentation output directory.
 PUT THE CSS/JS THAT IS ACTUALLY BEING DOCUMENTED HERE
