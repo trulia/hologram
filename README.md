@@ -143,6 +143,16 @@ to include in your documentation assets folder is a css file that styles the
 "pygmentized" code examples. We use `github.css` which can be found along with the
 css we use to style code blocks [here](https://github.com/trulia/hologram-example/tree/gh-pages/hologram_assets/doc_assets/css).
 
+## Supported Preprocessors/File Types
+
+The following preprocessors/file types are supported by Hologram:
+- Sass (.scss, .sass)
+- Less (.less)
+- Stylus (.styl)
+- Vanilla CSS (.css)
+- Javascript (.js)
+- Markdown (.md, .markdown)
+
 ## Contributing
 
 1. Fork it
