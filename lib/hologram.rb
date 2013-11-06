@@ -156,8 +156,14 @@ module Hologram
 
     def process_file(file)
       file_str = File.read(file)
-      # get any comment blocks that match the pattern /*doc ... */
-      hologram_comments = file_str.scan(/^\s*\/\*doc(.*?)\*\//m)
+      # get any comment blocks that match the patterns:
+      # .sass: //doc (follow by other lines proceeded by a space) 
+      # other types: /*doc ... */
+      if file.end_with?('.sass')
+        hologram_comments = file_str.scan(/\s*\/\/doc\s*((( [^\n]*\n)|\n)+)/)
+      else
+        hologram_comments = file_str.scan(/^\s*\/\*doc(.*?)\*\//m)
+      end
       return unless hologram_comments
 
       hologram_comments.each do |comment_block|
