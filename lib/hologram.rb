@@ -104,6 +104,17 @@ module Hologram
       process_dir(input_directory)
 
       build_pages_from_doc_blocks(@doc_blocks)
+
+      # if we have an index category defined in our config copy that
+      # page to index.html
+      if config['index'] 
+        if @pages.has_key?(config['index'] + '.html')
+          @pages['index.html'] = @pages[config['index'] + '.html']
+        else
+          display_warning "Could not generate index.html, there was no content generated for the category #{config['index']}"
+        end
+      end
+
       write_docs(output_directory, doc_assets)
 
       # Copy over dependencies
