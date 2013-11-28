@@ -2,56 +2,71 @@
 <html>
 
   <head>
+    
     <title>Hologram — Style Documentation Build System</title>
+    
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animate.css">
+
     <link rel="SHORTCUT ICON" href="favicon.ico">
-    <link href='http://fonts.googleapis.com/css?family=Ropa+Sans|Open+Sans' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Alice|Roboto+Slab' rel='stylesheet' type='text/css'>
+      
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="js/scroll.js"></script>
+
   </head>
 
   <body>
+  <a name="top" class="blank-link"></a>
+
+    <nav class="animated fadeInLeft">
+      <ul>
+        <li> <a href="#top"> <span class="logo-type">hologram</span> </a>
+        <li> <a href="#why">Why would I use it?</a>
+        <li> <a href="#how">How does it work?</a>
+        <li> <a href="#where">Where can I get it?</a>
+        <li> <a href="https://github.com/trulia/hologram"><i class="icon-github"></i> Fork it</a>
+      </ul>
+    </nav>
 
     <header>
 
+      <div id="hologram-bird" class="animated tada"></div>
       <h1>hologram</h1>
 
     </header>
 
     <section>
 
-      <h2>Easily build and maintain beautiful style guides</h2>
+      <h2>Easily build and maintain beautiful style guides.</h2>
 
       <p>
         Hologram is a Ruby gem that parses comments in your CSS and turns them into a beautiful style guide.
       </p>
+      <div class="image-div">
+        <img src="images/screenshot.png" alt="Screenshot of Trulia OOCSS Library"/>
+      </div>
 
-      <p>
-         Hologram is built by <a href="http://trulia.com">Trulia</a>, and maintained by <a href="https://twitter.com/goodrobot_jd">@goodrobot_jd</a> and <a href="https://twitter.com/_uscr">@_uscr</a>.
-      </p>
-
-      <p>
-        <img style="width:650px;" src="images/screenshot.png" alt="Screenshot of Trulia OOCSS Library"/>
-      </p>
-
+      <a name="why" class="blank-link"></a>
       <h2>Why would I use it?</h2>
 
       <p>
-        Hologram was written to make building a style guide as easy as maintaining your CSS. It is similar to <a href="https://github.com/kneath/kss">Kneath Style Sheets</a> and <a href="http://jacobrask.github.io/styledocco/">Styledocco</a>.
+        Hologram was written to make building a style guide as easy as maintaining your CSS. It is similar to <a href="https://github.com/kneath/kss">Kneath Style Sheets</a> and <a href="http://jacobrask.github.io/styledocco/">Styledocco</a>
       </p>
       <p>
-        Your documentation is written right in your CSS files using a combination of YAML and Markdown. By using Markdown, you can easily format your docs however you wish and fall back to raw HTML for those tricky parts every styleguide has.
+        Your documentation is written right in your CSS files using a combination of YAML and Markdown. By using Markdown, you can easily format your docs however you wish and fall back to raw HTML for those tricky parts every style guide has.
       </p>
 
+      <a name="how" class="blank-link"></a>
       <h2>How does it work?</h2>
       <p>
-        An important part of any style guide are code examples accompanying the visual output. Hologram makes this easy by extending Markdown code blocks that can be marked as examples. The block will then be rendered twice, once as the actual HTML output and once as the html in order to show how the example was coded. You can also include javascript examples (the javascript will be executed inline and also output to the style guide).
-
+        Hologram makes this easy by extending Markdown code blocks that can be marked as examples. The block will then be rendered twice, once as the actual HTML output and once as the HTML in order to show how the example was coded.
       </p>
       <p>
         Here is an example documentation block from Trulia's CSS library as well as the corresponding output.
       </p>
       <div class="pre-container">
         <pre>
-
 /*doc
 ---
 title: Badge Examples
@@ -72,41 +87,44 @@ badgeTertiary  | This is a badge for a warning or something negative
 &lt;strong class="badgeSecondary"&gt;For Rent&lt;/strong&gt;
 &lt;strong class="badgeTertiary"&gt;Warning&lt;/strong&gt;
 ```
-*/
-        </pre>
+*/</pre>
       </div>
 
-      <img width="650px" src="images/badges.png" alt="Trulia badges example"/>
+      <div class="image-div">
+        <img src="images/badges.png" alt="Trulia badges example"/>
+      </div>
 
-
+      <a name="where" class="blank-link"></a>
       <h2>Where can I get it?</h2>
 
       <p>
-        Hologram is a ruby gem, just install it using <code>gem install hologram</code>, or add it to your project's <code>Gemfile</code>.
-        For usage instructions checkout out the <a href="http://github.com/trulia/hologram">github repository</a>'s README file.
+        Hologram is a ruby gem, just install it using <br>
+        <code>gem install hologram</code> or add it to your project's <code>Gemfile</code> <br>
+        For usage instructions checkout out the <br>
+        <a href="http://github.com/trulia/hologram">Github repository's README file</a>
       </p>
 
       <p>
-        You can also check out the <a href="http://trulia.github.io/hologram-example/docs">example project on github</a> to get an idea for the type
+        You can also check out the <a href="https://github.com/trulia/hologram-example">example project on github</a> to get an idea for the type
         of style guides you can build.
       </p>
 
       <p>
         Finally, Hologram is open source (licensed under the MIT License) and can
-        be found on <a href="http://github.com/trulia/hologram">GitHub</a>.
+        be found on <a href="http://github.com/trulia/hologram">GitHub</a> <br>
         Feel free to open any pull requests or issues (-:
       </p>
 
       <p class="hasBtn">
-        <a class="tealBtn"> <i class="icon-github"></i> Fork on Github</a>
+        <a class="tealBtn" href="https://github.com/trulia/hologram"> <i class="icon-github"></i> Fork on Github</a>
       </p>
 
     </section>
 
     <footer>
-
+      
       <p>
-        <a href="http://trulia.com">Trulia</a> &#10084 Open Source
+        Hologram is built by <a href="http://trulia.com">Trulia</a>, and maintained by <a href="https://twitter.com/goodrobot_jd">@goodrobot_jd</a> and <a href="https://twitter.com/_uscr">@_uscr</a>.
       </p>
 
     </footer>
