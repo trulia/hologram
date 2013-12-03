@@ -62,27 +62,54 @@ module Hologram
   class Builder
     attr_accessor :doc_blocks, :config, :pages
 
+    INIT_TEMPLATE_PATH = File.expand_path('./template/', File.dirname(__FILE__)) + '/'
+    INIT_TEMPLATE_FILES = [
+      INIT_TEMPLATE_PATH + '/hologram_config.yml',
+      INIT_TEMPLATE_PATH + '/doc_assets',
+    ]
+
     def init(args)
       @doc_blocks, @pages = {}, {}
       @supported_extensions = ['.css', '.scss', '.less', '.sass', '.styl', '.js', '.md', '.markdown' ]
 
       begin
-        @config = args ? YAML::load_file(args[0]) : YAML::load_file('hologram_config.yml')
-        validate_config
+        if args[0] == 'init' then
 
-        #TODO: maybe this should move into build_docs
-        current_path = Dir.pwd
-        base_path = Pathname.new(args[0])
-        Dir.chdir(base_path.dirname)
+          if File.exists?("hologram_config.yml")
+            puts "Cowardly refusing to overwrite existing hologram_config.yml"
+          else
+            FileUtils.cp_r INIT_TEMPLATE_FILES, Dir.pwd
+            puts "Created the following files and directories:"
+            puts "  hologram_config.yml"
+            puts "  doc_assets/"
+            puts "  doc_assets/header.html"
+            puts "  doc_assets/footer.html"
+          end
+        else
+          begin
+            config_file = args[0] ? args[0] : 'hologram_config.yml'
 
-        build_docs
+            begin
+              @config = YAML::load_file(config_file)
+            rescue
+              display_error "Could not load config file, try hologram init to get started"
+            end
 
-        Dir.chdir(current_path)
-        puts "Build successful. (-: ".green
-      rescue Errno::ENOENT
-        display_error("Could not load config file.")
-      rescue RuntimeError => e
-        display_error("#{e}")
+            validate_config
+
+            #TODO: maybe this should move into build_docs
+            current_path = Dir.pwd
+            base_path = Pathname.new(config_file)
+            Dir.chdir(base_path.dirname)
+
+            build_docs
+
+            Dir.chdir(current_path)
+            puts "Build completed. (-: ".green
+          rescue RuntimeError => e
+            display_error("#{e}")
+          end
+        end
       end
     end
 
@@ -92,9 +119,13 @@ module Hologram
       # Create the output directory if it doesn't exist
       FileUtils.mkdir_p(config['destination']) unless File.directory?(config['destination'])
 
-      input_directory  = Pathname.new(config['source']).realpath
-      output_directory = Pathname.new(config['destination']).realpath
+      begin
+        input_directory  = Pathname.new(config['source']).realpath
+      rescue
+        display_error "Can not read source directory, does it exist?"
+      end
 
+      output_directory = Pathname.new(config['destination']).realpath
       doc_assets       = Pathname.new(config['documentation_assets']).realpath unless !File.directory?(config['documentation_assets'])
 
       if doc_assets.nil?
@@ -107,11 +138,11 @@ module Hologram
 
       # if we have an index category defined in our config copy that
       # page to index.html
-      if config['index'] 
+      if config['index']
         if @pages.has_key?(config['index'] + '.html')
           @pages['index.html'] = @pages[config['index'] + '.html']
         else
-          display_warning "Could not generate index.html, there was no content generated for the category #{config['index']}"
+          display_warning "Could not generate index.html, there was no content generated for the category #{config['index']}."
         end
       end
 
@@ -120,10 +151,14 @@ module Hologram
       # Copy over dependencies
       if config['dependencies']
         config['dependencies'].each do |dir|
-          dirpath  = Pathname.new(dir).realpath
-          if File.directory?("#{dir}")
-            `rm -rf #{output_directory}/#{dirpath.basename}`
-            `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
+          begin
+            dirpath  = Pathname.new(dir).realpath
+            if File.directory?("#{dir}")
+              `rm -rf #{output_directory}/#{dirpath.basename}`
+              `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
+            end
+          rescue
+            display_warning "Could not copy dependency: #{dir}"
           end
         end
       end
@@ -170,7 +205,7 @@ module Hologram
     def process_file(file)
       file_str = File.read(file)
       # get any comment blocks that match the patterns:
-      # .sass: //doc (follow by other lines proceeded by a space) 
+      # .sass: //doc (follow by other lines proceeded by a space)
       # other types: /*doc ... */
       if file.end_with?('.sass')
         hologram_comments = file_str.scan(/\s*\/\/doc\s*((( [^\n]*\n)|\n)+)/)
@@ -293,15 +328,15 @@ module Hologram
 
     def validate_config
       unless @config.key?('source')
-        raise "No source directory specified in the config file"
+        display_error "No source directory specified in the config file"
       end
 
       unless @config.key?('destination')
-        raise "No destination directory specified in the config"
+        display_error "No destination directory specified in the config"
       end
 
       unless @config.key?('documentation_assets')
-        raise "No documentation assets directory specified"
+        display_error "No documentation assets directory specified"
       end
     end
 
