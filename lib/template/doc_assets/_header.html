@@ -1,9 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <title>A brand new styleguide</title>
-    <link rel="stylesheet" href="./YOUR_STYLESHEET_HERE.css">
+    <title>a brand new styleguide: <%= title %></title>
+    <link rel="stylesheet" href="./your_stylesheet_here.css">
   </head>
   <body>
-    <h1>A brand new style guide, it's super effective</h1>
+
+    <nav>
+      <ul>
+      <% for b in blocks %>
+        <li><a href="#<%= b[:name] %>"><%= b[:title] %></a></li>
+      <% end %>
+      </ul>
+    </nav>
+
+    <h1>a brand new style guide, it's super effective</h1>
     <section class="content">
