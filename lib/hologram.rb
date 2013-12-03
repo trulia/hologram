@@ -82,8 +82,8 @@ module Hologram
             puts "Created the following files and directories:"
             puts "  hologram_config.yml"
             puts "  doc_assets/"
-            puts "  doc_assets/header.html"
-            puts "  doc_assets/footer.html"
+            puts "  doc_assets/_header.html"
+            puts "  doc_assets/_footer.html"
           end
         else
           begin
@@ -165,8 +165,9 @@ module Hologram
 
       if !doc_assets.nil?
         Dir.foreach(doc_assets) do |item|
-         # ignore . and .. directories
-         next if item == '.' or item == '..'
+         # ignore . and .. directories and files that start with
+         # underscore
+         next if item == '.' or item == '..' or item.start_with?('_')
          `rm -rf #{output_directory}/#{item}`
          `cp -R #{doc_assets}/#{item} #{output_directory}/#{item}`
         end
@@ -287,20 +288,20 @@ module Hologram
         fh = get_fh(output_directory, file_name)
 
         # generate doc nav html
-        if File.exists?("#{doc_assets}/header.html")
-          fh.write(File.read("#{doc_assets}/header.html"))
+        if File.exists?("#{doc_assets}/_header.html")
+          fh.write(File.read("#{doc_assets}/_header.html"))
         else
-          display_warning "No header.html found in documentation assets. Without this your css/header will not be included on the generated pages."
+          display_warning "No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages."
         end
 
         # write the docs
         fh.write(renderer.render(markdown))
 
         # write the footer
-        if File.exists?("#{doc_assets}/footer.html")
-          fh.write(File.read("#{doc_assets}/footer.html"))
+        if File.exists?("#{doc_assets}/_footer.html")
+          fh.write(File.read("#{doc_assets}/_footer.html"))
         else
-          display_warning "No footer.html found in documentation assets. This might be okay to ignore..."
+          display_warning "No _footer.html found in documentation assets. This might be okay to ignore..."
         end
         fh.close()
       end
