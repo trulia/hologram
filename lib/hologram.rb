@@ -276,7 +276,7 @@ module Hologram
         end
 
         @doc_blocks[doc_block.name] = doc_block;
-        doc_block.markdown = "\n\n<h1 id=\"#{doc_block.name}\">#{doc_block.title}</h1>" + doc_block.markdown
+        doc_block.markdown = "\n\n<#{@config['parent_heading_tag']} id=\"#{doc_block.name}\">#{doc_block.title}</#{@config['parent_heading_tag']}>" + doc_block.markdown
       else
         # child file
         parent_doc_block = @doc_blocks[doc_block.parent]
@@ -284,7 +284,7 @@ module Hologram
           if doc_block.title.nil?
             doc_block.markdown = doc_block.markdown
           else
-            doc_block.markdown = "\n\n<h1 id=\"#{doc_block.name}\">#{doc_block.title}</h1>" + doc_block.markdown
+            doc_block.markdown = "\n\n<#{@config['child_heading_tag']} id=\"#{doc_block.name}\">#{doc_block.title}</#{@config['child_heading_tag']}>" + doc_block.markdown
           end
           parent_doc_block.children[doc_block.name] = doc_block
         else
@@ -389,6 +389,15 @@ module Hologram
 
       unless @config.key?('documentation_assets')
         display_error "No documentation assets directory specified"
+      end
+
+      #Setup some defaults for these guys
+      unless @config.key?('parent_heading_tag')
+        @config['parent_heading_tag'] = 'h1'
+      end
+
+      unless @config.key?('child_heading_tag')
+        @config['child_heading_tag'] = 'h2'
       end
     end
 
