@@ -86,7 +86,7 @@ PUT THE CSS/JS THAT IS ACTUALLY BEING DOCUMENTED HERE
 
 ###Documenting your styles
 
-Hologram will scan your css|scss|sass|less|stylus files within your **source** directory.
+Hologram will scan your .css|.scss|.sass|.less|.styl files within your **source** directory.
 It will look for comments that match the following:
 
     /*doc
