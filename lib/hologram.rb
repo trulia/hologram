@@ -276,12 +276,16 @@ module Hologram
         end
 
         @doc_blocks[doc_block.name] = doc_block;
-        doc_block.markdown = "\n\n# [#{doc_block.title}](##{doc_block.name})" + doc_block.markdown
+        doc_block.markdown = "\n\n<h1 id=\"#{doc_block.name}\">#{doc_block.title}</h1>" + doc_block.markdown
       else
         # child file
         parent_doc_block = @doc_blocks[doc_block.parent]
         if parent_doc_block
-          doc_block.markdown = "\n\n## #{doc_block.title}" + doc_block.markdown
+          if doc_block.title.nil?
+            doc_block.markdown = doc_block.markdown
+          else
+            doc_block.markdown = "\n\n<h1 id=\"#{doc_block.name}\">#{doc_block.title}</h1>" + doc_block.markdown
+          end
           parent_doc_block.children[doc_block.name] = doc_block
         else
           @doc_blocks[doc_block.parent] = DocumentBlock.new()
