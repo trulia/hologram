@@ -218,7 +218,7 @@ module Hologram
     def process_files(files, directory)
       files.each do |input_file|
         if input_file.end_with?('md')
-          @pages[File.basename(input_file, '.md') + '.html'] = File.read("#{directory}/#{input_file}")
+          @pages[File.basename(input_file, '.md') + '.html'] = {:md => File.read("#{directory}/#{input_file}"), :blocks => []}
         else
           process_file("#{directory}/#{input_file}")
         end
@@ -333,7 +333,10 @@ module Hologram
       @pages.each do |file_name, page|
         fh = get_fh(output_directory, file_name)
 
-        tpl_vars = TemplateVariables.new page[:blocks][0][:category], file_name, page[:blocks]
+        title = page[:blocks].empty? ? "" : page[:blocks][0][:category]
+
+        tpl_vars = TemplateVariables.new title, file_name, page[:blocks]
+
         # generate doc nav html
         unless header_erb.nil?
           fh.write(header_erb.result(tpl_vars.get_binding))
