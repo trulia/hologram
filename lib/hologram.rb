@@ -31,11 +31,26 @@ require 'yaml'
 require 'pygments'
 require 'fileutils'
 require 'pathname'
+require 'erb'
 
 require 'hologram_markdown_renderer'
 
 module Hologram
 
+  #Helper class for binding things for ERB
+  class TemplateVariables
+    attr_accessor :title, :file_name, :blocks
+
+    def initialize(title, file_name, blocks)
+      @title = title
+      @file_name = file_name
+      @blocks = blocks
+    end
+
+    def get_binding
+      binding
+    end
+  end
 
   class DocumentBlock
     attr_accessor :name, :parent, :children, :title, :category, :markdown, :output_file, :config
@@ -51,6 +66,14 @@ module Hologram
       @category = config['category']
       @title    = config['title']
       @markdown = markdown
+    end
+
+    def get_hash
+      {:name => @name,
+       :parent => @parent,
+       :category => @category,
+       :title => @title
+      }
     end
 
     def is_valid?
@@ -195,7 +218,7 @@ module Hologram
     def process_files(files, directory)
       files.each do |input_file|
         if input_file.end_with?('md')
-          @pages[File.basename(input_file, '.md') + '.html'] = File.read("#{directory}/#{input_file}")
+          @pages[File.basename(input_file, '.md') + '.html'] = {:md => File.read("#{directory}/#{input_file}"), :blocks => []}
         else
           process_file("#{directory}/#{input_file}")
         end
@@ -253,7 +276,7 @@ module Hologram
         end
 
         @doc_blocks[doc_block.name] = doc_block;
-        doc_block.markdown = "\n\n# #{doc_block.title}" + doc_block.markdown
+        doc_block.markdown = "\n\n# [#{doc_block.title}](##{doc_block.name})" + doc_block.markdown
       else
         # child file
         parent_doc_block = @doc_blocks[doc_block.parent]
@@ -270,8 +293,13 @@ module Hologram
     def build_pages_from_doc_blocks(doc_blocks, output_file = nil)
       doc_blocks.sort.map do |key, doc_block|
         output_file = doc_block.output_file || output_file
-        @pages[output_file] ||= ""
-        @pages[output_file] << doc_block.markdown
+
+        if !@pages.has_key?(output_file)
+          @pages[output_file] = {:md => "", :blocks => []}
+        end
+
+        @pages[output_file][:blocks].push(doc_block.get_hash)
+        @pages[output_file][:md] << doc_block.markdown
         if doc_block.children
           build_pages_from_doc_blocks(doc_block.children, output_file)
         end
@@ -283,26 +311,45 @@ module Hologram
       # load the markdown renderer we are going to use
       renderer = get_markdown_renderer
 
+      if File.exists?("#{doc_assets}/_header.html")
+        header_erb = ERB.new(File.read("#{doc_assets}/_header.html"))
+      elsif File.exists?("#{doc_assets}/header.html")
+        header_erb = ERB.new(File.read("#{doc_assets}/header.html"))
+      else
+        header_erb = nil
+        display_warning "No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages."
+      end
+
+      if File.exists?("#{doc_assets}/_footer.html")
+        footer_erb = ERB.new(File.read("#{doc_assets}/_footer.html"))
+      elsif File.exists?("#{doc_assets}/footer.html")
+        footer_erb = ERB.new(File.read("#{doc_assets}/footer.html"))
+      else
+        footer_erb = nil
+        display_warning "No _footer.html found in documentation assets. This might be okay to ignore..."
+      end
+
       #generate html from markdown
-      @pages.each do |file_name, markdown|
+      @pages.each do |file_name, page|
         fh = get_fh(output_directory, file_name)
 
+        title = page[:blocks].empty? ? "" : page[:blocks][0][:category]
+
+        tpl_vars = TemplateVariables.new title, file_name, page[:blocks]
+
         # generate doc nav html
-        if File.exists?("#{doc_assets}/_header.html")
-          fh.write(File.read("#{doc_assets}/_header.html"))
-        else
-          display_warning "No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages."
+        unless header_erb.nil?
+          fh.write(header_erb.result(tpl_vars.get_binding))
         end
 
         # write the docs
-        fh.write(renderer.render(markdown))
+        fh.write(renderer.render(page[:md]))
 
         # write the footer
-        if File.exists?("#{doc_assets}/_footer.html")
-          fh.write(File.read("#{doc_assets}/_footer.html"))
-        else
-          display_warning "No _footer.html found in documentation assets. This might be okay to ignore..."
+        unless footer_erb.nil?
+          fh.write(footer_erb.result(tpl_vars.get_binding))
         end
+
         fh.close()
       end
     end

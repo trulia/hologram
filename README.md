@@ -2,7 +2,7 @@
 
 Hologram is a Ruby gem that parses comments in your CSS and helps you turn them into a beautiful style guide.
 
-There are two steps to building a great style guide: 
+There are two steps to building a great style guide:
 
 1. Documenting your css and generating html examples.
 2. Styling the output of step 1.
@@ -21,13 +21,30 @@ And then execute:
 
 If you don't use bundler you can run `gem install hologram`.
 
-## Usage
+##Quick Start
+
+```
+hologram init
+```
+
+This will create a config yml file, and also create a starter
+`_header.tpl` and `_footer.tpl` file for you. You can then tweak the
+config values and start documenting your css.
+
+Building the documentation is simply:
+
+```
+hologram
+```
+
+## Details
 
 There are two things you need to do to start using hologram:
 
 1. Create a YAML config file for your project.
 
 2. Go document some code!
+
 
 ### Creating a YAML config file
 
@@ -45,23 +62,30 @@ Your config file needs to contain the following key/value pairs
   built to
 
 * **documentation_assets**: The path that contains supporting assets for
-  the documentaiton page. This typically includes html fragments (header/footer, etc),
-  styleguide specific CSS, javascript and any images. Hologram
-  specifically looks for two files: _header.html and _footer.html, these
-  are used to start and end every html page holgoram generates.
-  Additionaly, filenames that begin with underscores will not be copied
-  into the destination folder.
+  the documentaiton page. This typically includes html fragments
+  (header/footer, etc), styleguide specific CSS, javascript and any
+  images. Hologram specifically looks for two files: `_header.html` and
+  `_footer.html`, these are used to start and end every html page
+  holgoram generates. Hologram treats `_header.html` and `_footer.html`
+  as ERB files for each page that is generated you can access the
+  `title`, `file_name`, and `blocks`. `blocks` is a list of each
+  documenation block on the page. Each item in the list has a `title`,
+  `name`, `category`, and optionally a `parent`. Additionaly, filenames
+  that begin with underscores will not be copied into the destination
+  folder.
 
-* **custom_markdown**: (optional) this is the filename of a class that extends
-  RedCarpet::Render::HTML class. Use this for when you need
+
+* **custom_markdown**: (optional) this is the filename of a class that
+  extends RedCarpet::Render::HTML class. Use this for when you need
   additional classes or html tags for different parts of the page.
 
 * **index**: (optional) this is a category (see **Documenting your styles** section below) that will be used as the
   index.html.
 
-* **dependencies**: a **list** of relative pathes to folders containing any dependencies your style guide has.
-These folders will be copied over into the documentation output directory.
-PUT THE CSS/JS THAT IS ACTUALLY BEING DOCUMENTED HERE
+* **dependencies**: a **list** of relative paths to folders containing
+  any dependencies your style guide has. These folders will be copied
+  over into the documentation output directory. PUT THE CSS/JS THAT IS
+  ACTUALLY BEING DOCUMENTED HERE
 
 ##### Example config file
 
@@ -81,7 +105,6 @@ PUT THE CSS/JS THAT IS ACTUALLY BEING DOCUMENTED HERE
     # This is where the CSS/JS you are actually documenting should go
     dependencies:
         - ../build
-
 
 
 ###Documenting your styles
