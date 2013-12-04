@@ -313,6 +313,8 @@ module Hologram
 
       if File.exists?("#{doc_assets}/_header.html")
         header_erb = ERB.new(File.read("#{doc_assets}/_header.html"))
+      elsif File.exists?("#{doc_assets}/header.html")
+        header_erb = ERB.new(File.read("#{doc_assets}/header.html"))
       else
         header_erb = nil
         display_warning "No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages."
@@ -320,6 +322,8 @@ module Hologram
 
       if File.exists?("#{doc_assets}/_footer.html")
         footer_erb = ERB.new(File.read("#{doc_assets}/_footer.html"))
+      elsif File.exists?("#{doc_assets}/footer.html")
+        footer_erb = ERB.new(File.read("#{doc_assets}/footer.html"))
       else
         footer_erb = nil
         display_warning "No _footer.html found in documentation assets. This might be okay to ignore..."
