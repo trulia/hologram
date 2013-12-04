@@ -43,14 +43,18 @@ Your config file needs to contain the following key/value pairs
 
 * **documentation_assets**: The path that contains supporting assets for
   the documentaiton page. This typically includes html fragments (header/footer, etc),
-  styleguide specific CSS, javascript and any images.
+  styleguide specific CSS, javascript and any images. Hologram
+  specifically looks for two files: _header.html and _footer.html, these
+  are used to start and end every html page holgoram generates.
+  Additionaly, filenames that begin with underscores will not be copied
+  into the destination folder.
 
 * **custom_markdown**: (optional) this is the filename of a class that extends
   RedCarpet::Render::HTML class. Use this for when you need
   additional classes or html tags for different parts of the page.
 
 * **index**: (optional) this is a category that will be used as the
-  index.html. 
+  index.html.
 
 * **dependencies**: a **list** of relative pathes to a folderes containing any dependencies your style guide has.
 These folders will be copied over into the documentation output directory.
