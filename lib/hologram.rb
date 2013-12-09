@@ -31,11 +31,26 @@ require 'yaml'
 require 'pygments'
 require 'fileutils'
 require 'pathname'
+require 'erb'
 
 require 'hologram_markdown_renderer'
 
 module Hologram
 
+  #Helper class for binding things for ERB
+  class TemplateVariables
+    attr_accessor :title, :file_name, :blocks
+
+    def initialize(title, file_name, blocks)
+      @title = title
+      @file_name = file_name
+      @blocks = blocks
+    end
+
+    def get_binding
+      binding
+    end
+  end
 
   class DocumentBlock
     attr_accessor :name, :parent, :children, :title, :category, :markdown, :output_file, :config
@@ -53,6 +68,14 @@ module Hologram
       @markdown = markdown
     end
 
+    def get_hash
+      {:name => @name,
+       :parent => @parent,
+       :category => @category,
+       :title => @title
+      }
+    end
+
     def is_valid?
       @name && @markdown
     end
@@ -62,25 +85,54 @@ module Hologram
   class Builder
     attr_accessor :doc_blocks, :config, :pages
 
+    INIT_TEMPLATE_PATH = File.expand_path('./template/', File.dirname(__FILE__)) + '/'
+    INIT_TEMPLATE_FILES = [
+      INIT_TEMPLATE_PATH + '/hologram_config.yml',
+      INIT_TEMPLATE_PATH + '/doc_assets',
+    ]
+
     def init(args)
       @doc_blocks, @pages = {}, {}
+      @supported_extensions = ['.css', '.scss', '.less', '.sass', '.styl', '.js', '.md', '.markdown' ]
+
       begin
-        @config = args ? YAML::load_file(args[0]) : YAML::load_file('hologram_config.yml')
-        validate_config
+        if args[0] == 'init' then
 
-        #TODO: maybe this should move into build_docs
-        current_path = Dir.pwd
-        base_path = Pathname.new(args[0])
-        Dir.chdir(base_path.dirname)
+          if File.exists?("hologram_config.yml")
+            puts "Cowardly refusing to overwrite existing hologram_config.yml"
+          else
+            FileUtils.cp_r INIT_TEMPLATE_FILES, Dir.pwd
+            puts "Created the following files and directories:"
+            puts "  hologram_config.yml"
+            puts "  doc_assets/"
+            puts "  doc_assets/_header.html"
+            puts "  doc_assets/_footer.html"
+          end
+        else
+          begin
+            config_file = args[0] ? args[0] : 'hologram_config.yml'
 
-        build_docs
+            begin
+              @config = YAML::load_file(config_file)
+            rescue
+              DisplayMessage.error("Could not load config file, try 'hologram init' to get started")
+            end
 
-        Dir.chdir(current_path)
-        puts "Build successful. (-: ".green
-      rescue Errno::ENOENT
-        display_error("Could not load config file.")
-      rescue RuntimeError => e
-        display_error("#{e}")
+            validate_config
+
+            #TODO: maybe this should move into build_docs
+            current_path = Dir.pwd
+            base_path = Pathname.new(config_file)
+            Dir.chdir(base_path.dirname)
+
+            build_docs
+
+            Dir.chdir(current_path)
+            puts "Build completed. (-: ".green
+          rescue RuntimeError => e
+            DisplayMessage.error("#{e}")
+          end
+        end
       end
     end
 
@@ -90,31 +142,58 @@ module Hologram
       # Create the output directory if it doesn't exist
       FileUtils.mkdir_p(config['destination']) unless File.directory?(config['destination'])
 
-      input_directory  = Pathname.new(config['source']).realpath
+      begin
+        input_directory  = Pathname.new(config['source']).realpath
+      rescue
+        DisplayMessage.error("Can not read source directory, does it exist?")
+      end
+
       output_directory = Pathname.new(config['destination']).realpath
-      doc_assets       = Pathname.new(config['documentation_assets']).realpath
+      doc_assets       = Pathname.new(config['documentation_assets']).realpath unless !File.directory?(config['documentation_assets'])
+
+      if doc_assets.nil?
+        DisplayMessage.warning("Could not find documentation assets at #{config['documentation_assets']}")
+      end
 
       process_dir(input_directory)
 
       build_pages_from_doc_blocks(@doc_blocks)
+
+      # if we have an index category defined in our config copy that
+      # page to index.html
+      if config['index']
+        if @pages.has_key?(config['index'] + '.html')
+          @pages['index.html'] = @pages[config['index'] + '.html']
+        else
+          DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{config['index']}.")
+        end
+      end
+
       write_docs(output_directory, doc_assets)
 
       # Copy over dependencies
       if config['dependencies']
         config['dependencies'].each do |dir|
-          dirpath  = Pathname.new(dir).realpath
-          if File.directory?("#{dir}")
-            `rm -rf #{output_directory}/#{dirpath.basename}`
-            `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
+          begin
+            dirpath  = Pathname.new(dir).realpath
+            if File.directory?("#{dir}")
+              `rm -rf #{output_directory}/#{dirpath.basename}`
+              `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
+            end
+          rescue
+            DisplayMessage.warning("Could not copy dependency: #{dir}")
           end
         end
       end
 
-      Dir.foreach(doc_assets) do |item|
-       # ignore . and .. directories
-       next if item == '.' or item == '..'
-       `rm -rf #{output_directory}/#{item}`
-       `cp -R #{doc_assets}/#{item} #{output_directory}/#{item}`
+      if !doc_assets.nil?
+        Dir.foreach(doc_assets) do |item|
+         # ignore . and .. directories and files that start with
+         # underscore
+         next if item == '.' or item == '..' or item.start_with?('_')
+         `rm -rf #{output_directory}/#{item}`
+         `cp -R #{doc_assets}/#{item} #{output_directory}/#{item}`
+        end
       end
     end
 
@@ -139,7 +218,7 @@ module Hologram
     def process_files(files, directory)
       files.each do |input_file|
         if input_file.end_with?('md')
-          @pages[File.basename(input_file, '.md') + '.html'] = File.read("#{directory}/#{input_file}")
+          @pages[File.basename(input_file, '.md') + '.html'] = {:md => File.read("#{directory}/#{input_file}"), :blocks => []}
         else
           process_file("#{directory}/#{input_file}")
         end
@@ -149,8 +228,14 @@ module Hologram
 
     def process_file(file)
       file_str = File.read(file)
-      # get any comment blocks that match the pattern /*doc ... */
-      hologram_comments = file_str.scan(/^\s*\/\*doc(.*?)\*\//m)
+      # get any comment blocks that match the patterns:
+      # .sass: //doc (follow by other lines proceeded by a space)
+      # other types: /*doc ... */
+      if file.end_with?('.sass')
+        hologram_comments = file_str.scan(/\s*\/\/doc\s*((( [^\n]*\n)|\n)+)/)
+      else
+        hologram_comments = file_str.scan(/^\s*\/\*doc(.*?)\*\//m)
+      end
       return unless hologram_comments
 
       hologram_comments.each do |comment_block|
@@ -169,7 +254,7 @@ module Hologram
       begin
         config = YAML::load(yaml_match[1])
       rescue
-        display_error("Could not parse YAML:\n#{yaml_match[1]}")
+        DisplayMessage.error("Could not parse YAML:\n#{yaml_match[1]}")
       end
 
       if config['name'].nil?
@@ -187,16 +272,20 @@ module Hologram
         begin
           doc_block.output_file = get_file_name(doc_block.category)
         rescue NoMethodError => e
-          display_error("No output file specified. Missing category? \n #{doc_block.inspect}")
+          DisplayMessage.error("No output file specified. Missing category? \n #{doc_block.inspect}")
         end
 
         @doc_blocks[doc_block.name] = doc_block;
-        doc_block.markdown = "\n\n# #{doc_block.title}" + doc_block.markdown
+        doc_block.markdown = "\n\n<#{@config['parent_heading_tag']} id=\"#{doc_block.name}\">#{doc_block.title}</#{@config['parent_heading_tag']}>" + doc_block.markdown
       else
         # child file
         parent_doc_block = @doc_blocks[doc_block.parent]
         if parent_doc_block
-          doc_block.markdown = "\n\n## #{doc_block.title}" + doc_block.markdown
+          if doc_block.title.nil?
+            doc_block.markdown = doc_block.markdown
+          else
+            doc_block.markdown = "\n\n<#{@config['child_heading_tag']} id=\"#{doc_block.name}\">#{doc_block.title}</#{@config['child_heading_tag']}>" + doc_block.markdown
+          end
           parent_doc_block.children[doc_block.name] = doc_block
         else
           @doc_blocks[doc_block.parent] = DocumentBlock.new()
@@ -208,8 +297,13 @@ module Hologram
     def build_pages_from_doc_blocks(doc_blocks, output_file = nil)
       doc_blocks.sort.map do |key, doc_block|
         output_file = doc_block.output_file || output_file
-        @pages[output_file] ||= ""
-        @pages[output_file] << doc_block.markdown
+
+        if !@pages.has_key?(output_file)
+          @pages[output_file] = {:md => "", :blocks => []}
+        end
+
+        @pages[output_file][:blocks].push(doc_block.get_hash)
+        @pages[output_file][:md] << doc_block.markdown
         if doc_block.children
           build_pages_from_doc_blocks(doc_block.children, output_file)
         end
@@ -221,22 +315,45 @@ module Hologram
       # load the markdown renderer we are going to use
       renderer = get_markdown_renderer
 
+      if File.exists?("#{doc_assets}/_header.html")
+        header_erb = ERB.new(File.read("#{doc_assets}/_header.html"))
+      elsif File.exists?("#{doc_assets}/header.html")
+        header_erb = ERB.new(File.read("#{doc_assets}/header.html"))
+      else
+        header_erb = nil
+        DisplayMessage.warning("No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages.")
+      end
+
+      if File.exists?("#{doc_assets}/_footer.html")
+        footer_erb = ERB.new(File.read("#{doc_assets}/_footer.html"))
+      elsif File.exists?("#{doc_assets}/footer.html")
+        footer_erb = ERB.new(File.read("#{doc_assets}/footer.html"))
+      else
+        footer_erb = nil
+        DisplayMessage.warning("No _footer.html found in documentation assets. This might be okay to ignore...")
+      end
+
       #generate html from markdown
-      @pages.each do |file_name, markdown|
+      @pages.each do |file_name, page|
         fh = get_fh(output_directory, file_name)
 
+        title = page[:blocks].empty? ? "" : page[:blocks][0][:category]
+
+        tpl_vars = TemplateVariables.new(title, file_name, page[:blocks])
+
         # generate doc nav html
-        if File.exists?("#{doc_assets}/header.html")
-          fh.write(File.read("#{doc_assets}/header.html"))
+        unless header_erb.nil?
+          fh.write(header_erb.result(tpl_vars.get_binding))
         end
 
         # write the docs
-        fh.write(renderer.render(markdown))
+        fh.write(renderer.render(page[:md]))
 
         # write the footer
-        if File.exists?("#{doc_assets}/footer.html")
-          fh.write(File.read("#{doc_assets}/footer.html"))
+        unless footer_erb.nil?
+          fh.write(footer_erb.result(tpl_vars.get_binding))
         end
+
         fh.close()
       end
     end
@@ -252,9 +369,9 @@ module Hologram
           puts "Custom markdown renderer #{renderer_class} loaded."
           renderer = Redcarpet::Markdown.new(Module.const_get(renderer_class), { :fenced_code_blocks => true, :tables => true })
         rescue LoadError => e
-          display_error("Could not load #{config['custom_markdown']}.")
+          DisplayMessage.error("Could not load #{config['custom_markdown']}.")
         rescue NameError => e
-          display_error("Class #{renderer_class} not found in #{config['custom_markdown']}.")
+          DisplayMessage.error("Class #{renderer_class} not found in #{config['custom_markdown']}.")
         end
       end
       renderer
@@ -263,32 +380,30 @@ module Hologram
 
     def validate_config
       unless @config.key?('source')
-        raise "No source directory specified in the config file"
+        DisplayMessage.error("No source directory specified in the config file")
       end
 
       unless @config.key?('destination')
-        raise "No destination directory specified in the config"
+        DisplayMessage.error("No destination directory specified in the config")
       end
 
       unless @config.key?('documentation_assets')
-        raise "No documentation assets directory specified"
+        DisplayMessage.error("No documentation assets directory specified")
+      end
+
+      #Setup some defaults for these guys
+      unless @config.key?('parent_heading_tag')
+        @config['parent_heading_tag'] = 'h1'
+      end
+
+      unless @config.key?('child_heading_tag')
+        @config['child_heading_tag'] = 'h2'
       end
     end
 
 
     def is_supported_file_type?(file)
-      supported_extensions = ['.css', '.scss', '.less', '.sass', '.js', '.md', '.markdown' ]
-      supported_extensions.include?(File.extname(file))
-    end
-
-    def display_error(message)
-      if RUBY_VERSION.to_f > 1.8 then
-        puts "(\u{256F}\u{00B0}\u{25A1}\u{00B0}\u{FF09}\u{256F}".green + "\u{FE35} \u{253B}\u{2501}\u{253B} ".yellow + " Build not complete.".red
-      else
-        puts "Build not complete.".red
-      end
-        puts " #{message}"
-        exit 1
+      @supported_extensions.include?(File.extname(file))
     end
 
 
@@ -301,7 +416,23 @@ module Hologram
       File.open("#{output_directory}/#{output_file}", 'w')
     end
   end
+end
 
+
+class DisplayMessage
+  def self.error(message)
+    if RUBY_VERSION.to_f > 1.8 then
+      puts "(\u{256F}\u{00B0}\u{25A1}\u{00B0}\u{FF09}\u{256F}".green + "\u{FE35} \u{253B}\u{2501}\u{253B} ".yellow + " Build not complete.".red
+    else
+      puts "Build not complete.".red
+    end
+      puts " #{message}"
+      exit 1
+  end
+
+  def self.warning(message)
+    puts "Warning: ".yellow + message
+  end
 end
 
 
