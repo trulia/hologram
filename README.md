@@ -1,8 +1,11 @@
 # Hologram
 
-Hologram is a Ruby gem that parses comments in your CSS and helps you turns them into a beautiful style guide.
+Hologram is a Ruby gem that parses comments in your CSS and helps you turn them into a beautiful style guide.
 
-There are two steps to building a great style guide: 1.) documenting your css and generating html examples, and 2.) actually styling the output of step 1.
+There are two steps to building a great style guide:
+
+1. Documenting your css and generating html examples.
+2. Styling the output of step 1.
 
 The hologram gem itself is only concerned with step 1. This means you are free to make your style guide look however you would like. If you don't feel like going through this process yourself you can take a look at the [templates](https://github.com/trulia/hologram-example/tree/master/templates) in our [example repository](https://github.com/trulia/hologram-example) and use the assets defined there instead.
 
@@ -18,13 +21,30 @@ And then execute:
 
 If you don't use bundler you can run `gem install hologram`.
 
-## Usage
+##Quick Start
+
+```
+hologram init
+```
+
+This will create a config yml file, and also create a starter
+`_header.tpl` and `_footer.tpl` file for you. You can then tweak the
+config values and start documenting your css.
+
+Building the documentation is simply:
+
+```
+hologram
+```
+
+## Details
 
 There are two things you need to do to start using hologram:
 
-1. Create a YAML config file for your project
+1. Create a YAML config file for your project.
 
-2. Document yourself some code
+2. Go document some code!
+
 
 ### Creating a YAML config file
 
@@ -42,16 +62,30 @@ Your config file needs to contain the following key/value pairs
   built to
 
 * **documentation_assets**: The path that contains supporting assets for
-  the documentaiton page. This typically includes html fragments (header/footer, etc),
-  styleguide specific CSS, javascript and any images.
+  the documentaiton page. This typically includes html fragments
+  (header/footer, etc), styleguide specific CSS, javascript and any
+  images. Hologram specifically looks for two files: `_header.html` and
+  `_footer.html`, these are used to start and end every html page
+  holgoram generates. Hologram treats `_header.html` and `_footer.html`
+  as ERB files for each page that is generated you can access the
+  `title`, `file_name`, and `blocks`. `blocks` is a list of each
+  documenation block on the page. Each item in the list has a `title`,
+  `name`, `category`, and optionally a `parent`. Additionaly, filenames
+  that begin with underscores will not be copied into the destination
+  folder.
 
-* **custom_markdown**: (optional) this is the filename of a class that extends
-  RedCarpet::Render::HTML class. Use this for when you need
+
+* **custom_markdown**: (optional) this is the filename of a class that
+  extends RedCarpet::Render::HTML class. Use this for when you need
   additional classes or html tags for different parts of the page.
 
-* **dependencies**: a **list** of relative pathes to a folderes containing any dependencies your style guide has.
-These folders will be copied over into the documentation output directory.
-PUT THE CSS/JS THAT IS ACTUALLY BEING DOCUMENTED HERE
+* **index**: (optional) this is a category (see **Documenting your styles** section below) that will be used as the
+  index.html.
+
+* **dependencies**: a **list** of relative paths to folders containing
+  any dependencies your style guide has. These folders will be copied
+  over into the documentation output directory. PUT THE CSS/JS THAT IS
+  ACTUALLY BEING DOCUMENTED HERE
 
 ##### Example config file
 
@@ -73,10 +107,9 @@ PUT THE CSS/JS THAT IS ACTUALLY BEING DOCUMENTED HERE
         - ../build
 
 
-
 ###Documenting your styles
 
-Hologram will scan any css/scss/less files within your **source** directory.
+Hologram will scan your .css|.scss|.sass|.less|.styl files within your **source** directory.
 It will look for comments that match the following:
 
     /*doc
@@ -112,8 +145,6 @@ but it specifically looks for the following keys:
 * **title**: The title to display in the documents
 * **category**: This is the broad category for the component, all
   components in the same category will be written to the same page.
-  (Usually named the same as the category but with spaces replaced with
-  underscores and lower cased).
 * **name**: This is used for grouping components, by assigning
   a name a component can be referenced in another component as a parent.
 * **parent**: Optional. If this is set the current component will be
@@ -128,13 +159,6 @@ you'll need for making your style guide look beautiful.
 Hologram doesn't care too much about to what is in here as it is intended
 to be custom for your style guide.
 
-However, it does look for two files called header.html and footer.html.
-These are html fragments that will be used when creating a new category page.
-`header.html` will be copied to the beginning to the page and `footer.html`
-will be copied to the bottom of the page. This gives you control of how you
-will navigate your docs and lets you include any css, disclaimer text, and
-whatever else you need on each page.
-
 #####Styling Your Code Examples
 
 Hologram uses [pygments.rb](https://github.com/tmm1/pygments.rb) gem to provide
@@ -142,6 +166,16 @@ syntax highlighting for code examples. One of the assets that you probably want
 to include in your documentation assets folder is a css file that styles the
 "pygmentized" code examples. We use `github.css` which can be found along with the
 css we use to style code blocks [here](https://github.com/trulia/hologram-example/tree/gh-pages/hologram_assets/doc_assets/css).
+
+## Supported Preprocessors/File Types
+
+The following preprocessors/file types are supported by Hologram:
+- Sass (.scss, .sass)
+- Less (.less)
+- Stylus (.styl)
+- Vanilla CSS (.css)
+- Javascript (.js)
+- Markdown (.md, .markdown)
 
 ## Contributing
 
