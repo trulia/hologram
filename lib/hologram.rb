@@ -115,7 +115,7 @@ module Hologram
             begin
               @config = YAML::load_file(config_file)
             rescue
-              display_error "Could not load config file, try hologram init to get started"
+              DisplayMessage.error("Could not load config file, try 'hologram init' to get started")
             end
 
             validate_config
@@ -130,7 +130,7 @@ module Hologram
             Dir.chdir(current_path)
             puts "Build completed. (-: ".green
           rescue RuntimeError => e
-            display_error("#{e}")
+            DisplayMessage.error("#{e}")
           end
         end
       end
@@ -145,14 +145,14 @@ module Hologram
       begin
         input_directory  = Pathname.new(config['source']).realpath
       rescue
-        display_error "Can not read source directory, does it exist?"
+        DisplayMessage.error("Can not read source directory, does it exist?")
       end
 
       output_directory = Pathname.new(config['destination']).realpath
       doc_assets       = Pathname.new(config['documentation_assets']).realpath unless !File.directory?(config['documentation_assets'])
 
       if doc_assets.nil?
-        display_warning "Could not find documentation assets at #{config['documentation_assets']}"
+        DisplayMessage.warning("Could not find documentation assets at #{config['documentation_assets']}")
       end
 
       process_dir(input_directory)
@@ -165,7 +165,7 @@ module Hologram
         if @pages.has_key?(config['index'] + '.html')
           @pages['index.html'] = @pages[config['index'] + '.html']
         else
-          display_warning "Could not generate index.html, there was no content generated for the category #{config['index']}."
+          DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{config['index']}.")
         end
       end
 
@@ -181,7 +181,7 @@ module Hologram
               `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
             end
           rescue
-            display_warning "Could not copy dependency: #{dir}"
+            DisplayMessage.warning("Could not copy dependency: #{dir}")
           end
         end
       end
@@ -254,7 +254,7 @@ module Hologram
       begin
         config = YAML::load(yaml_match[1])
       rescue
-        display_error("Could not parse YAML:\n#{yaml_match[1]}")
+        DisplayMessage.error("Could not parse YAML:\n#{yaml_match[1]}")
       end
 
       if config['name'].nil?
@@ -272,7 +272,7 @@ module Hologram
         begin
           doc_block.output_file = get_file_name(doc_block.category)
         rescue NoMethodError => e
-          display_error("No output file specified. Missing category? \n #{doc_block.inspect}")
+          DisplayMessage.error("No output file specified. Missing category? \n #{doc_block.inspect}")
         end
 
         @doc_blocks[doc_block.name] = doc_block;
@@ -321,7 +321,7 @@ module Hologram
         header_erb = ERB.new(File.read("#{doc_assets}/header.html"))
       else
         header_erb = nil
-        display_warning "No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages."
+        DisplayMessage.warning("No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages.")
       end
 
       if File.exists?("#{doc_assets}/_footer.html")
@@ -330,7 +330,7 @@ module Hologram
         footer_erb = ERB.new(File.read("#{doc_assets}/footer.html"))
       else
         footer_erb = nil
-        display_warning "No _footer.html found in documentation assets. This might be okay to ignore..."
+        DisplayMessage.warning("No _footer.html found in documentation assets. This might be okay to ignore...")
       end
 
       #generate html from markdown
@@ -339,7 +339,7 @@ module Hologram
 
         title = page[:blocks].empty? ? "" : page[:blocks][0][:category]
 
-        tpl_vars = TemplateVariables.new title, file_name, page[:blocks]
+        tpl_vars = TemplateVariables.new(title, file_name, page[:blocks])
 
         # generate doc nav html
         unless header_erb.nil?
@@ -369,9 +369,9 @@ module Hologram
           puts "Custom markdown renderer #{renderer_class} loaded."
           renderer = Redcarpet::Markdown.new(Module.const_get(renderer_class), { :fenced_code_blocks => true, :tables => true })
         rescue LoadError => e
-          display_error("Could not load #{config['custom_markdown']}.")
+          DisplayMessage.error("Could not load #{config['custom_markdown']}.")
         rescue NameError => e
-          display_error("Class #{renderer_class} not found in #{config['custom_markdown']}.")
+          DisplayMessage.error("Class #{renderer_class} not found in #{config['custom_markdown']}.")
         end
       end
       renderer
@@ -380,15 +380,15 @@ module Hologram
 
     def validate_config
       unless @config.key?('source')
-        display_error "No source directory specified in the config file"
+        DisplayMessage.error("No source directory specified in the config file")
       end
 
       unless @config.key?('destination')
-        display_error "No destination directory specified in the config"
+        DisplayMessage.error("No destination directory specified in the config")
       end
 
       unless @config.key?('documentation_assets')
-        display_error "No documentation assets directory specified"
+        DisplayMessage.error("No documentation assets directory specified")
       end
 
       #Setup some defaults for these guys
@@ -406,20 +406,6 @@ module Hologram
       @supported_extensions.include?(File.extname(file))
     end
 
-    def display_error(message)
-      if RUBY_VERSION.to_f > 1.8 then
-        puts "(\u{256F}\u{00B0}\u{25A1}\u{00B0}\u{FF09}\u{256F}".green + "\u{FE35} \u{253B}\u{2501}\u{253B} ".yellow + " Build not complete.".red
-      else
-        puts "Build not complete.".red
-      end
-        puts " #{message}"
-        exit 1
-    end
-
-    def display_warning(message)
-      puts "Warning: ".yellow + message
-    end
-
 
     def get_file_name(str)
       str = str.gsub(' ', '_').downcase + '.html'
@@ -430,7 +416,23 @@ module Hologram
       File.open("#{output_directory}/#{output_file}", 'w')
     end
   end
+end
 
+
+class DisplayMessage
+  def self.error(message)
+    if RUBY_VERSION.to_f > 1.8 then
+      puts "(\u{256F}\u{00B0}\u{25A1}\u{00B0}\u{FF09}\u{256F}".green + "\u{FE35} \u{253B}\u{2501}\u{253B} ".yellow + " Build not complete.".red
+    else
+      puts "Build not complete.".red
+    end
+      puts " #{message}"
+      exit 1
+  end
+
+  def self.warning(message)
+    puts "Warning: ".yellow + message
+  end
 end
 
 
