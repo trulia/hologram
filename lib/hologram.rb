@@ -37,23 +37,8 @@ require 'hologram_markdown_renderer'
 
 module Hologram
 
-  #Helper class for binding things for ERB
-  class TemplateVariables
-    attr_accessor :title, :file_name, :blocks
-
-    def initialize(title, file_name, blocks)
-      @title = title
-      @file_name = file_name
-      @blocks = blocks
-    end
-
-    def get_binding
-      binding
-    end
-  end
-
   class DocumentBlock
-    attr_accessor :name, :parent, :children, :title, :category, :markdown, :output_file, :config
+    attr_accessor :name, :parent, :children, :title, :category, :markdown, :config, :heading
 
     def initialize(config = nil, markdown = nil)
       @children = {}
@@ -62,9 +47,9 @@ module Hologram
 
     def set_members(config, markdown)
       @name     = config['name']
-      @parent   = config['parent']
       @category = config['category']
       @title    = config['title']
+      @parent   = config['parent']
       @markdown = markdown
     end
 
@@ -79,10 +64,15 @@ module Hologram
     def is_valid?
       @name && @markdown
     end
+
+    # sets the header tag based on how deep your nesting is
+    def markdown_with_heading(heading = 1)
+      @markdown = "\n\n<h#{heading.to_s} id=\"#{@name}\">#{@title}</h#{heading.to_s}>" + @markdown
+    end
   end
 
 
-  class Builder
+  class DocBuilder
     attr_accessor :doc_blocks, :config, :pages
 
     INIT_TEMPLATE_PATH = File.expand_path('./template/', File.dirname(__FILE__)) + '/'
@@ -92,7 +82,7 @@ module Hologram
     ]
 
     def init(args)
-      @doc_blocks, @pages = {}, {}
+      @pages = {}
       @supported_extensions = ['.css', '.scss', '.less', '.sass', '.styl', '.js', '.md', '.markdown' ]
 
       begin
@@ -120,11 +110,11 @@ module Hologram
 
             validate_config
 
-            #TODO: maybe this should move into build_docs
             current_path = Dir.pwd
             base_path = Pathname.new(config_file)
             Dir.chdir(base_path.dirname)
 
+            # the real work happens here.
             build_docs
 
             Dir.chdir(current_path)
@@ -155,9 +145,22 @@ module Hologram
         DisplayMessage.warning("Could not find documentation assets at #{config['documentation_assets']}")
       end
 
-      process_dir(input_directory)
+      # recursively traverse our directory structure looking for files that
+      # match our "parseable" file types. Open those files pulling out any
+      # comments matching the hologram doc style /*doc */ and create DocBlock
+      # objects from those comments, then add those to a collection object which
+      # is then returned.
+      doc_block_collection = process_dir(input_directory)
 
-      build_pages_from_doc_blocks(@doc_blocks)
+      # doc blocks can define parent/child relationships that will nest their
+      # documentation appropriately. we can't put everything into that structure
+      # on our first pass through because there is no guarantee we'll parse files
+      # in the correct order. This step takes the full collection and creates the
+      # proper structure.
+      doc_block_collection.create_nested_structure
+
+      # hand off our properly nested collection to the output generator
+      build_pages_from_doc_blocks(doc_block_collection.doc_blocks)
 
       # if we have an index category defined in our config copy that
       # page to index.html
@@ -200,6 +203,7 @@ module Hologram
 
     def process_dir(base_directory)
       #get all directories in our library folder
+      doc_block_collection = DocBlockCollection.new
       directories = Dir.glob("#{base_directory}/**/*/")
       directories.unshift(base_directory)
 
@@ -210,23 +214,24 @@ module Hologram
           files << file
         end
         files.sort!
-        process_files(files, directory)
+        process_files(files, directory, doc_block_collection)
       end
+      doc_block_collection
     end
 
 
-    def process_files(files, directory)
+    def process_files(files, directory, doc_block_collection)
       files.each do |input_file|
         if input_file.end_with?('md')
           @pages[File.basename(input_file, '.md') + '.html'] = {:md => File.read("#{directory}/#{input_file}"), :blocks => []}
         else
-          process_file("#{directory}/#{input_file}")
+          process_file("#{directory}/#{input_file}", doc_block_collection)
         end
       end
     end
 
 
-    def process_file(file)
+    def process_file(file, doc_block_collection)
       file_str = File.read(file)
       # get any comment blocks that match the patterns:
       # .sass: //doc (follow by other lines proceeded by a space)
@@ -239,73 +244,30 @@ module Hologram
       return unless hologram_comments
 
       hologram_comments.each do |comment_block|
-        doc_block = build_doc_block(comment_block[0])
-        add_doc_block_to_collection(doc_block) if doc_block
+        doc_block_collection.add_doc_block(comment_block[0])
       end
     end
 
 
-    # this should throw an error if we have a match, but now yaml_match
-    def build_doc_block(comment_block)
-      yaml_match = /^\s*---\s(.*?)\s---$/m.match(comment_block)
-      return unless yaml_match
-      markdown = comment_block.sub(yaml_match[0], '')
-
-      begin
-        config = YAML::load(yaml_match[1])
-      rescue
-        DisplayMessage.error("Could not parse YAML:\n#{yaml_match[1]}")
-      end
-
-      if config['name'].nil?
-        puts "Missing required name config value. This hologram comment will be skipped. \n #{config.inspect}"
-      else
-        doc_block = DocumentBlock.new(config, markdown)
-      end
-    end
-
-
-    def add_doc_block_to_collection(doc_block)
-      return unless doc_block.is_valid?
-      if doc_block.parent.nil?
-        #parent file
-        begin
-          doc_block.output_file = get_file_name(doc_block.category)
-        rescue NoMethodError => e
-          DisplayMessage.error("No output file specified. Missing category? \n #{doc_block.inspect}")
-        end
-
-        @doc_blocks[doc_block.name] = doc_block;
-        doc_block.markdown = "\n\n<#{@config['parent_heading_tag']} id=\"#{doc_block.name}\">#{doc_block.title}</#{@config['parent_heading_tag']}>" + doc_block.markdown
-      else
-        # child file
-        parent_doc_block = @doc_blocks[doc_block.parent]
-        if parent_doc_block
-          if doc_block.title.nil?
-            doc_block.markdown = doc_block.markdown
-          else
-            doc_block.markdown = "\n\n<#{@config['child_heading_tag']} id=\"#{doc_block.name}\">#{doc_block.title}</#{@config['child_heading_tag']}>" + doc_block.markdown
-          end
-          parent_doc_block.children[doc_block.name] = doc_block
-        else
-          @doc_blocks[doc_block.parent] = DocumentBlock.new()
-        end
-      end
-    end
-
-
-    def build_pages_from_doc_blocks(doc_blocks, output_file = nil)
+    def build_pages_from_doc_blocks(doc_blocks, output_file = nil, depth = 1)
       doc_blocks.sort.map do |key, doc_block|
-        output_file = doc_block.output_file || output_file
+
+        # if the doc_block has a category set then use that, this will be
+        # true of all top level doc_blocks. The output file they set will then
+        # be passed into the recursive call for adding children to the output
+        output_file = get_file_name(doc_block.category) if doc_block.category
 
         if !@pages.has_key?(output_file)
           @pages[output_file] = {:md => "", :blocks => []}
         end
 
         @pages[output_file][:blocks].push(doc_block.get_hash)
-        @pages[output_file][:md] << doc_block.markdown
+        @pages[output_file][:md] << doc_block.markdown_with_heading(depth)
+
         if doc_block.children
-          build_pages_from_doc_blocks(doc_block.children, output_file)
+          depth += 1
+          build_pages_from_doc_blocks(doc_block.children, output_file, depth)
+          depth -= 1
         end
       end
     end
@@ -390,15 +352,6 @@ module Hologram
       unless @config.key?('documentation_assets')
         DisplayMessage.error("No documentation assets directory specified")
       end
-
-      #Setup some defaults for these guys
-      unless @config.key?('parent_heading_tag')
-        @config['parent_heading_tag'] = 'h1'
-      end
-
-      unless @config.key?('child_heading_tag')
-        @config['child_heading_tag'] = 'h2'
-      end
     end
 
 
@@ -416,7 +369,72 @@ module Hologram
       File.open("#{output_directory}/#{output_file}", 'w')
     end
   end
+
+
+  #Helper class for binding things for ERB
+  class TemplateVariables
+    attr_accessor :title, :file_name, :blocks
+
+    def initialize(title, file_name, blocks)
+      @title = title
+      @file_name = file_name
+      @blocks = blocks
+    end
+
+    def get_binding
+      binding()
+    end
+  end
+
+  class DocBlockCollection
+    attr_accessor :doc_blocks
+
+    def initialize
+      @doc_blocks = {}
+    end
+
+    # this should throw an error if we have a match, but no yaml_match
+    def add_doc_block(comment_block)
+      yaml_match = /^\s*---\s(.*?)\s---$/m.match(comment_block)
+      return unless yaml_match
+
+      markdown = comment_block.sub(yaml_match[0], '')
+
+      begin
+        config = YAML::load(yaml_match[1])
+      rescue
+        DisplayMessage.error("Could not parse YAML:\n#{yaml_match[1]}")
+      end
+
+      if config['name'].nil?
+        DisplayMessage.warning("Missing required name config value. This hologram comment will be skipped. \n #{config.inspect}")
+      else
+        doc_block = DocumentBlock.new(config, markdown)
+      end
+
+      @doc_blocks[doc_block.name] = doc_block if doc_block.is_valid?
+    end
+
+    def create_nested_structure
+      blocks_to_remove_from_top_level = []
+      @doc_blocks.each do |key, doc_block|
+        # don't do anything to top level doc_blocks
+        next if !doc_block.parent
+
+        parent = @doc_blocks[doc_block.parent]
+        parent.children[doc_block.name] = doc_block
+        doc_block.parent = parent
+        blocks_to_remove_from_top_level << doc_block.name
+      end
+
+      blocks_to_remove_from_top_level.each do |key|
+        @doc_blocks.delete(key)
+      end
+    end
+  end
+
 end
+
 
 
 class DisplayMessage
