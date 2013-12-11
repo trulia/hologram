@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 require 'hologram'
 
-builder = Hologram::Builder.new
+builder = Hologram::DocBuilder.new
 builder.init(ARGV)
