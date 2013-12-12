@@ -32,7 +32,7 @@ class HologramMarkdownRenderer < Redcarpet::Render::HTML
         '<script>' + code + '</script>
         <div class="codeBlock jsExample">' + Pygments.highlight(code) + '</div>'
       else
-        '<div class="codeExample">' + '<div class="exampleOutput">' + render_html(code, language) + '</div>' + '<div class="codeBlock">' + Pygments.highlight(code) + '</div>' + '</div>'
+        '<div class="codeExample">' + '<div class="exampleOutput">' + render_html(code, language) + '</div>' + '<div class="codeBlock">' + Pygments.highlight(code, lexer: get_lexer(language)) + '</div>' + '</div>'
       end
     else
       '<div class="codeBlock">' + Pygments.highlight(code) + '</div>'
@@ -41,13 +41,21 @@ class HologramMarkdownRenderer < Redcarpet::Render::HTML
 
   private
   def render_html(code, language)
-
     case language
       when 'haml_example'
         safe_require 'haml', language
         return Haml::Engine.new(code.strip).render(Object.new, {})
       else
         code
+    end
+  end
+
+  def get_lexer(language)
+    case language
+      when 'haml_example'
+        'haml'
+      else
+        'html'
     end
   end
 
