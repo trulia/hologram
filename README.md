@@ -138,7 +138,7 @@ The first section of the comment is a yaml block that defines certain
 aspects of the this documentation block (more on that in the next section). The second part is simply
 markdown as defined by Redcarpet.
 
-Notice the use of `html_example`. This tells the markdown rendererit should treat the example as, well, html. If your project uses [haml](http://haml.info/) you can also use `haml_example`. In that case the output will be html for the example and the code block will show the haml used to generate the html. For components that require [javascript](https://www.destroyallsoftware.com/talks/wat) you can use `js_example` for your js. In addtion to outputing the js in a `<code>` block it will also wrap it in a `<script>` tag for execution.
+Notice the use of `html_example`. This tells the markdown renderer that it should treat the example as...well...html. If your project uses [haml](http://haml.info/) you can also use `haml_example`. In that case the output will be html for the example and the code block will show the haml used to generate the html. For components that require [javascript](https://www.destroyallsoftware.com/talks/wat) you can use `js_example` for your js. In addtion to outputing the js in a `<code>` block it will also wrap it in a `<script>` tag for execution.
 
 ####Document YAML section
 The yaml in the doc block can have any key value pair you deem important
