@@ -63,7 +63,7 @@ module Hologram
         if args[0] == 'init' then
 
           if File.exists?("hologram_config.yml")
-            puts "Cowardly refusing to overwrite existing hologram_config.yml"
+            puts "Cowardly refusing to overwrite existing hologram_config.yml".yellow
           else
             FileUtils.cp_r INIT_TEMPLATE_FILES, Dir.pwd
             puts "Created the following files and directories:"
@@ -283,7 +283,11 @@ module Hologram
         end
 
         # write the docs
-        fh.write(renderer.render(page[:md]))
+        begin
+          fh.write(renderer.render(page[:md]))
+        rescue Exception => e
+          DisplayMessage.error(e.message)
+        end
 
         # write the footer
         unless footer_erb.nil?

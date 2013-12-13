@@ -6,7 +6,7 @@ class HologramMarkdownRenderer < Redcarpet::Render::HTML
         '<script>' + code + '</script>
         <div class="codeBlock jsExample">' + Pygments.highlight(code) + '</div>'
       else
-        '<div class="codeExample">' + '<div class="exampleOutput">' + render_html(code, language) + '</div>' + '<div class="codeBlock">' + Pygments.highlight(code, lexer: get_lexer(language)) + '</div>' + '</div>'
+        '<div class="codeExample">' + '<div class="exampleOutput">' + render_html(code, language) + '</div>' + '<div class="codeBlock">' + Pygments.highlight(code, :lexer => get_lexer(language)) + '</div>' + '</div>'
       end
     else
       '<div class="codeBlock">' + Pygments.highlight(code) + '</div>'
@@ -17,7 +17,7 @@ class HologramMarkdownRenderer < Redcarpet::Render::HTML
   def render_html(code, language)
     case language
       when 'haml_example'
-        safe_require 'haml', language
+        safe_require('haml', language)
         return Haml::Engine.new(code.strip).render(Object.new, {})
       else
         code
@@ -34,8 +34,10 @@ class HologramMarkdownRenderer < Redcarpet::Render::HTML
   end
 
   def safe_require(templating_library, language)
-    require templating_library
-  rescue LoadError
-    raise "#{templating_library} must be present for you to use #{language}"
+    begin
+      require templating_library
+    rescue LoadError
+      raise "#{templating_library} must be present for you to use #{language}"
+    end
   end
 end
