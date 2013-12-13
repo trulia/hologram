@@ -151,7 +151,9 @@ but it specifically looks for the following keys:
   a name a component can be referenced in another component as a parent.
 * **parent**: (Optional.) This should be the **name** of another components. If this is set the current component will be displayed as a section within the **parent**'s documentation. 
 
-For example, you might have a component with the **name** 'buttons' and another component named 'buttonSkins'. You could set the **parent** for the 'buttonSkins' component to be 'buttons'. It would then nest the skins documentation inside the 'buttons' documentation. Each level of nesting (components are infinitely nestable) will have a heading tag that represents its depth. In this example 'buttons' would have an `h1` and 'buttonSkins' would have an `h2`. This you can [see this example here](https://github.com/trulia/hologram-example/tree/master/components/button), and the output of this nesting [here](http://trulia.github.io/hologram-example/base_css.html#Buttons).
+For example, you might have a component with the **name** *buttons* and another component named *buttonSkins*. You could set the **parent** for the *buttonSkins* component to be *buttons*. It would then nest the *buttonSkins* documentation inside the *buttons* documentation. 
+
+Each level of nesting (components are infinitely nestable) will have a heading tag that represents its depth. In the above example *buttons* would have an `<h1>` and *buttonSkins* would have an `<h2>`. This you can [see this exact example in our demo repo](https://github.com/trulia/hologram-example/tree/master/components/button), and the output of this nesting [in our demo styleguide](http://trulia.github.io/hologram-example/base_css.html#Buttons).
 
 
 ###Documentation Assets
