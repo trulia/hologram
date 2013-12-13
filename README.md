@@ -27,7 +27,7 @@ If you don't use bundler you can run `gem install hologram`.
 hologram init
 ```
 
-This will create a config yml file, and also create a starter
+This will create a `hologram_config.yml` file  (more on this below), and also create a starter
 `_header.tpl` and `_footer.tpl` file for you. You can then tweak the
 config values and start documenting your css.
 
@@ -135,8 +135,10 @@ It will look for comments that match the following:
     */
 
 The first section of the comment is a yaml block that defines certain
-aspects of the this documentation block. The second part is simply
+aspects of the this documentation block (more on that in the next section). The second part is simply
 markdown as defined by Redcarpet.
+
+Notice the use of `html_example`. This tells the markdown rendererit should treat the example as, well, html. If your project uses [haml](http://haml.info/) you can also use `haml_example`. In that case the output will be html for the example and the code block will show the haml used to generate the html. For components that require [javascript](https://www.destroyallsoftware.com/talks/wat) you can use `js_example` for your js. In addtion to outputing the js in a `<code>` block it will also wrap it in a `<script>` tag for execution.
 
 ####Document YAML section
 The yaml in the doc block can have any key value pair you deem important
@@ -147,8 +149,9 @@ but it specifically looks for the following keys:
   components in the same category will be written to the same page.
 * **name**: This is used for grouping components, by assigning
   a name a component can be referenced in another component as a parent.
-* **parent**: Optional. If this is set the current component will be
-  displayed as a section within the parent's documentation.
+* **parent**: (Optional.) This should be the **name** of another components. If this is set the current component will be displayed as a section within the **parent**'s documentation. 
+
+For example, you might have a component with the **name** 'buttons' and another component named 'buttonSkins'. You could set the **parent** for the 'buttonSkins' component to be 'buttons'. It would then nest the skins documentation inside the 'buttons' documentation. Each level of nesting (components are infinitely nestable) will have a heading tag that represents its depth. In this example 'buttons' would have an `h1` and 'buttonSkins' would have an `h2`. This you can [see this example here](https://github.com/trulia/hologram-example/tree/master/components/button), and the output of this nesting [here](http://trulia.github.io/hologram-example/base_css.html#Buttons).
 
 
 ###Documentation Assets
