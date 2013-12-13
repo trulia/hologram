@@ -28,7 +28,7 @@ hologram init
 ```
 
 This will create a `hologram_config.yml` file  (more on this below), and also create a starter
-`_header.tpl` and `_footer.tpl` file for you. You can then tweak the
+`_header.html` and `_footer.html` file for you. You can then tweak the
 config values and start documenting your css.
 
 Building the documentation is simply:
