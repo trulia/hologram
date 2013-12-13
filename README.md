@@ -66,9 +66,11 @@ Your config file needs to contain the following key/value pairs
   (header/footer, etc), styleguide specific CSS, javascript and any
   images. Hologram specifically looks for two files: `_header.html` and
   `_footer.html`, these are used to start and end every html page
-  holgoram generates. Hologram treats `_header.html` and `_footer.html`
+  hologram generates. Hologram treats `_header.html` and `_footer.html`
   as ERB files for each page that is generated you can access the
-  `title`, `file_name`, and `blocks`. `blocks` is a list of each
+  `title`, `file_name`, and `blocks`. 
+
+  **`blocks`** is a list of each
   documenation block on the page. Each item in the list has a `title`,
   `name`, `category`, and optionally a `parent`. Additionaly, filenames
   that begin with underscores will not be copied into the destination
