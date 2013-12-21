@@ -109,7 +109,7 @@ module Hologram
       begin
         input_directory  = Pathname.new(config['source']).realpath
       rescue
-        DisplayMessage.error("Can not read source directory, does it exist?")
+        DisplayMessage.error("Can not read source directory (#{config['source'].inspect}), does it exist?")
       end
 
       output_directory = Pathname.new(config['destination']).realpath
