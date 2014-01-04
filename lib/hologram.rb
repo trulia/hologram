@@ -36,7 +36,7 @@ module Hologram
     end
 
     def is_valid?
-      @name && @markdown
+      !!(@name && @markdown)
     end
 
     # sets the header tag based on how deep your nesting is
