@@ -1,0 +1,113 @@
+/*doc
+---
+parent: button
+name: buttonSkins
+title: Button Styles
+---
+
+Button                                            | Class             | Description
+------------------------------------------------- | ----------------- | -----------
+<button class="btn btnDefault">Default</button>   | `btn btnDefault`  | This is what buttons look like, this is the go to button style.
+<button class="btn btnPrimary">Primary</button>   | `btn btnPrimary`  | Use this button as the primary call to action
+<button class="btn btnDanger">Delete</button>     | `btn btnDanger`   | This button is for delete actions, these actions should also have a confirmation dialog
+<button class="btn btnDisabled">Disabled</button> | `btn btnDisabled` | I'm afraid I can't let you do that, yet.
+
+*/
+
+.btnDefault,
+a.btnDefault {
+  border: 1px #d7d7d7 solid;
+  background: #f3f3f3;
+  color: #222222;
+  text-shadow: 0 1px 0 white;
+  -webkit-box-shadow: 0 1px 0px #cccccc;
+  -moz-box-shadow: 0 1px 0px #cccccc;
+  box-shadow: 0 1px 0px #cccccc;
+}
+
+.btnDefault:hover,
+.btnDefault:focus {
+  background: #f6f6f6;
+}
+
+.btnDefault:active {
+  position: relative;
+  top: 1px;
+  -webkit-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btnPrimary,
+a.btnPrimary, .btnDanger,
+a.btnDanger {
+  color: white;
+  text-shadow: 0 0 0;
+}
+
+.btnPrimary,
+a.btnPrimary {
+  border: 1px #d14b00 solid;
+  background: #ff5c00;
+  -webkit-box-shadow: 0 1px 0px #d35500;
+  -moz-box-shadow: 0 1px 0px #d35500;
+  box-shadow: 0 1px 0px #d35500;
+}
+
+.btnPrimary:hover,
+.btnPrimary:focus {
+  background: #ff660f;
+}
+
+.btnPrimary:active {
+  position: relative;
+  top: 1px;
+  -webkit-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btnDanger,
+a.btnDanger {
+  border: 1px #a21a10 solid;
+  background: #cc2114;
+  -webkit-box-shadow: 0 1px 0px #d35500;
+  -moz-box-shadow: 0 1px 0px #d35500;
+  box-shadow: 0 1px 0px #d35500;
+}
+
+.btnDanger:hover,
+.btnDanger:focus {
+  background: #da2315;
+}
+
+.btnDanger:active {
+  position: relative;
+  top: 1px;
+  -webkit-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn[disabled],
+.btn[disabled]:hover,
+.btn[disabled]:focus
+.btn[disabled]:active,
+.btnDisabled,
+a.btnDisabled,
+.btnDisabled:hover,
+.btnDisabled:focus,
+.btnDisabled:active {
+  border: 0px;
+  background: #cccccc;
+  color: #999999;
+  text-shadow: 0 0 0;
+  cursor: default;
+}
+
+.btn[disabled]:active,
+.btnDisabled:active {
+  position: static;
+  color: #999999;
+  box-shadow: none;
+}
