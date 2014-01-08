@@ -1,0 +1,17 @@
+# Hologram config
+
+# The directory containing the source files to parse
+source: ./components
+
+# The assets needed to build the docs (includes header.html, footer.html, etc)
+documentation_assets: ./templates
+
+# This is a custom markdown renderer (see Redcarpet documentation for
+# how to do this)
+# custom_markdown: trulia_markdown_renderer.rb
+
+# Any other asset folders that need to be copied to the destination folder
+# This where you should include your full stylesheets, component javascript,
+# libraries and any other dependencies your style guide will have
+dependencies:
+  - ./extra

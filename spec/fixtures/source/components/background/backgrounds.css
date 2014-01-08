@@ -1,0 +1,46 @@
+/*doc
+---
+title: Background Colors
+name: background
+category: Base CSS
+---
+
+We have a few background colors that can be used in various contexts.
+These are not for use as the entire page background but instead for
+specific components and modules on the page.
+
+<div class="line txtC">
+    <div class="col cols6 ">
+      <div class="docSwatch backgroundLowlight"></div>
+      <code>backgroundLowlight</code>
+    </div>
+    <div class="col cols6 ">
+      <div class="docSwatch backgroundHighlight"></div>
+      <code>backgroundHighlight</code>
+    </div>
+    <div class="col cols6 ">
+      <div class="docSwatch backgroundBasic"></div>
+      <code>backgroundBasic</code>
+    </div>
+    <div class="col cols6 lastCol">
+      <div class="docSwatch backgroundInverse"></div>
+      <code>backgroundInverse</code>
+    </div>
+</div>
+*/
+
+.backgroundBasic {
+  background-color: white;
+}
+
+.backgroundLowlight {
+  background-color: #f9f9f9;
+}
+
+.backgroundHighlight {
+  background-color: #5eab1f;
+}
+
+.backgroundInverse {
+  background-color: #222222;
+}

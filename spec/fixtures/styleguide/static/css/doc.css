@@ -1,0 +1,132 @@
+.container {
+  max-width: 1128px;
+  width: auto;
+  margin: 0 auto;
+}
+
+.content {
+  margin-top: 5px;
+}
+
+
+.main > h1 {
+  margin-top: 30px;
+}
+
+.main > h1:first-child {
+  margin-top: 0;
+}
+
+footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+
+.componentMenu {
+  max-height: 535px;
+  width: 175px;
+  overflow-y: auto;
+}
+
+blockquote:before {
+  content: "Design Note:";
+  font-weight: bold;
+}
+
+blockquote {
+  border: 1px solid #eee;
+  border-radius: 4px;
+  font-family: "Comic Sans MS";
+  font-size:16px;
+  margin: 10px 0;
+  padding: 5px;
+
+}
+
+
+code {
+  padding: 2px 4px;
+  color: #d14;
+  white-space: nowrap;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+div.codeExample, div.jsExample {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+div.jsExample {
+  border-top: 0px;
+}
+
+div.codeExample:before, div.jsExample:before {
+  font-family: "OpenSans", sans-serif;
+  color: #222;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 0;
+  position: relative;
+  padding: 2px;
+  display: block;
+}
+
+div.codeExample:before {
+  content: "Example";
+  background-color: #f9f9f9;
+  width: 60px;
+  top: -1px;
+  left: -1px;
+}
+
+div.jsExample:before {
+  content: "JS Example";
+  background-color: #fff;
+  width: 80px;
+  top: -11px;
+  left: -11px;
+}
+
+div.codeBlock, div.exampleOutput {
+  padding: 10px;
+}
+
+div.codeBlock {
+  background-color: #f9f9f9;
+  border-top: 1px solid #ccc;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.docSwatch {
+  min-height: 218.21px;
+  border: 1px solid #ccc;
+  padding: 10px 0 0 10px;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.codeExample .line > div:after {
+content: attr(class);
+display: block;
+min-height: 40px;
+line-height: 40px;
+background-color: #EEE;
+text-align: center;
+border-radius: 3px;
+font-size: 12px;
+}
+
+table, table tr, table td, table th {
+  padding: 7px;
+  border: 1px solid #ccc;
+}
+
+table th {
+  font-weight: bold;
+}
