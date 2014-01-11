@@ -10,14 +10,11 @@ module Hologram
         if args[0] == 'init' then
 
           if File.exists?("hologram_config.yml")
-            puts "Cowardly refusing to overwrite existing hologram_config.yml".yellow
+            DisplayMessage.warning("Cowardly refusing to overwrite existing hologram_config.yml")
           else
             FileUtils.cp_r INIT_TEMPLATE_FILES, Dir.pwd
-            puts "Created the following files and directories:"
-            puts "  hologram_config.yml"
-            puts "  doc_assets/"
-            puts "  doc_assets/_header.html"
-            puts "  doc_assets/_footer.html"
+            new_files = ["hologram_config.yml", "doc_assets/", "doc_assets/_header.html", "doc_assets/_footer.html"]
+            DisplayMessage.created(new_files)
           end
         else
           begin
@@ -39,7 +36,7 @@ module Hologram
             build_docs
 
             Dir.chdir(current_path)
-            puts "Build completed. (-: ".green
+            DisplayMessage.success("Build completed. (-: ")
           rescue RuntimeError => e
             DisplayMessage.error("#{e}")
           end
@@ -160,7 +157,7 @@ module Hologram
         begin
           load config['custom_markdown']
           renderer_class = File.basename(config['custom_markdown'], '.rb').split(/_/).map(&:capitalize).join
-          puts "Custom markdown renderer #{renderer_class} loaded."
+          DisplayMessage.info("Custom markdown renderer #{renderer_class} loaded.")
           renderer = Redcarpet::Markdown.new(Module.const_get(renderer_class), { :fenced_code_blocks => true, :tables => true })
         rescue LoadError => e
           DisplayMessage.error("Could not load #{config['custom_markdown']}.")

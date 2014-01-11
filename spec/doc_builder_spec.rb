@@ -3,21 +3,11 @@ require 'spec_helper'
 describe Hologram::DocBuilder do
   subject(:builder) { Hologram::DocBuilder.new }
 
-  # Rails Kernerl helper
-  def silence_stream(stream)
-    old_stream = stream.dup
-    stream.reopen(RbConfig::CONFIG['host_os'] =~ /mswin|mingw/ ? 'NUL:' : '/dev/null')
-    stream.sync = true
-    yield
-  ensure
-    stream.reopen(old_stream)
-  end
-
   context '#init' do
     around do |example|
-      silence_stream(STDOUT) do
-        example.run
-      end
+      Hologram::DisplayMessage.quiet!
+      example.run
+      Hologram::DisplayMessage.show!
     end
 
     context 'when passed an invalid config' do
