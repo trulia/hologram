@@ -96,7 +96,7 @@ module Hologram
         # be passed into the recursive call for adding children to the output
         if doc_block.category
           output_file = get_file_name(doc_block.category)
-          @categories[doc_block.category] = {:file_name => output_file}
+          @categories[doc_block.category] = output_file
         end
 
         if !@pages.has_key?(output_file)
