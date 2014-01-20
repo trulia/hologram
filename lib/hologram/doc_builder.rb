@@ -4,11 +4,9 @@ module Hologram
 
     def init(args)
       @pages = {}
-      @supported_extensions = ['.css', '.scss', '.less', '.sass', '.styl', '.js', '.md', '.markdown' ]
 
       begin
         if args[0] == 'init' then
-
           if File.exists?("hologram_config.yml")
             DisplayMessage.warning("Cowardly refusing to overwrite existing hologram_config.yml")
           else
@@ -63,7 +61,8 @@ module Hologram
         DisplayMessage.warning("Could not find documentation assets at #{config['documentation_assets']}")
       end
 
-      @pages = DocParser.new(input_directory, config['index']).parse
+      doc_parser = DocParser.new(input_directory, config['index'])
+      @pages, @categories = doc_parser.parse
 
       if config['index'] && !@pages.has_key?(config['index'] + '.html')
         DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{config['index']}.")
@@ -120,13 +119,14 @@ module Hologram
         DisplayMessage.warning("No _footer.html found in documentation assets. This might be okay to ignore...")
       end
 
+      tpl_vars = TemplateVariables.new({:categories => @categories})
       #generate html from markdown
       @pages.each do |file_name, page|
         fh = get_fh(output_directory, file_name)
 
         title = page[:blocks].empty? ? "" : page[:blocks][0][:category]
 
-        tpl_vars = TemplateVariables.new(title, file_name, page[:blocks])
+        tpl_vars.set_args({:title =>title, :file_name => file_name, :blocks => page[:blocks]})
 
         # generate doc nav html
         unless header_erb.nil?
