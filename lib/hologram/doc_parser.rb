@@ -7,6 +7,7 @@ module Hologram
       @source_path = source_path
       @index_name = index_name
       @pages = {}
+      @categories = {}
     end
 
     def parse
@@ -24,8 +25,9 @@ module Hologram
       # proper structure.
       doc_block_collection.create_nested_structure
 
+
       # hand off our properly nested collection to the output generator
-      build_pages_from_doc_blocks(doc_block_collection.doc_blocks)
+      build_output(doc_block_collection.doc_blocks)
 
       # if we have an index category defined in our config copy that
       # page to index.html
@@ -36,7 +38,7 @@ module Hologram
         end
       end
 
-      pages
+      return @pages, @categories
     end
 
     private
@@ -86,13 +88,16 @@ module Hologram
       end
     end
 
-    def build_pages_from_doc_blocks(doc_blocks, output_file = nil, depth = 1)
+    def build_output(doc_blocks, output_file = nil, depth = 1)
       doc_blocks.sort.map do |key, doc_block|
 
         # if the doc_block has a category set then use that, this will be
         # true of all top level doc_blocks. The output file they set will then
         # be passed into the recursive call for adding children to the output
-        output_file = get_file_name(doc_block.category) if doc_block.category
+        if doc_block.category
+          output_file = get_file_name(doc_block.category)
+          @categories[doc_block.category] = output_file
+        end
 
         if !@pages.has_key?(output_file)
           @pages[output_file] = {:md => "", :blocks => []}
@@ -103,7 +108,7 @@ module Hologram
 
         if doc_block.children
           depth += 1
-          build_pages_from_doc_blocks(doc_block.children, output_file, depth)
+          build_output(doc_block.children, output_file, depth)
           depth -= 1
         end
       end
