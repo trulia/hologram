@@ -24,17 +24,22 @@ module Hologram
               DisplayMessage.error("Could not load config file, try 'hologram init' to get started")
             end
 
-            validate_config
+            if @config.is_a?(Hash)
 
-            current_path = Dir.pwd
-            base_path = Pathname.new(config_file)
-            Dir.chdir(base_path.dirname)
+              validate_config
 
-            # the real work happens here.
-            build_docs
+              current_path = Dir.pwd
+              base_path = Pathname.new(config_file)
+              Dir.chdir(base_path.dirname)
 
-            Dir.chdir(current_path)
-            DisplayMessage.success("Build completed. (-: ")
+              # the real work happens here.
+              build_docs
+
+              Dir.chdir(current_path)
+              DisplayMessage.success("Build completed. (-: ")
+           else
+              DisplayMessage.error("Could not read config file, is it valid yaml? ")
+           end
           rescue RuntimeError => e
             DisplayMessage.error("#{e}")
           end
