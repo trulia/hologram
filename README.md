@@ -1,4 +1,4 @@
-# Hologram
+# Hologram [![Build Status](https://travis-ci.org/trulia/hologram.png)](https://travis-ci.org/trulia/hologram)
 
 Hologram is a Ruby gem that parses comments in your CSS and helps you turn them into a beautiful style guide.
 
