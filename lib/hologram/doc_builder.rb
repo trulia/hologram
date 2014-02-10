@@ -20,11 +20,13 @@ module Hologram
 
             begin
               @config = YAML::load_file(config_file)
+            rescue SyntaxError => e
+              DisplayMessage.error("Could not load config file, check the syntax or try 'hologram init' to get started")
             rescue
               DisplayMessage.error("Could not load config file, try 'hologram init' to get started")
             end
 
-            if @config.is_a?(Hash)
+            if @config.is_a? Hash
 
               validate_config
 
@@ -37,9 +39,9 @@ module Hologram
 
               Dir.chdir(current_path)
               DisplayMessage.success("Build completed. (-: ")
-           else
-              DisplayMessage.error("Could not read config file, is it valid yaml? ")
-           end
+            else
+              DisplayMessage.error("Could not read config file, check the syntax or try 'hologram init' to get started")
+            end
           rescue RuntimeError => e
             DisplayMessage.error("#{e}")
           end
