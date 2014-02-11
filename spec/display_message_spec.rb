@@ -62,7 +62,7 @@ describe Hologram::DisplayMessage do
     end
 
     it 'displays an error in red' do
-      expect(display).to receive(:puts).with("\e[32m(╯°□°）╯\e[0m\e[31m︵ ┻━┻ \e[0m\e[31m Build not complete.\e[0m")
+      expect(display).to receive(:puts).with("\e[32m(\u{256F}\u{00B0}\u{25A1}\u{00B0}\u{FF09}\u{256F}\e[0m\e[31m\u{FE35} \u{253B}\u{2501}\u{253B} \e[0m\e[31m Build not complete.\e[0m")
       expect(display).to receive(:puts).with(" foo")
 
       begin
