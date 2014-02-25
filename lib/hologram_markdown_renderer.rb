@@ -18,7 +18,8 @@ class HologramMarkdownRenderer < Redcarpet::Render::HTML
     case language
       when 'haml_example'
         safe_require('haml', language)
-        return Haml::Engine.new(code.strip).render(Object.new, {})
+        scope = defined?(HologramViewScope) ? HologramViewScope.new : Object.new
+        return Haml::Engine.new(code.strip).render(scope, {})
       else
         code
     end
