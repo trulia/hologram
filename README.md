@@ -1,4 +1,4 @@
-# Hologram
+# Hologram [![Build Status](https://travis-ci.org/trulia/hologram.png)](https://travis-ci.org/trulia/hologram)
 
 Hologram is a Ruby gem that parses comments in your CSS and helps you turn them into a beautiful style guide.
 
@@ -69,10 +69,15 @@ Your config file needs to contain the following key/value pairs
   hologram generates.
 
   Hologram treats `_header.html` and `_footer.html`
-  as ERB files for each page that is generated you can access the
-  `title`, `file_name`, and `blocks`.  `blocks` is a list of each
-  documenation block on the page. Each item in the list has a `title`,
-  `name`, `category`, and optionally a `parent`. This is useful for, say, building a menu that lists each component.
+  as ERB files for each page that is generated. You can access the
+  `title`, `file_name`, `blocks`, and `categories`.
+
+  `blocks` is a list of each documenation block on the page. Each item in the list has a `title`,
+  `name`, `category`, and optionally a `parent`. This is useful for,
+  say, building a menu that lists each component.
+
+  `categories` is a list of all the categories found in the documentation
+
   **Nota Bene:** Filenames that begin with underscores will not be copied into the destination folder.
 
 
@@ -110,7 +115,7 @@ Your config file needs to contain the following key/value pairs
 
 ###Documenting your styles
 
-Hologram will scan your .css|.scss|.sass|.less|.styl files within your **source** directory.
+Hologram will scan for stylesheets (.css, .scss, .sass, .less, or .styl) within the **source** directory defined in you configuraiton.
 It will look for comments that match the following:
 
     /*doc
@@ -139,10 +144,10 @@ The first section of the comment is a yaml block that defines certain
 aspects of the this documentation block (more on that in the next section). The second part is simply
 markdown as defined by Redcarpet.
 
-Notice the use of `html_example`. This tells the markdown renderer that it should treat the example as...well...html. If your project uses [haml](http://haml.info/) you can also use `haml_example`. In that case the output will be html for the example and the code block will show the haml used to generate the html. For components that require [javascript](https://www.destroyallsoftware.com/talks/wat) you can use `js_example` for your js. In addtion to outputing the js in a `<code>` block it will also wrap it in a `<script>` tag for execution.
+Notice the use of `html_example`. This tells the markdown renderer that it should treat the example as...well...html. If your project uses [haml](http://haml.info/) you can also use `haml_example`. In that case the output will be html for the example and the code block will show the haml used to generate the html. For components that require [javascript](https://www.destroyallsoftware.com/talks/wat) you can use `js_example` for your javascript. In addition to outputing the javascript in a `<code>` block it will also wrap it in a `<script>` tag for execution.
 
 ####Document YAML section
-The yaml in the doc block can have any key value pair you deem important
+The yaml in the documention block can have any key value pair you deem important
 but it specifically looks for the following keys:
 
 * **title**: The title to display in the documents

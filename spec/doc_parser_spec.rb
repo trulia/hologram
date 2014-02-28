@@ -35,10 +35,14 @@ eos
 
   context '#parse' do
     let(:result) { parser.parse }
+    let(:pages) { result[0] }
+    let(:categories) { result[1] }
 
-    it 'builds and returns a hash of pages' do
-      expect(result).to be_a Hash
+    it 'builds and returns a hash of pages and a hash of categories' do
+      expect(pages).to be_a Hash
+      expect(categories).to be_a Hash
     end
+
 
     context 'when an index page is specified' do
       subject(:parser) { Hologram::DocParser.new('spec/fixtures/source', 'foo') }
@@ -50,7 +54,7 @@ eos
       end
 
       it 'uses that page as the index' do
-        expect(result['index.html'][:md]).to include 'Markdown stuff'
+        expect(pages['index.html'][:md]).to include 'Markdown stuff'
       end
     end
 
@@ -62,7 +66,7 @@ eos
       end
 
       it 'takes the category in a collection and treats them as the page names' do
-        expect(result.keys).to include 'foo.html'
+        expect(pages.keys).to include 'foo.html'
       end
     end
 
@@ -78,11 +82,11 @@ eos
       end
 
       it 'appends the child doc to the category page' do
-        expect(result['base_css.html'][:md]).to include 'Some other style'
+        expect(pages['base_css.html'][:md]).to include 'Some other style'
       end
 
       it 'assigns the child doc a deeper header' do
-        expect(result['base_css.html'][:md]).to include '<h2 id="otherStyle">Some other style</h2>'
+        expect(pages['base_css.html'][:md]).to include '<h2 id="otherStyle">Some other style</h2>'
       end
     end
   end
