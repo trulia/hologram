@@ -25,5 +25,5 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Hologram
-  VERSION = "1.0.0"
+  VERSION = "1.0.1"
 end
