@@ -52,6 +52,13 @@ module Hologram
 
     private
     def build_docs
+      # Read and require the Ruby dependencies
+      if config['ruby_dependencies']
+        config['ruby_dependencies'].each do |file|
+          require file
+        end
+      end
+
       # Create the output directory if it doesn't exist
       FileUtils.mkdir_p(config['destination']) unless File.directory?(config['destination'])
 
