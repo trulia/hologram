@@ -18,10 +18,14 @@ class HologramMarkdownRenderer < Redcarpet::Render::HTML
     case language
       when 'haml_example'
         safe_require('haml', language)
-        return Haml::Engine.new(code.strip).render(Object.new, {})
+        return Haml::Engine.new(code.strip).render(template_rendering_scope, {})
       else
         code
     end
+  end
+
+  def template_rendering_scope
+    Object.new
   end
 
   def get_lexer(language)
