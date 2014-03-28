@@ -1,10 +1,25 @@
 module Hologram
   class DocumentBlock
-    attr_accessor :name, :parent, :children, :title, :category, :markdown, :config, :heading
+    COMMENT_REGEX = /^\s*---\s(.*?)\s---$/m
+
+    attr_accessor :name, :parent, :children, :title, :category, :markdown, :config, :heading, :errors
 
     def initialize(config = nil, markdown = nil)
       @children = {}
+      @errors = []
       set_members(config, markdown) if config and markdown
+    end
+
+    def self.from_comment(comment)
+      comment_match = COMMENT_REGEX.match(comment)
+      return if !comment_match
+
+      markdown = comment.sub(comment_match[0], '')
+      config = YAML::load(comment_match[1])
+
+      self.new(config, markdown)
+    rescue ArgumentError, Psych::SyntaxError
+      raise CommentLoadError, "Could not parse comment:\n#{comment}"
     end
 
     def set_members(config, markdown)
@@ -24,7 +39,9 @@ module Hologram
     end
 
     def is_valid?
-      !!(@name && @markdown)
+      errors << 'Missing required name config value' if !name
+      errors << 'Missing required markdown' if !markdown
+      errors.empty?
     end
 
     # sets the header tag based on how deep your nesting is

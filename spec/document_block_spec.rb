@@ -8,6 +8,56 @@ describe Hologram::DocumentBlock do
   let(:markdown){ 'blah' }
   let(:doc_block){ subject.class.new(config, markdown) }
 
+  context '.from_comment' do
+    let(:doc) do
+<<-eos
+/*doc
+---
+title: Some other style
+name: otherStyle
+category: Foo
+---
+Markdown stuff
+*/
+eos
+    end
+
+    let(:bad_doc) do
+<<-eos
+/*doc
+---
+: :
+---
+Markdown stuff
+*/
+eos
+    end
+
+    it 'initializes a new document block from a matching comment' do
+      doc_block = Hologram::DocumentBlock.from_comment(doc)
+      expect(doc_block).to be_a Hologram::DocumentBlock
+    end
+
+    it 'raises CommentLoadError when the yaml section is bad' do
+      expect{
+        Hologram::DocumentBlock.from_comment(bad_doc)
+      }.to raise_error Hologram::CommentLoadError
+    end
+
+    it 'returns nothing if its not a valid doc block' do
+      doc_block = Hologram::DocumentBlock.from_comment('foo')
+      expect(doc_block).to be_nil
+    end
+
+    it 'sets up the usual attrs using the YAML and markdown text' do
+      doc_block = Hologram::DocumentBlock.from_comment(doc)
+      expect(doc_block.name).to eql 'otherStyle'
+      expect(doc_block.category).to eql 'Foo'
+      expect(doc_block.title).to eql 'Some other style'
+      expect(doc_block.markdown).to eql "/*doc\n\nMarkdown stuff\n*/\n"
+    end
+  end
+
   context '#set_members' do
     it 'sets accessors for the the block config' do
       config.each do |k, v|
@@ -41,6 +91,11 @@ describe Hologram::DocumentBlock do
       it 'returns false' do
         expect(invalid_doc_block.is_valid?).to eql false
       end
+
+      it 'populates errors' do
+        invalid_doc_block.is_valid?
+        expect(invalid_doc_block.errors).to include('Missing required name config value')
+      end
     end
 
     context 'when markdown is not present' do
@@ -50,6 +105,11 @@ describe Hologram::DocumentBlock do
 
       it 'returns false' do
         expect(invalid_doc_block.is_valid?).to eql false
+      end
+
+      it 'populates errors' do
+        invalid_doc_block.is_valid?
+        expect(invalid_doc_block.errors).to include('Missing required markdown')
       end
     end
   end
