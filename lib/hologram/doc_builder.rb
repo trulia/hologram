@@ -68,8 +68,12 @@ module Hologram
         DisplayMessage.warning("Could not find documentation assets at #{config['documentation_assets']}")
       end
 
-      doc_parser = DocParser.new(input_directory, config['index'])
-      @pages, @categories = doc_parser.parse
+      begin
+        doc_parser = DocParser.new(input_directory, config['index'])
+        @pages, @categories = doc_parser.parse
+      rescue CommentLoadError => e
+        DisplayMessage.error(e.message)
+      end
 
       if config['index'] && !@pages.has_key?(config['index'] + '.html')
         DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{config['index']}.")

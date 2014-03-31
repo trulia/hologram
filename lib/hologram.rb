@@ -12,6 +12,7 @@ require 'hologram/doc_parser'
 require 'hologram/doc_builder'
 require 'hologram/template_variables'
 require 'hologram/display_message'
+require 'hologram/errors'
 
 require 'hologram_markdown_renderer'
 
