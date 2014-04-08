@@ -1,5 +1,12 @@
 #!/usr/bin/env ruby
 require 'hologram'
 
-builder = Hologram::DocBuilder.new
-builder.init(ARGV)
+begin
+  if ARGV[0] == 'init'
+    Hologram::DocBuilder.setup_dir
+  else
+    Hologram::DocBuilder.from_yaml(ARGV[0]).build
+  end
+rescue RuntimeError => e
+  Hologram::DisplayMessage.error("#{e}")
+end
