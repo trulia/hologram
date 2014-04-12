@@ -2,53 +2,6 @@ module Hologram
   class DocBuilder
     attr_accessor :source, :destination, :documentation_assets, :dependencies, :index, :base_path, :renderer, :doc_blocks, :pages
 
-    def init(args)
-      @pages = {}
-
-      begin
-        if args[0] == 'init' then
-          if File.exists?("hologram_config.yml")
-            DisplayMessage.warning("Cowardly refusing to overwrite existing hologram_config.yml")
-          else
-            FileUtils.cp_r INIT_TEMPLATE_FILES, Dir.pwd
-            new_files = ["hologram_config.yml", "doc_assets/", "doc_assets/_header.html", "doc_assets/_footer.html"]
-            DisplayMessage.created(new_files)
-          end
-        else
-          begin
-            config_file = args[0] ? args[0] : 'hologram_config.yml'
-
-            begin
-              @config = YAML::load_file(config_file)
-            rescue SyntaxError => e
-              DisplayMessage.error("Could not load config file, check the syntax or try 'hologram init' to get started")
-            rescue
-              DisplayMessage.error("Could not load config file, try 'hologram init' to get started")
-            end
-
-            if @config.is_a? Hash
-
-              validate_config
-
-              current_path = Dir.pwd
-              base_path = Pathname.new(config_file)
-              Dir.chdir(base_path.dirname)
-
-              # the real work happens here.
-              build_docs
-
-              Dir.chdir(current_path)
-              DisplayMessage.success("Build completed. (-: ")
-            else
-              DisplayMessage.error("Could not read config file, check the syntax or try 'hologram init' to get started")
-            end
-          rescue RuntimeError => e
-            DisplayMessage.error("#{e}")
-          end
-        end
-      end
-    end
-
     def self.from_yaml(yaml_file)
       config = YAML::load_file(yaml_file)
       raise SyntaxError if !config.is_a? Hash
