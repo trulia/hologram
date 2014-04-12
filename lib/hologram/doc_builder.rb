@@ -1,7 +1,7 @@
 module Hologram
   class DocBuilder
     attr_accessor :source, :destination, :documentation_assets, :dependencies, :index, :base_path, :renderer, :doc_blocks, :pages
-    attr :doc_assets, :output_directory, :input_directory
+    attr :doc_assets, :output_directory, :input_directory, :header_erb, :footer_erb
 
     def self.from_yaml(yaml_file)
       config = YAML::load_file(yaml_file)
@@ -143,26 +143,7 @@ module Hologram
     end
 
     def write_docs(output_directory, doc_assets)
-      # load the markdown renderer we are going to use
-
-      if File.exists?("#{doc_assets}/_header.html")
-        header_erb = ERB.new(File.read("#{doc_assets}/_header.html"))
-      elsif File.exists?("#{doc_assets}/header.html")
-        header_erb = ERB.new(File.read("#{doc_assets}/header.html"))
-      else
-        header_erb = nil
-        DisplayMessage.warning("No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages.")
-      end
-
-      if File.exists?("#{doc_assets}/_footer.html")
-        footer_erb = ERB.new(File.read("#{doc_assets}/_footer.html"))
-      elsif File.exists?("#{doc_assets}/footer.html")
-        footer_erb = ERB.new(File.read("#{doc_assets}/footer.html"))
-      else
-        footer_erb = nil
-        DisplayMessage.warning("No _footer.html found in documentation assets. This might be okay to ignore...")
-      end
-
+      setup_header_footer
       tpl_vars = TemplateVariables.new({:categories => @categories})
       #generate html from markdown
       @pages.each do |file_name, page|
@@ -190,6 +171,28 @@ module Hologram
         end
 
         fh.close()
+      end
+    end
+
+    def setup_header_footer
+      # load the markdown renderer we are going to use
+
+      if File.exists?("#{doc_assets}/_header.html")
+        @header_erb = ERB.new(File.read("#{doc_assets}/_header.html"))
+      elsif File.exists?("#{doc_assets}/header.html")
+        @header_erb = ERB.new(File.read("#{doc_assets}/header.html"))
+      else
+        @header_erb = nil
+        DisplayMessage.warning("No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages.")
+      end
+
+      if File.exists?("#{doc_assets}/_footer.html")
+        @footer_erb = ERB.new(File.read("#{doc_assets}/_footer.html"))
+      elsif File.exists?("#{doc_assets}/footer.html")
+        @footer_erb = ERB.new(File.read("#{doc_assets}/footer.html"))
+      else
+        @footer_erb = nil
+        DisplayMessage.warning("No _footer.html found in documentation assets. This might be okay to ignore...")
       end
     end
 
