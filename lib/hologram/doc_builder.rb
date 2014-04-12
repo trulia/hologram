@@ -101,21 +101,19 @@ module Hologram
 
     def build_docs
       setup_paths
-      begin
-        doc_parser = DocParser.new(input_directory, index)
-        @pages, @categories = doc_parser.parse
-      rescue CommentLoadError => e
-        DisplayMessage.error(e.message)
-      end
+      doc_parser = DocParser.new(input_directory, index)
+      @pages, @categories = doc_parser.parse
 
       if index && !@pages.has_key?(index + '.html')
         DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{config['index']}.")
       end
 
       write_docs(output_directory, doc_assets)
-
       copy_dependencies if dependencies
       copy_assets if doc_assets
+
+    rescue CommentLoadError => e
+      DisplayMessage.error(e.message)
     end
 
     def copy_assets
@@ -148,30 +146,20 @@ module Hologram
       #generate html from markdown
       @pages.each do |file_name, page|
         fh = get_fh(output_directory, file_name)
-
         title = page[:blocks].empty? ? "" : page[:blocks][0][:category]
-
         tpl_vars.set_args({:title =>title, :file_name => file_name, :blocks => page[:blocks]})
-
+        binding = tpl_vars.get_binding
         # generate doc nav html
-        unless header_erb.nil?
-          fh.write(header_erb.result(tpl_vars.get_binding))
-        end
 
-        # write the docs
-        begin
-          fh.write(renderer.render(page[:md]))
-        rescue Exception => e
-          DisplayMessage.error(e.message)
-        end
-
-        # write the footer
-        unless footer_erb.nil?
-          fh.write(footer_erb.result(tpl_vars.get_binding))
-        end
+        fh.write(header_erb.result(binding)) if header_erb
+        fh.write(renderer.render(page[:md]))
+        fh.write(footer_erb.result(binding)) if footer_erb
 
         fh.close()
       end
+
+    rescue Exception => e
+      DisplayMessage.error(e.message)
     end
 
     def setup_header_footer
@@ -197,7 +185,7 @@ module Hologram
     end
 
     def get_file_name(str)
-      str = str.gsub(' ', '_').downcase + '.html'
+      str.gsub(' ', '_').downcase + '.html'
     end
 
     def get_fh(output_directory, output_file)
