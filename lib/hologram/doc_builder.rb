@@ -114,21 +114,7 @@ module Hologram
 
       write_docs(output_directory, doc_assets)
 
-      # Copy over dependencies
-      if dependencies
-        dependencies.each do |dir|
-          begin
-            dirpath  = Pathname.new(dir).realpath
-            if File.directory?("#{dir}")
-              `rm -rf #{output_directory}/#{dirpath.basename}`
-              `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
-            end
-          rescue
-            DisplayMessage.warning("Could not copy dependency: #{dir}")
-          end
-        end
-      end
-
+      copy_dependencies if dependencies
       copy_assets if doc_assets
     end
 
@@ -139,6 +125,20 @@ module Hologram
         next if item == '.' or item == '..' or item.start_with?('_')
         `rm -rf #{output_directory}/#{item}`
         `cp -R #{doc_assets}/#{item} #{output_directory}/#{item}`
+      end
+    end
+
+    def copy_dependencies
+      dependencies.each do |dir|
+        begin
+          dirpath  = Pathname.new(dir).realpath
+          if File.directory?("#{dir}")
+            `rm -rf #{output_directory}/#{dirpath.basename}`
+            `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
+          end
+        rescue
+          DisplayMessage.warning("Could not copy dependency: #{dir}")
+        end
       end
     end
 
