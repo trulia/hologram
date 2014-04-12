@@ -79,6 +79,8 @@ module Hologram
       # Create the output directory if it doesn't exist
       FileUtils.mkdir_p(destination) unless File.directory?(destination)
       # the real work happens here.
+      setup_paths
+      setup_header_footer
       build_docs
       Dir.chdir(current_path)
       DisplayMessage.success("Build completed. (-: ")
@@ -99,7 +101,6 @@ module Hologram
     end
 
     def build_docs
-      setup_paths
       doc_parser = DocParser.new(input_dir, index)
       @pages, @categories = doc_parser.parse
 
@@ -140,7 +141,6 @@ module Hologram
     end
 
     def write_docs(output_dir, doc_assets_dir)
-      setup_header_footer
       tpl_vars = TemplateVariables.new({:categories => @categories})
       #generate html from markdown
       @pages.each do |file_name, page|
