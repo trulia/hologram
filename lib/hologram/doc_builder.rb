@@ -1,6 +1,7 @@
 module Hologram
   class DocBuilder
     attr_accessor :source, :destination, :documentation_assets, :dependencies, :index, :base_path, :renderer, :doc_blocks, :pages
+    attr :doc_assets, :output_directory
 
     def self.from_yaml(yaml_file)
       config = YAML::load_file(yaml_file)
@@ -93,8 +94,8 @@ module Hologram
         DisplayMessage.error("Can not read source directory (#{source.inspect}), does it exist?")
       end
 
-      output_directory = Pathname.new(destination).realpath
-      doc_assets       = Pathname.new(documentation_assets).realpath unless !File.directory?(documentation_assets)
+      @output_directory = Pathname.new(destination).realpath
+      @doc_assets       = Pathname.new(documentation_assets).realpath unless !File.directory?(documentation_assets)
 
       if doc_assets.nil?
         DisplayMessage.warning("Could not find documentation assets at #{documentation_assets}")
@@ -128,17 +129,18 @@ module Hologram
         end
       end
 
-      if !doc_assets.nil?
-        Dir.foreach(doc_assets) do |item|
-         # ignore . and .. directories and files that start with
-         # underscore
-         next if item == '.' or item == '..' or item.start_with?('_')
-         `rm -rf #{output_directory}/#{item}`
-         `cp -R #{doc_assets}/#{item} #{output_directory}/#{item}`
-        end
-      end
+      copy_assets if doc_assets
     end
 
+    def copy_assets
+      Dir.foreach(doc_assets) do |item|
+        # ignore . and .. directories and files that start with
+        # underscore
+        next if item == '.' or item == '..' or item.start_with?('_')
+        `rm -rf #{output_directory}/#{item}`
+        `cp -R #{doc_assets}/#{item} #{output_directory}/#{item}`
+      end
+    end
 
     def write_docs(output_directory, doc_assets)
       # load the markdown renderer we are going to use
