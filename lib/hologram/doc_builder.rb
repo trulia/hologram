@@ -1,7 +1,7 @@
 module Hologram
   class DocBuilder
     attr_accessor :source, :destination, :documentation_assets, :dependencies, :index, :base_path, :renderer, :doc_blocks, :pages
-    attr :doc_assets, :output_directory, :input_directory, :header_erb, :footer_erb
+    attr :doc_assets_dir, :output_dir, :input_dir, :header_erb, :footer_erb
 
     def self.from_yaml(yaml_file)
       config = YAML::load_file(yaml_file)
@@ -76,6 +76,8 @@ module Hologram
     def build
       current_path = Dir.pwd
       Dir.chdir(base_path.dirname)
+      # Create the output directory if it doesn't exist
+      FileUtils.mkdir_p(destination) unless File.directory?(destination)
       # the real work happens here.
       build_docs
       Dir.chdir(current_path)
@@ -85,14 +87,11 @@ module Hologram
     private
 
     def setup_paths
-      # Create the output directory if it doesn't exist
-      FileUtils.mkdir_p(destination) unless File.directory?(destination)
+      @input_dir = Pathname.new(source).realpath
+      @output_dir = Pathname.new(destination).realpath
+      @doc_assets_dir = Pathname.new(documentation_assets).realpath if File.directory?(documentation_assets)
 
-      @input_directory  = Pathname.new(source).realpath
-      @output_directory = Pathname.new(destination).realpath
-      @doc_assets       = Pathname.new(documentation_assets).realpath unless !File.directory?(documentation_assets)
-
-      if doc_assets.nil?
+      if doc_assets_dir.nil?
         DisplayMessage.warning("Could not find documentation assets at #{documentation_assets}")
       end
     rescue
@@ -101,28 +100,28 @@ module Hologram
 
     def build_docs
       setup_paths
-      doc_parser = DocParser.new(input_directory, index)
+      doc_parser = DocParser.new(input_dir, index)
       @pages, @categories = doc_parser.parse
 
       if index && !@pages.has_key?(index + '.html')
         DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{config['index']}.")
       end
 
-      write_docs(output_directory, doc_assets)
+      write_docs(output_dir, doc_assets_dir)
       copy_dependencies if dependencies
-      copy_assets if doc_assets
+      copy_assets if doc_assets_dir
 
     rescue CommentLoadError => e
       DisplayMessage.error(e.message)
     end
 
     def copy_assets
-      Dir.foreach(doc_assets) do |item|
+      Dir.foreach(doc_assets_dir) do |item|
         # ignore . and .. directories and files that start with
         # underscore
         next if item == '.' or item == '..' or item.start_with?('_')
-        `rm -rf #{output_directory}/#{item}`
-        `cp -R #{doc_assets}/#{item} #{output_directory}/#{item}`
+        `rm -rf #{output_dir}/#{item}`
+        `cp -R #{doc_assets_dir}/#{item} #{output_dir}/#{item}`
       end
     end
 
@@ -131,8 +130,8 @@ module Hologram
         begin
           dirpath  = Pathname.new(dir).realpath
           if File.directory?("#{dir}")
-            `rm -rf #{output_directory}/#{dirpath.basename}`
-            `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
+            `rm -rf #{output_dir}/#{dirpath.basename}`
+            `cp -R #{dirpath} #{output_dir}/#{dirpath.basename}`
           end
         rescue
           DisplayMessage.warning("Could not copy dependency: #{dir}")
@@ -140,12 +139,12 @@ module Hologram
       end
     end
 
-    def write_docs(output_directory, doc_assets)
+    def write_docs(output_dir, doc_assets_dir)
       setup_header_footer
       tpl_vars = TemplateVariables.new({:categories => @categories})
       #generate html from markdown
       @pages.each do |file_name, page|
-        fh = get_fh(output_directory, file_name)
+        fh = get_fh(output_dir, file_name)
         title = page[:blocks].empty? ? "" : page[:blocks][0][:category]
         tpl_vars.set_args({:title =>title, :file_name => file_name, :blocks => page[:blocks]})
         binding = tpl_vars.get_binding
@@ -165,19 +164,19 @@ module Hologram
     def setup_header_footer
       # load the markdown renderer we are going to use
 
-      if File.exists?("#{doc_assets}/_header.html")
-        @header_erb = ERB.new(File.read("#{doc_assets}/_header.html"))
-      elsif File.exists?("#{doc_assets}/header.html")
-        @header_erb = ERB.new(File.read("#{doc_assets}/header.html"))
+      if File.exists?("#{doc_assets_dir}/_header.html")
+        @header_erb = ERB.new(File.read("#{doc_assets_dir}/_header.html"))
+      elsif File.exists?("#{doc_assets_dir}/header.html")
+        @header_erb = ERB.new(File.read("#{doc_assets_dir}/header.html"))
       else
         @header_erb = nil
         DisplayMessage.warning("No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages.")
       end
 
-      if File.exists?("#{doc_assets}/_footer.html")
-        @footer_erb = ERB.new(File.read("#{doc_assets}/_footer.html"))
-      elsif File.exists?("#{doc_assets}/footer.html")
-        @footer_erb = ERB.new(File.read("#{doc_assets}/footer.html"))
+      if File.exists?("#{doc_assets_dir}/_footer.html")
+        @footer_erb = ERB.new(File.read("#{doc_assets_dir}/_footer.html"))
+      elsif File.exists?("#{doc_assets_dir}/footer.html")
+        @footer_erb = ERB.new(File.read("#{doc_assets_dir}/footer.html"))
       else
         @footer_erb = nil
         DisplayMessage.warning("No _footer.html found in documentation assets. This might be okay to ignore...")
@@ -188,8 +187,8 @@ module Hologram
       str.gsub(' ', '_').downcase + '.html'
     end
 
-    def get_fh(output_directory, output_file)
-      File.open("#{output_directory}/#{output_file}", 'w')
+    def get_fh(output_dir, output_file)
+      File.open("#{output_dir}/#{output_file}", 'w')
     end
   end
 end
