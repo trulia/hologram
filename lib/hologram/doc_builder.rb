@@ -1,7 +1,7 @@
 module Hologram
   class DocBuilder
     attr_accessor :source, :destination, :documentation_assets, :dependencies, :index, :base_path, :renderer, :doc_blocks, :pages
-    attr :doc_assets, :output_directory
+    attr :doc_assets, :output_directory, :input_directory
 
     def self.from_yaml(yaml_file)
       config = YAML::load_file(yaml_file)
@@ -84,23 +84,23 @@ module Hologram
 
     private
 
-    def build_docs
+    def setup_paths
       # Create the output directory if it doesn't exist
       FileUtils.mkdir_p(destination) unless File.directory?(destination)
 
-      begin
-        input_directory  = Pathname.new(source).realpath
-      rescue
-        DisplayMessage.error("Can not read source directory (#{source.inspect}), does it exist?")
-      end
-
+      @input_directory  = Pathname.new(source).realpath
       @output_directory = Pathname.new(destination).realpath
       @doc_assets       = Pathname.new(documentation_assets).realpath unless !File.directory?(documentation_assets)
 
       if doc_assets.nil?
         DisplayMessage.warning("Could not find documentation assets at #{documentation_assets}")
       end
+    rescue
+      DisplayMessage.error("Can not read source directory (#{source.inspect}), does it exist?")
+    end
 
+    def build_docs
+      setup_paths
       begin
         doc_parser = DocParser.new(input_directory, index)
         @pages, @categories = doc_parser.parse
