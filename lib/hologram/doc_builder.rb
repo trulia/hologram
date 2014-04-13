@@ -13,10 +13,8 @@ module Hologram
         'renderer' => Utils.get_markdown_renderer(config['custom_markdown'])
       ))
 
-    rescue SyntaxError
-      DisplayMessage.error("Could not load config file, check the syntax or try 'hologram init' to get started")
-    rescue
-      DisplayMessage.error("Could not load config file, try 'hologram init' to get started")
+    rescue SyntaxError, ArgumentError, Psych::SyntaxError
+      raise SyntaxError, "Could not load config file, check the syntax or try 'hologram init' to get started"
     end
 
     def self.setup_dir
@@ -91,9 +89,6 @@ module Hologram
       write_docs(output_dir, doc_assets_dir)
       copy_dependencies if dependencies
       copy_assets if doc_assets_dir
-
-    rescue CommentLoadError => e
-      DisplayMessage.error(e.message)
     end
 
     def copy_assets
@@ -136,9 +131,6 @@ module Hologram
 
         fh.close()
       end
-
-    rescue Exception => e
-      DisplayMessage.error(e.message)
     end
 
     def setup_header_footer

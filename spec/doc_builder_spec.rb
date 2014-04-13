@@ -39,7 +39,7 @@ describe Hologram::DocBuilder do
       end
 
       it 'exits the process' do
-        expect { subject.from_yaml('bad_config.yml') }.to raise_error SystemExit
+        expect { subject.from_yaml('bad_config.yml') }.to raise_error SyntaxError
       end
     end
   end

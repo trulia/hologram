@@ -1,12 +1,6 @@
 #!/usr/bin/env ruby
 require 'hologram'
+require 'hologram/cli'
 
-begin
-  if ARGV[0] == 'init'
-    Hologram::DocBuilder.setup_dir
-  else
-    Hologram::DocBuilder.from_yaml(ARGV[0]).build
-  end
-rescue RuntimeError => e
-  Hologram::DisplayMessage.error("#{e}")
-end
+cli = Hologram::CLI.new(ARGV)
+cli.run
