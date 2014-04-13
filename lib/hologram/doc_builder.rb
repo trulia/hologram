@@ -28,17 +28,17 @@ module Hologram
       DisplayMessage.created(new_files)
     end
 
-    def initialize(config)
+    def initialize(options)
       @pages = {}
       @errors = []
-      @dependencies = config['dependencies']
-      @index = config['index']
-      @base_path = config['base_path']
-      @renderer = config['renderer']
+      @dependencies = options.fetch('dependencies', [])
+      @index = options['index']
+      @base_path = options.fetch('base_path', Dir.pwd)
+      @renderer = options.fetch('renderer', MarkdownRenderer)
+      @source = options['source']
+      @destination = options['destination']
+      @documentation_assets = options['documentation_assets']
 
-      self.source = config['source']
-      self.destination = config['destination']
-      self.documentation_assets = config['documentation_assets']
       setup_header_footer
     end
 
@@ -87,7 +87,7 @@ module Hologram
       end
 
       write_docs(output_dir, doc_assets_dir)
-      copy_dependencies if dependencies
+      copy_dependencies
       copy_assets if doc_assets_dir
     end
 
