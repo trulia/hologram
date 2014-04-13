@@ -14,8 +14,7 @@ require 'hologram/template_variables'
 require 'hologram/display_message'
 require 'hologram/errors'
 require 'hologram/utils'
-
-require 'hologram_markdown_renderer'
+require 'hologram/markdown_renderer'
 
 module Hologram
   INIT_TEMPLATE_PATH = File.expand_path('./template/', File.dirname(__FILE__)) + '/'

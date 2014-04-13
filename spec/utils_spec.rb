@@ -14,18 +14,18 @@ describe Hologram::Utils do
     end
 
     context 'by default' do
-      let(:markdown) { utils.get_markdown_renderer }
+      let(:renderer) { utils.get_markdown_renderer }
 
       it 'returns the standard hologram markdown renderer' do
-        markdown.renderer.should be_a HologramMarkdownRenderer
+        expect(renderer).to eql Hologram::MarkdownRenderer
       end
     end
 
     context 'when passed a valid custom renderer' do
-      let(:markdown) { utils.get_markdown_renderer('valid_renderer.rb') }
+      let(:renderer) { utils.get_markdown_renderer('valid_renderer.rb') }
 
       it 'returns the custom renderer' do
-        expect(markdown.renderer).to be_a ValidRenderer
+        expect(renderer).to eql ValidRenderer
       end
     end
 

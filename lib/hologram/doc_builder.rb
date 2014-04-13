@@ -116,6 +116,7 @@ module Hologram
     end
 
     def write_docs(output_dir, doc_assets_dir)
+      markdown = Redcarpet::Markdown.new(renderer, { :fenced_code_blocks => true, :tables => true })
       tpl_vars = TemplateVariables.new({:categories => @categories})
       #generate html from markdown
       @pages.each do |file_name, page|
@@ -126,7 +127,7 @@ module Hologram
         # generate doc nav html
 
         fh.write(header_erb.result(binding)) if header_erb
-        fh.write(renderer.render(page[:md]))
+        fh.write(markdown.render(page[:md]))
         fh.write(footer_erb.result(binding)) if footer_erb
 
         fh.close()
