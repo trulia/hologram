@@ -80,90 +80,61 @@ describe Hologram::DocBuilder do
     end
   end
 
-  context '.validate_config' do
-    let(:config) { { 'source' => 'foo', 'destination' => 'foo', 'documentation_assets' => 'foo' } }
+  context '#is_valid?' do
 
-    context 'when valid' do
-      it 'raises nothing' do
-        expect {
-          subject.validate_config(config)
-        }.to_not raise_error SystemExit
-      end
+    let(:config) do
+      {
+        'source' => 'spec/fixtures/source/components',
+        'documentation_assets' => 'spec/fixtures/source/templates',
+        'base_path' => 'spec/fixtures/source/'
+      }
     end
 
-    context 'when missing source' do
-      let(:invalid_config) { config.delete('source'); config }
-
-      it 'exits' do
-        expect {
-          subject.validate_config(invalid_config)
-        }.to raise_error SystemExit
-      end
-    end
-
-    context 'when missing documentation_asset' do
-      let(:invalid_config) { config.delete('documentation_assets'); config }
-
-      it 'exits' do
-        expect {
-          subject.validate_config(invalid_config)
-        }.to raise_error SystemExit
-      end
-    end
-
-    context 'when missing destination' do
-      let(:invalid_config) { config.delete('destination'); config }
-
-      it 'exits' do
-        expect {
-          subject.validate_config(invalid_config)
-        }.to raise_error SystemExit
-      end
-    end
-  end
-
-  context '.get_markdown_renderer' do
-    subject(:builder) { Hologram::DocBuilder }
+    let(:builder) { Hologram::DocBuilder.new(config) }
 
     around do |example|
-      current_dir = Dir.pwd
-      Dir.chdir('spec/fixtures/renderer')
-
-      example.run
-
-      Dir.chdir(current_dir)
-    end
-
-    context 'by default' do
-      let(:markdown) { builder.get_markdown_renderer }
-
-      it 'returns the standard hologram markdown renderer' do
-        markdown.renderer.should be_a HologramMarkdownRenderer
+      Dir.mktmpdir do |tmpdir|
+        config['destination'] = tmpdir
+        example.run
       end
     end
 
-    context 'when passed a valid custom renderer' do
-      let(:markdown) { builder.get_markdown_renderer('valid_renderer.rb') }
-
-      it 'returns the custom renderer' do
-        expect(markdown.renderer).to be_a ValidRenderer
+    context 'when config vars are present and directories exists' do
+      it 'returns true' do
+        expect(builder.is_valid?).to be_true
       end
     end
 
-    context 'when passed an invalid custom renderer' do
-      context 'expecting a class named as the upper camel cased version of the file name' do
-        it 'exits' do
-          expect {
-            builder.get_markdown_renderer('invalid_renderer.rb')
-          }.to raise_error SystemExit
+    ['source', 'destination', 'documentation_assets'].each do |config_var|
+      context "when the required #{config_var} parameter is missing" do
+        before do
+          config.delete(config_var)
+        end
+
+        it 'returns false' do
+          expect(builder.is_valid?).to be_false
+        end
+
+        it 'populates errors' do
+          builder.is_valid?
+          expect(builder.errors.size).to eql 1
         end
       end
+    end
 
-      context 'expecting a filename.rb' do
-        it 'exits' do
-          expect {
-            builder.get_markdown_renderer('foo')
-          }.to raise_error SystemExit
+    ['source', 'destination', 'documentation_assets'].each do |config_var|
+      context "when the #{config_var} directory does not exist" do
+        before do
+          config[config_var] = './foo'
+        end
+
+        it 'returns false' do
+          expect(builder.is_valid?).to be_false
+        end
+
+        it 'populates errors' do
+          builder.is_valid?
+          expect(builder.errors.size).to eql 1
         end
       end
     end

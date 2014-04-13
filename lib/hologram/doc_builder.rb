@@ -1,15 +1,15 @@
 module Hologram
   class DocBuilder
     attr_accessor :source, :destination, :documentation_assets, :dependencies, :index, :base_path, :renderer, :doc_blocks, :pages
+    attr_reader :errors
     attr :doc_assets_dir, :output_dir, :input_dir, :header_erb, :footer_erb
 
     def self.from_yaml(yaml_file)
       config = YAML::load_file(yaml_file)
       raise SyntaxError if !config.is_a? Hash
-      validate_config(config)
 
       new(config.merge(
-        'base_path' => Pathname.new(yaml_file),
+        'base_path' => Pathname.new(yaml_file).dirname,
         'renderer' => Utils.get_markdown_renderer(config['custom_markdown'])
       ))
 
@@ -30,56 +30,54 @@ module Hologram
       DisplayMessage.created(new_files)
     end
 
-    def self.validate_config(config)
-      unless config.key?('source')
-        DisplayMessage.error("No source directory specified in the config file")
-      end
-
-      unless config.key?('destination')
-        DisplayMessage.error("No destination directory specified in the config")
-      end
-
-      unless config.key?('documentation_assets')
-        DisplayMessage.error("No documentation assets directory specified")
-      end
-    end
-
     def initialize(config)
       @pages = {}
-      @source = config['source']
-      @destination = config['destination']
-      @documentation_assets = config['documentation_assets']
+      @errors = []
       @dependencies = config['dependencies']
       @index = config['index']
       @base_path = config['base_path']
       @renderer = config['renderer']
+
+      self.source = config['source']
+      self.destination = config['destination']
+      self.documentation_assets = config['documentation_assets']
+      setup_header_footer
     end
 
     def build
+      return false if !is_valid?
+      @output_dir = real_path(destination)
+      @doc_assets_dir = real_path(documentation_assets)
+      @input_dir = real_path(source)
+
       current_path = Dir.pwd
-      Dir.chdir(base_path.dirname)
+      Dir.chdir(base_path)
       # Create the output directory if it doesn't exist
       FileUtils.mkdir_p(destination) unless File.directory?(destination)
       # the real work happens here.
-      setup_paths
-      setup_header_footer
       build_docs
       Dir.chdir(current_path)
       DisplayMessage.success("Build completed. (-: ")
+      true
+    end
+
+    def is_valid?
+      errors.clear
+      errors << "No source directory specified in the config file" if !source
+      errors << "No destination directory specified in the config" if !destination
+      errors << "No documentation assets directory specified" if !documentation_assets
+
+      errors << "Can not read source directory (#{source}), does it exist?" if source && !real_path(source)
+      errors << "Can not read destination directory (#{destination}), does it exist?" if destination && !real_path(destination)
+      errors << "Can not read documentation_assets directory (#{documentation_assets}), does it exist?" if documentation_assets && !real_path(documentation_assets)
+      errors.empty?
     end
 
     private
 
-    def setup_paths
-      @input_dir = Pathname.new(source).realpath
-      @output_dir = Pathname.new(destination).realpath
-      @doc_assets_dir = Pathname.new(documentation_assets).realpath if File.directory?(documentation_assets)
-
-      if doc_assets_dir.nil?
-        DisplayMessage.warning("Could not find documentation assets at #{documentation_assets}")
-      end
-    rescue
-      DisplayMessage.error("Can not read source directory (#{source.inspect}), does it exist?")
+    def real_path(dir)
+      return if !File.directory?(String(dir))
+      Pathname.new(dir).realpath
     end
 
     def build_docs
