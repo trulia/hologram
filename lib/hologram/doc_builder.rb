@@ -86,7 +86,7 @@ module Hologram
         DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{config['index']}.")
       end
 
-      write_docs(output_dir, doc_assets_dir)
+      write_docs
       copy_dependencies
       copy_assets if doc_assets_dir
     end
@@ -115,23 +115,24 @@ module Hologram
       end
     end
 
-    def write_docs(output_dir, doc_assets_dir)
+    def write_docs
       markdown = Redcarpet::Markdown.new(renderer, { :fenced_code_blocks => true, :tables => true })
       tpl_vars = TemplateVariables.new({:categories => @categories})
       #generate html from markdown
       @pages.each do |file_name, page|
-        fh = get_fh(output_dir, file_name)
         title = page[:blocks].empty? ? "" : page[:blocks][0][:category]
-        tpl_vars.set_args({:title =>title, :file_name => file_name, :blocks => page[:blocks]})
-        binding = tpl_vars.get_binding
-        # generate doc nav html
-
-        fh.write(header_erb.result(binding)) if header_erb
-        fh.write(markdown.render(page[:md]))
-        fh.write(footer_erb.result(binding)) if footer_erb
-
-        fh.close()
+        tpl_vars.set_args({:title => title, :file_name => file_name, :blocks => page[:blocks]})
+        write_page(file_name, markdown.render(page[:md]), tpl_vars.get_binding)
       end
+    end
+
+    def write_page(file_name, body, binding)
+      fh = get_fh(output_dir, file_name)
+      fh.write(header_erb.result(binding)) if header_erb
+      fh.write(body)
+      fh.write(footer_erb.result(binding)) if footer_erb
+    ensure
+      fh.close
     end
 
     def setup_header_footer
