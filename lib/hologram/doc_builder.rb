@@ -38,14 +38,13 @@ module Hologram
       @source = options['source']
       @destination = options['destination']
       @documentation_assets = options['documentation_assets']
-
-      setup_header_footer
     end
 
     def build
       set_dirs
       return false if !is_valid?
 
+      setup_header_footer
       current_path = Dir.pwd
       Dir.chdir(base_path)
       # Create the output directory if it doesn't exist

@@ -142,6 +142,7 @@ describe Hologram::DocBuilder do
 
   context '#build' do
     let(:style_files) { Dir[File.expand_path('../fixtures/styleguide/**/*.*', __FILE__)] }
+    let(:processed_files) { Dir[File.join(builder.destination, '.', '**/*.*')] }
     let(:config_path) { File.join(Dir.pwd, 'spec/fixtures/source/config.yml') }
     let(:config_copy_path) { File.join(Dir.pwd, 'spec/fixtures/source/config.yml.copy') }
     let(:builder) { Hologram::DocBuilder.from_yaml(config_copy_path) }
@@ -152,7 +153,7 @@ describe Hologram::DocBuilder do
         FileUtils.cp(config_path, config_copy_path)
         File.open(config_copy_path, 'a'){ |io| io << "destination: #{tmpdir}" }
         current_dir = Dir.pwd
-        Dir.chdir(tmpdir)
+        Dir.chdir('spec/fixtures/source')
 
         example.run
 
@@ -164,9 +165,8 @@ describe Hologram::DocBuilder do
 
     it 'builds a styleguide' do
       builder.build
-      processed_files = Dir[File.join('.', '**/*.*')]
-      processed_files.each_with_index do |file, index|
-        expect(FileUtils.cmp(file, style_files[index])).to be_true
+      style_files.each_with_index do |file, index|
+        expect(FileUtils.cmp(file, processed_files[index])).to be_true
       end
     end
   end
