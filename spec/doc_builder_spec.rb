@@ -3,6 +3,12 @@ require 'spec_helper'
 describe Hologram::DocBuilder do
   subject(:builder) { Hologram::DocBuilder }
 
+  around do |example|
+    Hologram::DisplayMessage.quiet!
+    example.run
+    Hologram::DisplayMessage.show!
+  end
+
   context '.from_yaml' do
     subject(:builder) { Hologram::DocBuilder }
 
@@ -148,7 +154,6 @@ describe Hologram::DocBuilder do
     let(:builder) { Hologram::DocBuilder.from_yaml(config_copy_path) }
 
     around do |example|
-      Hologram::DisplayMessage.quiet!
       Dir.mktmpdir do |tmpdir|
         FileUtils.cp(config_path, config_copy_path)
         File.open(config_copy_path, 'a'){ |io| io << "destination: #{tmpdir}" }
@@ -160,7 +165,6 @@ describe Hologram::DocBuilder do
         Dir.chdir(current_dir)
         FileUtils.rm(config_copy_path)
       end
-      Hologram::DisplayMessage.show!
     end
 
     it 'builds a styleguide' do

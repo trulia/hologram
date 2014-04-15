@@ -7,7 +7,7 @@ describe Hologram::CLI do
       subject(:cli) { Hologram::CLI.new('init') }
 
       it 'setups the dir' do
-        Hologram::DocBuilder.should_receive(:setup_dir)
+        expect(Hologram::DocBuilder).to receive(:setup_dir)
         cli.run
       end
     end
@@ -17,7 +17,7 @@ describe Hologram::CLI do
       subject(:builder) { double(Hologram::DocBuilder, is_valid?: true, build: true) }
 
       it 'builds the documentation' do
-        Hologram::DocBuilder.should_receive(:from_yaml).and_return(builder)
+        expect(Hologram::DocBuilder).to receive(:from_yaml).and_return(builder)
         cli.run
       end
     end
@@ -27,7 +27,7 @@ describe Hologram::CLI do
       subject(:builder) { double(Hologram::DocBuilder, is_valid?: true, build: true) }
 
       it 'builds the documentation' do
-        Hologram::DocBuilder.should_receive(:from_yaml).with('test.yml').and_return(builder)
+        expect(Hologram::DocBuilder).to receive(:from_yaml).with('test.yml').and_return(builder)
         cli.run
       end
     end

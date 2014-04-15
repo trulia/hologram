@@ -5,12 +5,14 @@ describe Hologram::Utils do
     subject(:utils) { Hologram::Utils }
 
     around do |example|
+      Hologram::DisplayMessage.quiet!
       current_dir = Dir.pwd
       Dir.chdir('spec/fixtures/renderer')
 
       example.run
 
       Dir.chdir(current_dir)
+      Hologram::DisplayMessage.show!
     end
 
     context 'by default' do

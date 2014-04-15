@@ -44,11 +44,11 @@ module Hologram
       set_dirs
       return false if !is_valid?
 
-      setup_header_footer
+      set_header_footer
       current_path = Dir.pwd
       Dir.chdir(base_path)
       # Create the output directory if it doesn't exist
-      FileUtils.mkdir_p(destination) unless File.directory?(destination)
+      FileUtils.mkdir_p(destination) if !output_dir
       # the real work happens here.
       build_docs
       Dir.chdir(current_path)
@@ -89,12 +89,14 @@ module Hologram
         DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{config['index']}.")
       end
 
+      warn_missing_doc_assets
       write_docs
       copy_dependencies
-      copy_assets if doc_assets_dir
+      copy_assets
     end
 
     def copy_assets
+      return unless doc_assets_dir
       Dir.foreach(doc_assets_dir) do |item|
         # ignore . and .. directories and files that start with
         # underscore
@@ -138,7 +140,7 @@ module Hologram
       fh.close
     end
 
-    def setup_header_footer
+    def set_header_footer
       # load the markdown renderer we are going to use
 
       if File.exists?("#{doc_assets_dir}/_header.html")
@@ -166,6 +168,11 @@ module Hologram
 
     def get_fh(output_dir, output_file)
       File.open("#{output_dir}/#{output_file}", 'w')
+    end
+
+    def warn_missing_doc_assets
+      return if doc_assets_dir
+      DisplayMessage.warning("Could not find documentation assets at #{documentation_assets}")
     end
   end
 end
