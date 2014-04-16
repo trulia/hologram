@@ -23,3 +23,9 @@ module Hologram
     INIT_TEMPLATE_PATH + '/doc_assets',
   ]
 end
+
+class HologramMarkdownRenderer < Hologram::MarkdownRenderer
+  def self.inherited(subclass)
+    puts "HologramMarkdownRenderer is deprecated, please inherit from Hologram::MarkdownRenderer"
+  end
+end
