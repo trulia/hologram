@@ -2,9 +2,12 @@ require 'spec_helper'
 require 'hologram/cli'
 
 describe Hologram::CLI do
+  let(:argv) { [] }
+  subject(:cli) { Hologram::CLI.new(argv) }
+
   context '#run' do
     context 'when arg is "init"' do
-      subject(:cli) { Hologram::CLI.new('init') }
+      let(:argv) { ['init'] }
 
       it 'setups the dir' do
         expect(Hologram::DocBuilder).to receive(:setup_dir)
@@ -13,7 +16,6 @@ describe Hologram::CLI do
     end
 
     context 'when arg is empty' do
-      subject(:cli) { Hologram::CLI.new('') }
       subject(:builder) { double(Hologram::DocBuilder, is_valid?: true, build: true) }
 
       it 'builds the documentation' do
@@ -23,7 +25,7 @@ describe Hologram::CLI do
     end
 
     context 'when a config file is passed' do
-      subject(:cli) { Hologram::CLI.new('test.yml') }
+      let(:argv) { ['test.yml'] }
       subject(:builder) { double(Hologram::DocBuilder, is_valid?: true, build: true) }
 
       it 'builds the documentation' do

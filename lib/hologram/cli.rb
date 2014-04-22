@@ -1,14 +1,14 @@
 module Hologram
   class CLI
-    attr_reader :arg
+    attr_reader :args
 
-    def initialize(arg)
-      @arg = arg
+    def initialize(args)
+      @args = args
     end
 
     def run
-      return setup if arg == 'init'
-      arg.empty? ? build : build(arg)
+      return setup if args[0] == 'init'
+      args.empty? ? build : build(args[0])
     end
 
     private
