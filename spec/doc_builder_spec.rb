@@ -128,20 +128,18 @@ describe Hologram::DocBuilder do
       end
     end
 
-    ['source', 'destination', 'documentation_assets'].each do |config_var|
-      context "when the #{config_var} directory does not exist" do
-        before do
-          config[config_var] = './foo'
-        end
+    context "when the source directory does not exist" do
+      before do
+        config['source'] = './foo'
+      end
 
-        it 'returns false' do
-          expect(builder.is_valid?).to be_false
-        end
+      it 'returns false' do
+        expect(builder.is_valid?).to be_false
+      end
 
-        it 'populates errors' do
-          builder.is_valid?
-          expect(builder.errors.size).to eql 1
-        end
+      it 'populates errors' do
+        builder.is_valid?
+        expect(builder.errors.size).to eql 1
       end
     end
   end

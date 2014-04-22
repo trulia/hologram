@@ -63,8 +63,6 @@ module Hologram
       errors << "No destination directory specified in the config" if !destination
       errors << "No documentation assets directory specified" if !documentation_assets
       errors << "Can not read source directory (#{source}), does it exist?" if source && !input_dir
-      errors << "Can not read destination directory (#{destination}), does it exist?" if destination && !output_dir
-      errors << "Can not read documentation_assets directory (#{documentation_assets}), does it exist?" if documentation_assets && !doc_assets_dir
       errors.empty?
     end
 
