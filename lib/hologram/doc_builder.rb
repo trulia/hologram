@@ -1,207 +1,176 @@
 module Hologram
   class DocBuilder
-    attr_accessor :doc_blocks, :config, :pages
+    attr_accessor :source, :destination, :documentation_assets, :dependencies, :index, :base_path, :renderer, :doc_blocks, :pages
+    attr_reader :errors
+    attr :doc_assets_dir, :output_dir, :input_dir, :header_erb, :footer_erb
 
-    def init(args)
-      @pages = {}
+    def self.from_yaml(yaml_file)
+      config = YAML::load_file(yaml_file)
+      raise SyntaxError if !config.is_a? Hash
 
-      begin
-        if args[0] == 'init' then
-          if File.exists?("hologram_config.yml")
-            DisplayMessage.warning("Cowardly refusing to overwrite existing hologram_config.yml")
-          else
-            FileUtils.cp_r INIT_TEMPLATE_FILES, Dir.pwd
-            new_files = ["hologram_config.yml", "doc_assets/", "doc_assets/_header.html", "doc_assets/_footer.html"]
-            DisplayMessage.created(new_files)
-          end
-        else
-          begin
-            config_file = args[0] ? args[0] : 'hologram_config.yml'
+      new(config.merge(
+        'base_path' => Pathname.new(yaml_file).dirname,
+        'renderer' => Utils.get_markdown_renderer(config['custom_markdown'])
+      ))
 
-            begin
-              @config = YAML::load_file(config_file)
-            rescue SyntaxError => e
-              DisplayMessage.error("Could not load config file, check the syntax or try 'hologram init' to get started")
-            rescue
-              DisplayMessage.error("Could not load config file, try 'hologram init' to get started")
-            end
-
-            if @config.is_a? Hash
-
-              validate_config
-
-              current_path = Dir.pwd
-              base_path = Pathname.new(config_file)
-              Dir.chdir(base_path.dirname)
-
-              # the real work happens here.
-              build_docs
-
-              Dir.chdir(current_path)
-              DisplayMessage.success("Build completed. (-: ")
-            else
-              DisplayMessage.error("Could not read config file, check the syntax or try 'hologram init' to get started")
-            end
-          rescue RuntimeError => e
-            DisplayMessage.error("#{e}")
-          end
-        end
-      end
+    rescue SyntaxError, ArgumentError, Psych::SyntaxError
+      raise SyntaxError, "Could not load config file, check the syntax or try 'hologram init' to get started"
     end
 
+    def self.setup_dir
+      if File.exists?("hologram_config.yml")
+        DisplayMessage.warning("Cowardly refusing to overwrite existing hologram_config.yml")
+        return
+      end
+
+      FileUtils.cp_r INIT_TEMPLATE_FILES, Dir.pwd
+      new_files = ["hologram_config.yml", "doc_assets/", "doc_assets/_header.html", "doc_assets/_footer.html"]
+      DisplayMessage.created(new_files)
+    end
+
+    def initialize(options)
+      @pages = {}
+      @errors = []
+      @dependencies = options.fetch('dependencies', [])
+      @index = options['index']
+      @base_path = options.fetch('base_path', Dir.pwd)
+      @renderer = options.fetch('renderer', MarkdownRenderer)
+      @source = options['source']
+      @destination = options['destination']
+      @documentation_assets = options['documentation_assets']
+    end
+
+    def build
+      set_dirs
+      return false if !is_valid?
+
+      set_header_footer
+      current_path = Dir.pwd
+      Dir.chdir(base_path)
+      # Create the output directory if it doesn't exist
+      FileUtils.mkdir_p(destination) if !output_dir
+      # the real work happens here.
+      build_docs
+      Dir.chdir(current_path)
+      DisplayMessage.success("Build completed. (-: ")
+      true
+    end
+
+    def is_valid?
+      errors.clear
+      set_dirs
+      errors << "No source directory specified in the config file" if !source
+      errors << "No destination directory specified in the config" if !destination
+      errors << "No documentation assets directory specified" if !documentation_assets
+      errors << "Can not read source directory (#{source}), does it exist?" if source && !input_dir
+      errors.empty?
+    end
 
     private
+
+    def set_dirs
+      @output_dir = real_path(destination)
+      @doc_assets_dir = real_path(documentation_assets)
+      @input_dir = real_path(source)
+    end
+
+    def real_path(dir)
+      return if !File.directory?(String(dir))
+      Pathname.new(dir).realpath
+    end
+
     def build_docs
-      # Create the output directory if it doesn't exist
-      FileUtils.mkdir_p(config['destination']) unless File.directory?(config['destination'])
+      doc_parser = DocParser.new(input_dir, index)
+      @pages, @categories = doc_parser.parse
 
-      begin
-        input_directory  = Pathname.new(config['source']).realpath
-      rescue
-        DisplayMessage.error("Can not read source directory (#{config['source'].inspect}), does it exist?")
-      end
-
-      output_directory = Pathname.new(config['destination']).realpath
-      doc_assets       = Pathname.new(config['documentation_assets']).realpath unless !File.directory?(config['documentation_assets'])
-
-      if doc_assets.nil?
-        DisplayMessage.warning("Could not find documentation assets at #{config['documentation_assets']}")
-      end
-
-      begin
-        doc_parser = DocParser.new(input_directory, config['index'])
-        @pages, @categories = doc_parser.parse
-      rescue CommentLoadError => e
-        DisplayMessage.error(e.message)
-      end
-
-      if config['index'] && !@pages.has_key?(config['index'] + '.html')
+      if index && !@pages.has_key?(index + '.html')
         DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{config['index']}.")
       end
 
-      write_docs(output_directory, doc_assets)
+      warn_missing_doc_assets
+      write_docs
+      copy_dependencies
+      copy_assets
+    end
 
-      # Copy over dependencies
-      if config['dependencies']
-        config['dependencies'].each do |dir|
-          begin
-            dirpath  = Pathname.new(dir).realpath
-            if File.directory?("#{dir}")
-              `rm -rf #{output_directory}/#{dirpath.basename}`
-              `cp -R #{dirpath} #{output_directory}/#{dirpath.basename}`
-            end
-          rescue
-            DisplayMessage.warning("Could not copy dependency: #{dir}")
-          end
-        end
+    def copy_assets
+      return unless doc_assets_dir
+      Dir.foreach(doc_assets_dir) do |item|
+        # ignore . and .. directories and files that start with
+        # underscore
+        next if item == '.' or item == '..' or item.start_with?('_')
+        `rm -rf #{output_dir}/#{item}`
+        `cp -R #{doc_assets_dir}/#{item} #{output_dir}/#{item}`
       end
+    end
 
-      if !doc_assets.nil?
-        Dir.foreach(doc_assets) do |item|
-         # ignore . and .. directories and files that start with
-         # underscore
-         next if item == '.' or item == '..' or item.start_with?('_')
-         `rm -rf #{output_directory}/#{item}`
-         `cp -R #{doc_assets}/#{item} #{output_directory}/#{item}`
+    def copy_dependencies
+      dependencies.each do |dir|
+        begin
+          dirpath  = Pathname.new(dir).realpath
+          if File.directory?("#{dir}")
+            `rm -rf #{output_dir}/#{dirpath.basename}`
+            `cp -R #{dirpath} #{output_dir}/#{dirpath.basename}`
+          end
+        rescue
+          DisplayMessage.warning("Could not copy dependency: #{dir}")
         end
       end
     end
 
-
-    def write_docs(output_directory, doc_assets)
-      # load the markdown renderer we are going to use
-      renderer = get_markdown_renderer
-
-      if File.exists?("#{doc_assets}/_header.html")
-        header_erb = ERB.new(File.read("#{doc_assets}/_header.html"))
-      elsif File.exists?("#{doc_assets}/header.html")
-        header_erb = ERB.new(File.read("#{doc_assets}/header.html"))
-      else
-        header_erb = nil
-        DisplayMessage.warning("No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages.")
-      end
-
-      if File.exists?("#{doc_assets}/_footer.html")
-        footer_erb = ERB.new(File.read("#{doc_assets}/_footer.html"))
-      elsif File.exists?("#{doc_assets}/footer.html")
-        footer_erb = ERB.new(File.read("#{doc_assets}/footer.html"))
-      else
-        footer_erb = nil
-        DisplayMessage.warning("No _footer.html found in documentation assets. This might be okay to ignore...")
-      end
-
+    def write_docs
+      markdown = Redcarpet::Markdown.new(renderer, { :fenced_code_blocks => true, :tables => true })
       tpl_vars = TemplateVariables.new({:categories => @categories})
       #generate html from markdown
       @pages.each do |file_name, page|
-        fh = get_fh(output_directory, file_name)
-
         title = page[:blocks].empty? ? "" : page[:blocks][0][:category]
-
-        tpl_vars.set_args({:title =>title, :file_name => file_name, :blocks => page[:blocks]})
-
-        # generate doc nav html
-        unless header_erb.nil?
-          fh.write(header_erb.result(tpl_vars.get_binding))
-        end
-
-        # write the docs
-        begin
-          fh.write(renderer.render(page[:md]))
-        rescue Exception => e
-          DisplayMessage.error(e.message)
-        end
-
-        # write the footer
-        unless footer_erb.nil?
-          fh.write(footer_erb.result(tpl_vars.get_binding))
-        end
-
-        fh.close()
+        tpl_vars.set_args({:title => title, :file_name => file_name, :blocks => page[:blocks]})
+        write_page(file_name, markdown.render(page[:md]), tpl_vars.get_binding)
       end
     end
 
+    def write_page(file_name, body, binding)
+      fh = get_fh(output_dir, file_name)
+      fh.write(header_erb.result(binding)) if header_erb
+      fh.write(body)
+      fh.write(footer_erb.result(binding)) if footer_erb
+    ensure
+      fh.close
+    end
 
-    def get_markdown_renderer
-      if config['custom_markdown'].nil?
-        renderer = Redcarpet::Markdown.new(HologramMarkdownRenderer, { :fenced_code_blocks => true, :tables => true })
+    def set_header_footer
+      # load the markdown renderer we are going to use
+
+      if File.exists?("#{doc_assets_dir}/_header.html")
+        @header_erb = ERB.new(File.read("#{doc_assets_dir}/_header.html"))
+      elsif File.exists?("#{doc_assets_dir}/header.html")
+        @header_erb = ERB.new(File.read("#{doc_assets_dir}/header.html"))
       else
-        begin
-          load config['custom_markdown']
-          renderer_class = File.basename(config['custom_markdown'], '.rb').split(/_/).map(&:capitalize).join
-          DisplayMessage.info("Custom markdown renderer #{renderer_class} loaded.")
-          renderer = Redcarpet::Markdown.new(Module.const_get(renderer_class), { :fenced_code_blocks => true, :tables => true })
-        rescue LoadError => e
-          DisplayMessage.error("Could not load #{config['custom_markdown']}.")
-        rescue NameError => e
-          DisplayMessage.error("Class #{renderer_class} not found in #{config['custom_markdown']}.")
-        end
-      end
-      renderer
-    end
-
-
-    def validate_config
-      unless @config.key?('source')
-        DisplayMessage.error("No source directory specified in the config file")
+        @header_erb = nil
+        DisplayMessage.warning("No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages.")
       end
 
-      unless @config.key?('destination')
-        DisplayMessage.error("No destination directory specified in the config")
-      end
-
-      unless @config.key?('documentation_assets')
-        DisplayMessage.error("No documentation assets directory specified")
+      if File.exists?("#{doc_assets_dir}/_footer.html")
+        @footer_erb = ERB.new(File.read("#{doc_assets_dir}/_footer.html"))
+      elsif File.exists?("#{doc_assets_dir}/footer.html")
+        @footer_erb = ERB.new(File.read("#{doc_assets_dir}/footer.html"))
+      else
+        @footer_erb = nil
+        DisplayMessage.warning("No _footer.html found in documentation assets. This might be okay to ignore...")
       end
     end
-
 
     def get_file_name(str)
-      str = str.gsub(' ', '_').downcase + '.html'
+      str.gsub(' ', '_').downcase + '.html'
     end
 
+    def get_fh(output_dir, output_file)
+      File.open("#{output_dir}/#{output_file}", 'w')
+    end
 
-    def get_fh(output_directory, output_file)
-      File.open("#{output_directory}/#{output_file}", 'w')
+    def warn_missing_doc_assets
+      return if doc_assets_dir
+      DisplayMessage.warning("Could not find documentation assets at #{documentation_assets}")
     end
   end
 end

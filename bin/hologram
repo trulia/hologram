@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'hologram'
+require 'hologram/cli'
 
-builder = Hologram::DocBuilder.new
-builder.init(ARGV)
+cli = Hologram::CLI.new(ARGV)
+cli.run
