@@ -89,6 +89,7 @@ module Hologram
 
       warn_missing_doc_assets
       write_docs
+      write_data(output_dir)
       copy_dependencies
       copy_assets
     end
@@ -136,6 +137,35 @@ module Hologram
       fh.write(footer_erb.result(binding)) if footer_erb
     ensure
       fh.close
+    end
+
+    def write_data(output_dir)
+
+      File.open("#{output_dir}/doc_data.json", 'w') {|file| file.truncate(0) }
+      File.open("#{output_dir}/doc_data.json", 'a') {|file| file.write("[\n") }
+
+      @pages.each do |file_name, page|
+        doc_data = File.open("#{output_dir}/doc_data.json", 'a')
+        last_category = []
+
+        if not page[:blocks].empty?
+          page[:blocks].each do |block|
+            last_category << block[:category].to_s
+            file_path = last_category.first.gsub(' ', '_').downcase + '.html'
+            file_id = "#"+block[:name].to_s
+
+            doc_data.write("\t{\n")
+            doc_data.write("\t\t\"title\": \""+block[:title].to_s+"\",\n")
+            doc_data.write("\t\t\"breadcrumb\": \""+last_category.first+" > "+block[:title]+"\",\n")
+            doc_data.write("\t\t\"path\": \""+file_path+file_id+"\",\n")
+            doc_data.write("\t\t\"tokens\": [\n\t\t\t\""+last_category.first+"\",\n\t\t\t\""+block[:title].to_s+"\"\n\t\t]\n")
+            doc_data.write("\t},\n")
+          end
+        end
+        doc_data.close()
+      end
+
+      File.open("#{output_dir}/doc_data.json", 'a') {|file| file.write("\t{}\n]") }
     end
 
     def set_header_footer
