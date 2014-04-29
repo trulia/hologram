@@ -39,8 +39,6 @@ module Hologram
       builder.build
     rescue Errno::ENOENT
       DisplayMessage.error("Could not load config file, try 'hologram init' to get started")
-    rescue => e
-      DisplayMessage.error(e.message)
     end
 
     def setup
