@@ -84,7 +84,7 @@ module Hologram
       return unless hologram_comments
 
       hologram_comments.each do |comment_block|
-        doc_block_collection.add_doc_block(comment_block[0])
+        doc_block_collection.add_doc_block(comment_block[0], file)
       end
     end
 

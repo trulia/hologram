@@ -39,6 +39,7 @@ module Hologram
     end
 
     def is_valid?
+      errors << 'Missing required category config value' if !category
       errors << 'Missing required name config value' if !name
       errors << 'Missing required markdown' if !markdown
       errors.empty?

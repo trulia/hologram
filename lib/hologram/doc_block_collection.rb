@@ -7,10 +7,13 @@ module Hologram
     end
 
     # this should throw an error if we have a match, but no yaml_match
-    def add_doc_block(comment_block)
+    def add_doc_block(comment_block, file_name)
       doc_block = DocumentBlock.from_comment(comment_block)
       return unless doc_block
-      skip_block and return if !doc_block.is_valid?
+      if !doc_block.is_valid?
+        skip_block(doc_block, file_name)
+        return
+      end
 
       @doc_blocks[doc_block.name] = doc_block
     end
@@ -32,10 +35,8 @@ module Hologram
       end
     end
 
-    private
-
-    def skip_block
-      DisplayMessage.warning(doc_block.errors.join("\n") << "This hologram comment will be skipped.")
+    def skip_block(doc_block, file_name)
+      DisplayMessage.warning(doc_block.errors.join("\n") << " in #{file_name}. This hologram comment will be skipped.")
     end
   end
 end
