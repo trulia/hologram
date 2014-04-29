@@ -84,7 +84,7 @@ module Hologram
       @pages, @categories = doc_parser.parse
 
       if index && !@pages.has_key?(index + '.html')
-        DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{config['index']}.")
+        DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{index}.")
       end
 
       warn_missing_doc_assets
@@ -135,7 +135,9 @@ module Hologram
       fh.write(body)
       fh.write(footer_erb.result(binding)) if footer_erb
     ensure
-      fh.close
+      if !fh.nil?
+        fh.close
+      end
     end
 
     def set_header_footer
@@ -165,6 +167,7 @@ module Hologram
     end
 
     def get_fh(output_dir, output_file)
+      puts "fh for #{output_file}"
       File.open("#{output_dir}/#{output_file}", 'w')
     end
 
