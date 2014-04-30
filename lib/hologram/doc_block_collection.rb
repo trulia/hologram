@@ -25,9 +25,18 @@ module Hologram
         next if !doc_block.parent
 
         parent = @doc_blocks[doc_block.parent]
-        parent.children[doc_block.name] = doc_block
-        doc_block.parent = parent
-        blocks_to_remove_from_top_level << doc_block.name
+        if parent.nil?
+          DisplayMessage.warning("Hologram comment refers to parent: #{doc_block.parent}, but no other hologram comment has name: #{doc_block.parent}, skipping." )
+        else
+          parent.children[doc_block.name] = doc_block
+          doc_block.parent = parent
+
+          if doc_block.category.nil?
+            doc_block.category = parent.category
+          end
+
+          blocks_to_remove_from_top_level << doc_block.name
+        end
       end
 
       blocks_to_remove_from_top_level.each do |key|
