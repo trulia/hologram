@@ -12,10 +12,10 @@ There are two steps to building a great style guide:
 
 The hologram gem itself is only concerned with step 1. This means you
 are free to make your style guide look however you would like. If you
-don't feel like going through this process yourself you can take a look
+don't feel like going through this process yourself, you can take a look
 at the
 [templates](https://github.com/trulia/hologram-example/tree/master/templates)
-in our [example repository](https://github.com/trulia/hologram-example)
+in our [example repository](https://github.com/trulia/hologram-example),
 and use the assets defined there instead.
 
 
@@ -47,7 +47,7 @@ Building the documentation is simply:
 
 ###Command line flags
 
-Hologram has a couple command line flags:
+Hologram has a couple of command line flags:
 
 * `-c` or `--config` - specify the config file, by default hologram
   looks for `hologram_config.yml`
@@ -67,7 +67,7 @@ There are two things you need to do to start using hologram:
 ### Creating a YAML config file
 
 Hologram needs a few configuration settings before it can begin to build
-your documentation for you. Once this is set up you can execute hologram
+your documentation for you. Once this is set up, you can execute hologram
 by simply running:
 
 `hologram path/to/your/config.yml` or (using bundler) `bundle exec
@@ -78,20 +78,20 @@ Your config file needs to contain the following key/value pairs
 * **source**: relative path to your source files
 
 * **destination**: relative path where you want the documentation to be
-  built 
+  built
 
 * **documentation_assets**: The path that contains supporting assets for
   the documentation page. This typically includes html fragments
   (header/footer, etc), style guide specific CSS, javascript and any
   images. Hologram specifically looks for two files: `_header.html` and
-  `_footer.html`, these are used to start and end every html page
+  `_footer.html`. These are used to start and end every html page
   hologram generates.
 
   Hologram treats `_header.html` and `_footer.html` as ERB files for
   each page that is generated. You can access the `title`, `file_name`,
   `blocks`, and `categories`.
 
-  `blocks` is a list of each documentation block on the page. Each item 
+  `blocks` is a list of each documentation block on the page. Each item
   in the list has a `title`, `name`, `category`, and optionally a
   `parent`. This is useful for, say, building a menu that lists each
   component.
@@ -102,11 +102,10 @@ Your config file needs to contain the following key/value pairs
   **Nota Bene:** Filenames that begin with underscores will not be
   copied into the destination folder.
 
-
 * **custom_markdown**: (optional) this is the filename of a class that
   extends RedCarpet::Render::HTML class. Use this for when you need
   additional classes or html tags for different parts of the page.  See
-  `example_markdown_renderer.rb.example` for an example of how your
+  `example_markdown_renderer.rb.example` for an example of what your
   class can look like.
 
 * **index**: (optional) this is a category (see **Documenting your
@@ -140,7 +139,7 @@ Your config file needs to contain the following key/value pairs
 ### Documenting your styles
 
 Hologram will scan for stylesheets (.css, .scss, .sass, .less, or .styl)
-within the **source** directory defined in you configuraiton.  It will
+within the **source** directory defined in your configuration.  It will
 look for comments that match the following:
 
     /*doc
@@ -163,8 +162,8 @@ look for comments that match the following:
 
     */
 
-The first section of the comment is a yaml block that defines certain
-aspects of the this documentation block (more on that in the next
+The first section of the comment is a YAML block that defines certain
+aspects of this documentation block (more on that in the next
 section). The second part is simply markdown as defined by Redcarpet.
 
 Notice the use of `html_example`. This tells the markdown renderer that
@@ -180,8 +179,8 @@ for execution.
 
 #### Document YAML section
 
-The yaml in the documention block can have any
-key value pair you deem important but it specifically looks for the
+The YAML in the documentation block can have any
+key/value pairs you deem important, but it specifically looks for the
 following keys:
 
 * **title**: The title to display in the documents
@@ -189,8 +188,8 @@ following keys:
   components in the same category will be written to the same page.
 * **name**: This is used for grouping components, by assigning a name a
   component can be referenced in another component as a parent.
-* **parent**: (Optional.) This should be the **name** of another 
-  component. If this is set the current component will be displayed as 
+* **parent**: (Optional.) This should be the **name** of another
+  component. If this is set, the current component will be displayed as
   a section within the **parent**'s documentation.
 
 For example, you might have a component with the **name** *buttons* and
@@ -200,12 +199,12 @@ the *buttonSkins* component to be *buttons*. It would then nest the
 
 Each level of nesting (components are infinitely nestable) will have a
 heading tag that represents its depth. In the above example *buttons*
-would have an `<h1>` and *buttonSkins* would have an `<h2>`. 
+would have an `<h1>` and *buttonSkins* would have an `<h2>`.
 
-You can see [this exact example in our demo 
+You can see [this exact example in our demo
 repo](https://github.com/trulia/hologram-example/tree/master/components/button),
 and the output of this nesting [in our demo
-styleguide](http://trulia.github.io/hologram-example/base_css.html#Buttons).
+style guide](http://trulia.github.io/hologram-example/base_css.html#Buttons).
 
 
 ### Documentation Assets
@@ -243,7 +242,7 @@ The following preprocessors/file types are supported by Hologram:
 
 - [Guard Hologram](https://github.com/kmayer/guard-hologram) is a sweet
   little gem that uses guard to monitor changes to your hologram project
-  and rebuilds your styleguide on the fly as you make changes.
+  and rebuilds your style guide on the fly as you make changes.
 
 
 ## Contributing
