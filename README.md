@@ -119,22 +119,30 @@ Your config file needs to contain the following key/value pairs
 
 ##### Example config file
 
-    # The directory containing the source files to parse source:
-    ../components
+    # Hologram will run from same directory where this config file resides
+    # All paths should be relative to there
 
-    # The directory that hologram will build to destination: ../docs
+    # The directory containing the source files to parse recursively
+    source: ./sass
 
-    # The assets needed to build/style the docs (includes header.html,
-    footer.html, etc) documentation_assets: ../hologram_assets
+    # The directory that hologram will build to
+    destination: ./docs
 
-    # A custom markdown renderer that extends `RedCarpet::Render::HTML
-    class` custom_markdown: trulia_markdown_renderer.rb
+    # The assets needed to build the docs (includes header.html,
+    # footer.html, etc)
+    # You may put doc related assets here too: images, css, etc.
+    documentation_assets: ./doc_assets
 
     # Any other asset folders that need to be copied to the destination
-    folder # This is where the CSS/JS you are actually documenting
-    should go dependencies:
-        - ../build
+    # folder. Typically this will include the css that you are trying to
+    # document. May also include additional folders as needed.
+    dependencies:
+      - ./build
 
+    # Mark which category should be the index page
+    # Alternatively, you may have an index.md in the documentation assets
+    # folder instead of specifying this config.
+    index: basics
 
 ### Documenting your styles
 
