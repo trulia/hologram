@@ -7,7 +7,7 @@ turn them into a beautiful style guide.
 
 There are two steps to building a great style guide:
 
-1. Documenting your css and generating html examples.
+1. Documenting your css and javascript, and generating html examples.
 2. Styling the output of step 1.
 
 The hologram gem itself is only concerned with step 1. This means you
@@ -77,12 +77,12 @@ Your config file needs to contain the following key/value pairs
 
 * **source**: relative path to your source files
 
-* **destination**: relative path to where you want the documentation to
-  be built to
+* **destination**: relative path where you want the documentation to be
+  built 
 
 * **documentation_assets**: The path that contains supporting assets for
-  the documentaiton page. This typically includes html fragments
-  (header/footer, etc), styleguide specific CSS, javascript and any
+  the documentation page. This typically includes html fragments
+  (header/footer, etc), style guide specific CSS, javascript and any
   images. Hologram specifically looks for two files: `_header.html` and
   `_footer.html`, these are used to start and end every html page
   hologram generates.
@@ -91,7 +91,7 @@ Your config file needs to contain the following key/value pairs
   each page that is generated. You can access the `title`, `file_name`,
   `blocks`, and `categories`.
 
-  `blocks` is a list of each documenation block on the page. Each item
+  `blocks` is a list of each documentation block on the page. Each item 
   in the list has a `title`, `name`, `category`, and optionally a
   `parent`. This is useful for, say, building a menu that lists each
   component.
@@ -189,8 +189,8 @@ following keys:
   components in the same category will be written to the same page.
 * **name**: This is used for grouping components, by assigning a name a
   component can be referenced in another component as a parent.
-* **parent**: (Optional.) This should be the **name** of another
-  components. If this is set the current component will be displayed as
+* **parent**: (Optional.) This should be the **name** of another 
+  component. If this is set the current component will be displayed as 
   a section within the **parent**'s documentation.
 
 For example, you might have a component with the **name** *buttons* and
@@ -200,8 +200,9 @@ the *buttonSkins* component to be *buttons*. It would then nest the
 
 Each level of nesting (components are infinitely nestable) will have a
 heading tag that represents its depth. In the above example *buttons*
-would have an `<h1>` and *buttonSkins* would have an `<h2>`. This you
-can [see this exact example in our demo
+would have an `<h1>` and *buttonSkins* would have an `<h2>`. 
+
+You can see [this exact example in our demo 
 repo](https://github.com/trulia/hologram-example/tree/master/components/button),
 and the output of this nesting [in our demo
 styleguide](http://trulia.github.io/hologram-example/base_css.html#Buttons).
@@ -212,7 +213,7 @@ styleguide](http://trulia.github.io/hologram-example/base_css.html#Buttons).
 The documentation assets folder contains the html, css, js and images
 you'll need for making your style guide look beautiful.
 
-Hologram doesn't care too much about to what is in here as it is
+Hologram doesn't care too much about what is in here as it is
 intended to be custom for your style guide.
 
 
