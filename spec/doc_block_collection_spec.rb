@@ -32,7 +32,7 @@ comment
   context '#add_doc_block' do
     context 'when the comment is valid' do
       before do
-        collection.add_doc_block(comment)
+        collection.add_doc_block(comment, 'fake_file.sass')
       end
 
       it 'adds a doc block to the collection' do
@@ -42,7 +42,7 @@ comment
 
     context 'when no yaml is provided' do
       before do
-        collection.add_doc_block('')
+        collection.add_doc_block('', 'fake_file.sass')
       end
 
       it 'does not add a new block' do
@@ -54,7 +54,7 @@ comment
   context '#create_nested_structure' do
     context 'when the collection has blocks with parents' do
       before do
-        collection.add_doc_block(comment)
+        collection.add_doc_block(comment, 'fake_file.sass')
         collection.add_doc_block(%q{
           /*doc
           ---
@@ -63,7 +63,7 @@ comment
           parent: button
           ---
           some other button style
-          */})
+          */}, 'fake_file.sass')
 
         collection.create_nested_structure
       end
