@@ -128,7 +128,7 @@ module Hologram
         if file_name.nil?
           DisplayMessage.error("Hologram comments found with no defined category. Are there other warnings/errors that need to be resolved?")
         else
-          title = page.has_key?(:blocks) and page[:blocks].empty? ? "" : page[:blocks][0][:category]
+          title = (page.has_key?(:blocks) and page[:blocks].empty?) ? "" : page[:blocks][0][:category]
           tpl_vars.set_args({:title => title, :file_name => file_name, :blocks => page[:blocks]})
           if page.has_key?(:erb)
             write_erb(file_name, page[:erb], tpl_vars.get_binding)
