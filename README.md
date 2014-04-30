@@ -113,8 +113,10 @@ Your config file needs to contain the following key/value pairs
 
 * **dependencies**: a **list** of relative paths to folders containing
   any dependencies your style guide has. These folders will be copied
-  over into the documentation output directory. PUT THE CSS/JS THAT IS
-  ACTUALLY BEING DOCUMENTED HERE
+  over into the documentation output directory. ENSURE THE CSS/JS THAT IS
+  ACTUALLY BEING DOCUMENTED IS LISTED HERE. You will also need to ensure
+   that they are included on your pages. A simple way to do this is to add
+   `<link>` and `<script src=>` tags to the `_header.html` file.
 
 
 ##### Example config file
@@ -144,11 +146,11 @@ Your config file needs to contain the following key/value pairs
     # folder instead of specifying this config.
     index: basics
 
-### Documenting your styles
+### Documenting your styles and components
 
 Hologram will scan for stylesheets (.css, .scss, .sass, .less, or .styl)
-within the **source** directory defined in your configuration.  It will
-look for comments that match the following:
+and javascript source files (.js) within the **source** directory defined
+in your configuration.  It will look for comments that match the following:
 
     /*doc
     ---
@@ -178,11 +180,11 @@ Notice the use of `html_example`. This tells the markdown renderer that
 it should treat the example as...well...html. If your project uses
 [haml](http://haml.info/) you can also use `haml_example`. In that case
 the output will be html for the example and the code block will show the
-haml used to generate the html. For components that require
-[javascript](https://www.destroyallsoftware.com/talks/wat) you can use
-`js_example` for your javascript. In addition to outputing the
-javascript in a `<code>` block it will also wrap it in a `<script>` tag
-for execution.
+haml used to generate the html.
+
+For components that require [javascript](https://www.destroyallsoftware.com/talks/wat)
+you can use `js_example`. In addition to outputting the javascript in a
+`<code>` block it will also wrap it in a `<script>` tag for execution.
 
 
 #### Document YAML section
@@ -194,8 +196,9 @@ following keys:
 * **title**: The title to display in the documents
 * **category**: This is the broad category for the component, all
   components in the same category will be written to the same page.
-* **name**: This is used for grouping components, by assigning a name a
-  component can be referenced in another component as a parent.
+* **name**: This is used for grouping components, by assigning a name, a
+  component can be referenced in another component as a parent. Note that items in
+  the same category are sorted alphabetically by name.
 * **parent**: (Optional.) This should be the **name** of another
   component. If this is set, the current component will be displayed as
   a section within the **parent**'s documentation.
