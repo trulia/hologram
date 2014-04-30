@@ -94,7 +94,7 @@ eos
 
       it 'populates errors' do
         invalid_doc_block.is_valid?
-        expect(invalid_doc_block.errors).to include('Missing required name config value')
+        expect(invalid_doc_block.errors).to include('Missing name or title config value')
       end
     end
 

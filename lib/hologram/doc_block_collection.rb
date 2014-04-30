@@ -7,10 +7,13 @@ module Hologram
     end
 
     # this should throw an error if we have a match, but no yaml_match
-    def add_doc_block(comment_block)
+    def add_doc_block(comment_block, file_name)
       doc_block = DocumentBlock.from_comment(comment_block)
       return unless doc_block
-      skip_block and return if !doc_block.is_valid?
+      if !doc_block.is_valid?
+        skip_block(doc_block, file_name)
+        return
+      end
 
       @doc_blocks[doc_block.name] = doc_block
     end
@@ -22,9 +25,18 @@ module Hologram
         next if !doc_block.parent
 
         parent = @doc_blocks[doc_block.parent]
-        parent.children[doc_block.name] = doc_block
-        doc_block.parent = parent
-        blocks_to_remove_from_top_level << doc_block.name
+        if parent.nil?
+          DisplayMessage.warning("Hologram comment refers to parent: #{doc_block.parent}, but no other hologram comment has name: #{doc_block.parent}, skipping." )
+        else
+          parent.children[doc_block.name] = doc_block
+          doc_block.parent = parent
+
+          if doc_block.category.nil?
+            doc_block.category = parent.category
+          end
+
+          blocks_to_remove_from_top_level << doc_block.name
+        end
       end
 
       blocks_to_remove_from_top_level.each do |key|
@@ -32,10 +44,8 @@ module Hologram
       end
     end
 
-    private
-
-    def skip_block
-      DisplayMessage.warning(doc_block.errors.join("\n") << "This hologram comment will be skipped.")
+    def skip_block(doc_block, file_name)
+      DisplayMessage.warning(doc_block.errors.join("\n") << " in #{file_name}. This hologram comment will be skipped.")
     end
   end
 end

@@ -84,7 +84,7 @@ module Hologram
       @pages, @categories = doc_parser.parse
 
       if index && !@pages.has_key?(index + '.html')
-        DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{config['index']}.")
+        DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{index}.")
       end
 
       warn_missing_doc_assets
@@ -123,9 +123,13 @@ module Hologram
       tpl_vars = TemplateVariables.new({:categories => @categories})
       #generate html from markdown
       @pages.each do |file_name, page|
-        title = page[:blocks].empty? ? "" : page[:blocks][0][:category]
-        tpl_vars.set_args({:title => title, :file_name => file_name, :blocks => page[:blocks]})
-        write_page(file_name, markdown.render(page[:md]), tpl_vars.get_binding)
+        if file_name.nil?
+          DisplayMessage.error("Hologram comments found with no defined category. Are there other warnings/errors that need to be resolved?")
+        else
+          title = page[:blocks].empty? ? "" : page[:blocks][0][:category]
+          tpl_vars.set_args({:title => title, :file_name => file_name, :blocks => page[:blocks]})
+          write_page(file_name, markdown.render(page[:md]), tpl_vars.get_binding)
+        end
       end
     end
 
@@ -135,7 +139,9 @@ module Hologram
       fh.write(body)
       fh.write(footer_erb.result(binding)) if footer_erb
     ensure
-      fh.close
+      if !fh.nil?
+        fh.close
+      end
     end
 
     def set_header_footer
