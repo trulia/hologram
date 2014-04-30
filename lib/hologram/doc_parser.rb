@@ -1,6 +1,6 @@
 module Hologram
   class DocParser
-    SUPPORTED_EXTENSIONS = ['.css', '.scss', '.less', '.sass', '.styl', '.js', '.md', '.markdown' ]
+    SUPPORTED_EXTENSIONS = ['.css', '.scss', '.less', '.sass', '.styl', '.js', '.md', '.markdown', '.erb' ]
     attr_accessor :source_path, :pages, :doc_blocks
 
     def initialize(source_path, index_name = nil)
@@ -65,6 +65,8 @@ module Hologram
       files.each do |input_file|
         if input_file.end_with?('md')
           @pages[File.basename(input_file, '.md') + '.html'] = {:md => File.read("#{directory}/#{input_file}"), :blocks => []}
+        elsif input_file.end_with?('erb')
+          @pages[File.basename(input_file, '.erb')] = {:erb => File.read("#{directory}/#{input_file}")}
         else
           process_file("#{directory}/#{input_file}", doc_block_collection)
         end

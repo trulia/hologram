@@ -1,6 +1,6 @@
 module Hologram
   class DocBuilder
-    attr_accessor :source, :destination, :documentation_assets, :dependencies, :index, :base_path, :renderer, :doc_blocks, :pages
+    attr_accessor :source, :destination, :documentation_assets, :dependencies, :index, :base_path, :renderer, :doc_blocks, :pages, :config_yml
     attr_reader :errors
     attr :doc_assets_dir, :output_dir, :input_dir, :header_erb, :footer_erb
 
@@ -9,6 +9,7 @@ module Hologram
       raise SyntaxError if !config.is_a? Hash
 
       new(config.merge(
+        'config_yml' => config,
         'base_path' => Pathname.new(yaml_file).dirname,
         'renderer' => Utils.get_markdown_renderer(config['custom_markdown'])
       ))
@@ -38,6 +39,7 @@ module Hologram
       @source = options['source']
       @destination = options['destination']
       @documentation_assets = options['documentation_assets']
+      @config_yml = options['config_yml']
     end
 
     def build
@@ -120,17 +122,29 @@ module Hologram
 
     def write_docs
       markdown = Redcarpet::Markdown.new(renderer, { :fenced_code_blocks => true, :tables => true })
-      tpl_vars = TemplateVariables.new({:categories => @categories})
+      tpl_vars = TemplateVariables.new({:categories => @categories, :config => @config_yml})
       #generate html from markdown
       @pages.each do |file_name, page|
         if file_name.nil?
           DisplayMessage.error("Hologram comments found with no defined category. Are there other warnings/errors that need to be resolved?")
         else
-          title = page[:blocks].empty? ? "" : page[:blocks][0][:category]
+          title = page.has_key?(:blocks) and page[:blocks].empty? ? "" : page[:blocks][0][:category]
           tpl_vars.set_args({:title => title, :file_name => file_name, :blocks => page[:blocks]})
-          write_page(file_name, markdown.render(page[:md]), tpl_vars.get_binding)
+          if page.has_key?(:erb)
+            write_erb(file_name, page[:erb], tpl_vars.get_binding)
+          else
+            write_page(file_name, markdown.render(page[:md]), tpl_vars.get_binding)
+          end
         end
       end
+    end
+
+    def write_erb(file_name, content, binding)
+      fh = get_fh(output_dir, file_name)
+      erb = ERB.new(content)
+      fh.write(erb.result(binding))
+    ensure
+      fh.close
     end
 
     def write_page(file_name, body, binding)
@@ -139,9 +153,7 @@ module Hologram
       fh.write(body)
       fh.write(footer_erb.result(binding)) if footer_erb
     ensure
-      if !fh.nil?
-        fh.close
-      end
+      fh.close
     end
 
     def set_header_footer
