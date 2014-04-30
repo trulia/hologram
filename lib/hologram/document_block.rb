@@ -28,6 +28,10 @@ module Hologram
       @title    = config['title']
       @parent   = config['parent']
       @markdown = markdown
+
+      if @name.nil?
+        @name = @title.gsub(' ', '_')
+      end
     end
 
     def get_hash
@@ -39,8 +43,8 @@ module Hologram
     end
 
     def is_valid?
-      errors << 'Missing required category config value' if !category
-      errors << 'Missing required name config value' if !name
+      errors << 'Missing required category and/or parent config value' if !category and !parent
+      errors << 'Missing name or title config value' if !name and !title
       errors << 'Missing required markdown' if !markdown
       errors.empty?
     end
