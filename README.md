@@ -196,12 +196,14 @@ following keys:
 * **title**: The title to display in the documents
 * **category**: This is the broad category for the component, all
   components in the same category will be written to the same page.
+  Note: There is no need to set a category if this component has a **parent**.
 * **name**: This is used for grouping components, by assigning a name, a
   component can be referenced in another component as a parent. Note that items in
   the same category are sorted alphabetically by name.
 * **parent**: (Optional.) This should be the **name** of another
   component. If this is set, the current component will be displayed as
-  a section within the **parent**'s documentation.
+  a section within the **parent**'s documentation, but only if it specifies
+  the same **category**, or allows the **category** to be inherited from its **parent**.
 
 For example, you might have a component with the **name** *buttons* and
 another component named *buttonSkins*. You could set the **parent** for
