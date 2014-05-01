@@ -2,7 +2,7 @@ module Hologram
 
   #Helper class for binding things for ERB
   class TemplateVariables
-    attr_accessor :title, :file_name, :blocks, :categories, :config
+    attr_accessor :title, :file_name, :blocks, :categories, :config, :pages
 
     def initialize(args)
       set_args(args)

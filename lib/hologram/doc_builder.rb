@@ -122,7 +122,7 @@ module Hologram
 
     def write_docs
       markdown = Redcarpet::Markdown.new(renderer, { :fenced_code_blocks => true, :tables => true })
-      tpl_vars = TemplateVariables.new({:categories => @categories, :config => @config_yml})
+      tpl_vars = TemplateVariables.new({:categories => @categories, :config => @config_yml, :pages => @pages})
       #generate html from markdown
       @pages.each do |file_name, page|
         if file_name.nil?
