@@ -126,9 +126,12 @@ module Hologram
       #generate html from markdown
       @pages.each do |file_name, page|
         if file_name.nil?
-          DisplayMessage.error("Hologram comments found with no defined category. Are there other warnings/errors that need to be resolved?")
+          raise NoCategoryError
         else
-          title = (page.has_key?(:blocks) and page[:blocks].empty?) ? "" : page[:blocks][0][:category]
+          title = ""
+          if (page.has_key?(:blocks) and !page[:blocks].empty?)
+            title = page[:blocks][0][:category]
+          end
           tpl_vars.set_args({:title => title, :file_name => file_name, :blocks => page[:blocks]})
           if page.has_key?(:erb)
             write_erb(file_name, page[:erb], tpl_vars.get_binding)
