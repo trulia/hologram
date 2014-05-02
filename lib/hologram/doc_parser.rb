@@ -52,7 +52,7 @@ module Hologram
       directories.each do |directory|
         # filter and sort the files in our directory
         files = []
-        Dir.foreach(directory).select{ |file| is_supported_file_type?(file) }.each do |file|
+        Dir.foreach(directory).select{ |file| is_supported_file_type?("#{directory}/#{file}") }.each do |file|
           files << file
         end
         files.sort!
@@ -117,7 +117,7 @@ module Hologram
     end
 
     def is_supported_file_type?(file)
-      SUPPORTED_EXTENSIONS.include?(File.extname(file))
+      SUPPORTED_EXTENSIONS.include?(File.extname(file)) and !Dir.exists?(file)
     end
 
     def get_file_name(str)
