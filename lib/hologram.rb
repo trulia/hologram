@@ -16,6 +16,9 @@ require 'hologram/errors'
 require 'hologram/utils'
 require 'hologram/markdown_renderer'
 
+Encoding.default_internal = Encoding::UTF_8
+Encoding.default_external = Encoding::UTF_8
+
 module Hologram
   INIT_TEMPLATE_PATH = File.expand_path('./template/', File.dirname(__FILE__)) + '/'
   INIT_TEMPLATE_FILES = [
