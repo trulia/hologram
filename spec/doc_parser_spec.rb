@@ -34,7 +34,7 @@ eos
 ---
 title: Some other style
 name: multi
-category: Foo, Bar
+category: [Foo, Bar]
 ---
 Markdown stuff
 */

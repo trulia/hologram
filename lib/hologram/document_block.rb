@@ -24,7 +24,7 @@ module Hologram
 
     def set_members(config, markdown)
       @name     = config['name']
-      @categories = config['category'] ? config['category'].split(',').map(&:strip) : []
+      @categories = Array(config['category'] || config['categories'])
       @title    = config['title']
       @parent   = config['parent']
       @markdown = markdown
