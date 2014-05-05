@@ -31,8 +31,8 @@ module Hologram
           parent.children[doc_block.name] = doc_block
           doc_block.parent = parent
 
-          if doc_block.category.nil?
-            doc_block.category = parent.category
+          if doc_block.categories.nil?
+            doc_block.categories = parent.categories
           end
 
           blocks_to_remove_from_top_level << doc_block.name

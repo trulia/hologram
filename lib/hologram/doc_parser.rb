@@ -7,7 +7,7 @@ module Hologram
       @source_path = source_path
       @index_name = index_name
       @pages = {}
-      @categories = {}
+      @output_files_by_category = {}
     end
 
     def parse
@@ -38,7 +38,7 @@ module Hologram
         end
       end
 
-      return @pages, @categories
+      return @pages, @output_files_by_category
     end
 
     private
@@ -91,28 +91,26 @@ module Hologram
     end
 
     def build_output(doc_blocks, output_file = nil, depth = 1)
+      return if doc_blocks.nil?
+
       # sort elements in alphabetical order ignoring case
       doc_blocks.sort{|a, b| a[0].downcase<=>b[0].downcase}.map do |key, doc_block|
 
         # if the doc_block has a category set then use that, this will be
         # true of all top level doc_blocks. The output file they set will then
         # be passed into the recursive call for adding children to the output
-        if doc_block.category
-          output_file = get_file_name(doc_block.category)
-          @categories[doc_block.category] = output_file
-        end
 
-        if !@pages.has_key?(output_file)
-          @pages[output_file] = {:md => "", :blocks => []}
-        end
+        if !doc_block.categories.empty?
+          doc_block.categories.each do |category|
+            output_file = get_file_name(category)
+            @output_files_by_category[category] = output_file
 
-        @pages[output_file][:blocks].push(doc_block.get_hash)
-        @pages[output_file][:md] << doc_block.markdown_with_heading(depth)
-
-        if doc_block.children
-          depth += 1
-          build_output(doc_block.children, output_file, depth)
-          depth -= 1
+            add_doc_block_to_page(depth, doc_block, output_file)
+            build_output(doc_block.children, output_file, depth + 1)
+          end
+        else
+          add_doc_block_to_page(depth, doc_block, output_file)
+          build_output(doc_block.children, output_file, depth + 1)
         end
       end
     end
@@ -123,6 +121,15 @@ module Hologram
 
     def get_file_name(str)
       str = str.gsub(' ', '_').downcase + '.html'
+    end
+
+    def add_doc_block_to_page(depth, doc_block, output_file)
+      if !@pages.has_key?(output_file)
+        @pages[output_file] = {:md => "", :blocks => []}
+      end
+
+      @pages[output_file][:blocks].push(doc_block.get_hash)
+      @pages[output_file][:md] << doc_block.markdown_with_heading(depth)
     end
   end
 end

@@ -28,6 +28,19 @@ Markdown stuff
 eos
   end
 
+  let(:multi_category_doc) do
+    <<-eos
+/*doc
+---
+title: Some other style
+name: multi
+category: Foo, Bar
+---
+Markdown stuff
+*/
+    eos
+  end
+
   let(:source_path) { 'spec/fixtures/source' }
   let(:temp_doc) { File.join(source_path, 'components', 'button', 'skin', 'testSkin.css') }
 
@@ -36,11 +49,27 @@ eos
   context '#parse' do
     let(:result) { parser.parse }
     let(:pages) { result[0] }
-    let(:categories) { result[1] }
+    let(:output_files_by_category) { result[1] }
 
-    it 'builds and returns a hash of pages and a hash of categories' do
+    it 'builds and returns a hash of pages and a hash of output_files_by_category' do
       expect(pages).to be_a Hash
-      expect(categories).to be_a Hash
+      expect(output_files_by_category).to be_a Hash
+    end
+
+    context 'when the component has two categories' do
+      around do |example|
+        File.open(temp_doc, 'a+'){ |io| io << multi_category_doc }
+        example.run
+        FileUtils.rm(temp_doc)
+      end
+
+      before do
+        parser.parse
+      end
+
+      it 'adds two categories to output_files_by_category' do
+        expect(output_files_by_category).to eql({'Foo'=>'foo.html', 'Base CSS'=>'base_css.html', 'Bar'=>'bar.html'})
+      end
     end
 
 

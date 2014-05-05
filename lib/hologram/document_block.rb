@@ -2,7 +2,7 @@ module Hologram
   class DocumentBlock
     COMMENT_REGEX = /^\s*---\s(.*?)\s---$/m
 
-    attr_accessor :name, :parent, :children, :title, :category, :markdown, :config, :heading, :errors
+    attr_accessor :name, :parent, :children, :title, :categories, :markdown, :config, :heading, :errors
 
     def initialize(config = nil, markdown = nil)
       @children = {}
@@ -24,7 +24,7 @@ module Hologram
 
     def set_members(config, markdown)
       @name     = config['name']
-      @category = config['category']
+      @categories = config['category'] ? config['category'].split(',').map(&:strip) : []
       @title    = config['title']
       @parent   = config['parent']
       @markdown = markdown
@@ -37,13 +37,13 @@ module Hologram
     def get_hash
       {:name => @name,
        :parent => @parent,
-       :category => @category,
+       :categories => @categories,
        :title => @title
       }
     end
 
     def is_valid?
-      errors << 'Missing required category and/or parent config value' if !category and !parent
+      errors << 'Missing required category and/or parent config value' if !categories and !parent
       errors << 'Missing name or title config value' if !name and !title
       errors << 'Missing required markdown' if !markdown
       errors.empty?
@@ -51,7 +51,7 @@ module Hologram
 
     # sets the header tag based on how deep your nesting is
     def markdown_with_heading(heading = 1)
-      @markdown = "\n\n<h#{heading.to_s} id=\"#{@name}\">#{@title}</h#{heading.to_s}>" + @markdown
+      "\n\n<h#{heading.to_s} id=\"#{@name}\">#{@title}</h#{heading.to_s}>" + @markdown
     end
   end
 end

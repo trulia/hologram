@@ -8,7 +8,7 @@
 
     <nav>
       <ul>
-      <% @categories.each do |category, file_name| %>
+      <% @output_files_by_category.each do |category, file_name| %>
         <li><a href="<%= file_name %>"><%= category %></a></li>
       <% end %>
       </ul>
