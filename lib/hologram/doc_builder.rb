@@ -50,7 +50,10 @@ module Hologram
       current_path = Dir.pwd
       Dir.chdir(base_path)
       # Create the output directory if it doesn't exist
-      FileUtils.mkdir_p(destination) if !output_dir
+      if !output_dir
+        FileUtils.mkdir_p(destination)
+        set_dirs #need to reset output_dir post-creation for build_docs.
+      end
       # the real work happens here.
       build_docs
       Dir.chdir(current_path)
