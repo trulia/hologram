@@ -28,6 +28,19 @@ Markdown stuff
 eos
   end
 
+  let(:multi_category_child_doc) do
+<<-eos
+/*doc
+---
+parent: multi
+name: otherStyle
+title: Some other style
+---
+Markdown stuff
+*/
+eos
+  end
+
   let(:multi_category_doc) do
     <<-eos
 /*doc
@@ -116,6 +129,26 @@ Markdown stuff
 
       it 'assigns the child doc a deeper header' do
         expect(pages['base_css.html'][:md]).to include '<h2 id="otherStyle">Some other style</h2>'
+      end
+    end
+
+    context 'when a source doc is the child of a multi category doc block' do
+      around do |example|
+        File.open(temp_doc, 'a+'){ |io|
+          io << multi_category_doc
+          io << multi_category_child_doc
+        }
+        example.run
+        FileUtils.rm(temp_doc)
+      end
+
+      before do
+        parser.parse
+      end
+
+      it 'should not process unique object multiple times' do
+        objects = pages['foo.html'][:objects]
+        expect(objects).to match_array(objects.uniq)
       end
     end
   end

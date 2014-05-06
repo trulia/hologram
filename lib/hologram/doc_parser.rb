@@ -125,9 +125,12 @@ module Hologram
 
     def add_doc_block_to_page(depth, doc_block, output_file)
       if !@pages.has_key?(output_file)
-        @pages[output_file] = {:md => "", :blocks => []}
+        @pages[output_file] = {:md => "", :blocks => [], :objects => []}
       end
 
+      return if @pages[output_file][:objects].include?(doc_block)
+
+      @pages[output_file][:objects].push(doc_block)
       @pages[output_file][:blocks].push(doc_block.get_hash)
       @pages[output_file][:md] << doc_block.markdown_with_heading(depth)
     end

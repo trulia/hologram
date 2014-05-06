@@ -31,7 +31,7 @@ module Hologram
           parent.children[doc_block.name] = doc_block
           doc_block.parent = parent
 
-          if doc_block.categories.nil?
+          if doc_block.categories.empty?
             doc_block.categories = parent.categories
           end
 
