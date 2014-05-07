@@ -96,22 +96,13 @@ module Hologram
       # sort elements in alphabetical order ignoring case
       doc_blocks.sort{|a, b| a[0].downcase<=>b[0].downcase}.map do |key, doc_block|
 
-        # if the doc_block has a category set then use that, this will be
-        # true of all top level doc_blocks. The output file they set will then
-        # be passed into the recursive call for adding children to the output
-
-        if !doc_block.categories.empty?
-          doc_block.categories.each do |category|
-            output_file = get_file_name(category)
-            @output_files_by_category[category] = output_file
-
-            add_doc_block_to_page(depth, doc_block, output_file)
-            build_output(doc_block.children, output_file, depth + 1)
-          end
-        else
+        #doc_blocks are guaranteed to always have categories (top-level have categories, children get parent categories if empty).
+        doc_block.categories.each do |category|
+          output_file = get_file_name(category)
+          @output_files_by_category[category] = output_file
           add_doc_block_to_page(depth, doc_block, output_file)
-          build_output(doc_block.children, output_file, depth + 1)
         end
+        build_output(doc_block.children, nil, depth + 1)
       end
     end
 
@@ -125,12 +116,9 @@ module Hologram
 
     def add_doc_block_to_page(depth, doc_block, output_file)
       if !@pages.has_key?(output_file)
-        @pages[output_file] = {:md => "", :blocks => [], :objects => []}
+        @pages[output_file] = {:md => "", :blocks => []}
       end
 
-      return if @pages[output_file][:objects].include?(doc_block)
-
-      @pages[output_file][:objects].push(doc_block)
       @pages[output_file][:blocks].push(doc_block.get_hash)
       @pages[output_file][:md] << doc_block.markdown_with_heading(depth)
     end

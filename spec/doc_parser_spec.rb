@@ -34,9 +34,10 @@ eos
 ---
 parent: multi
 name: otherStyle
-title: Some other style
+title: MultiChild
 ---
 Markdown stuff
+multi-child
 */
 eos
   end
@@ -45,11 +46,12 @@ eos
     <<-eos
 /*doc
 ---
-title: Some other style
+title: MultiParent
 name: multi
 category: [Foo, Bar]
 ---
 Markdown stuff
+multi-parent
 */
     eos
   end
@@ -74,10 +76,6 @@ Markdown stuff
         File.open(temp_doc, 'a+'){ |io| io << multi_category_doc }
         example.run
         FileUtils.rm(temp_doc)
-      end
-
-      before do
-        parser.parse
       end
 
       it 'adds two categories to output_files_by_category' do
@@ -134,7 +132,7 @@ Markdown stuff
 
     context 'when a source doc is the child of a multi category doc block' do
       around do |example|
-        File.open(temp_doc, 'a+'){ |io|
+        File.open(temp_doc, 'w'){ |io|
           io << multi_category_doc
           io << multi_category_child_doc
         }
@@ -142,13 +140,14 @@ Markdown stuff
         FileUtils.rm(temp_doc)
       end
 
-      before do
-        parser.parse
+      it 'should not output duplicate content' do
+        objects = expect(pages['foo.html'][:md]).not_to match(/multi-parent.*multi-child.*multi-child/m)
+        objects = expect(pages['bar.html'][:md]).not_to match(/multi-parent.*multi-child.*multi-child/m)
       end
 
-      it 'should not process unique object multiple times' do
-        objects = pages['foo.html'][:objects]
-        expect(objects).to match_array(objects.uniq)
+      it 'should correctly order content in each page' do
+        objects = expect(pages['foo.html'][:md]).to match(/multi-parent.*multi-child/m)
+        objects = expect(pages['bar.html'][:md]).to match(/multi-parent.*multi-child/m)
       end
     end
   end
