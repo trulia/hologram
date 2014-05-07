@@ -86,7 +86,7 @@ module Hologram
 
     def build_docs
       doc_parser = DocParser.new(input_dir, index)
-      @pages, @output_files_by_category = doc_parser.parse
+      @pages, @categories = doc_parser.parse
 
       if index && !@pages.has_key?(index + '.html')
         DisplayMessage.warning("Could not generate index.html, there was no content generated for the category #{index}.")
@@ -125,7 +125,7 @@ module Hologram
 
     def write_docs
       markdown = Redcarpet::Markdown.new(renderer, { :fenced_code_blocks => true, :tables => true })
-      tpl_vars = TemplateVariables.new({:output_files_by_category => @output_files_by_category, :config => @config_yml, :pages => @pages})
+      tpl_vars = TemplateVariables.new({:categories => @categories, :config => @config_yml, :pages => @pages})
       #generate html from markdown
       @pages.each do |file_name, page|
         if file_name.nil?
@@ -134,7 +134,7 @@ module Hologram
           if page[:blocks] && page[:blocks].empty?
             title = ''
           else
-            title, _ = @output_files_by_category.rassoc(file_name)
+            title, _ = @categories.rassoc(file_name)
           end
 
           tpl_vars.set_args({:title => title, :file_name => file_name, :blocks => page[:blocks]})
