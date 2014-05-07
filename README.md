@@ -194,8 +194,8 @@ key/value pairs you deem important, but it specifically looks for the
 following keys:
 
 * **title**: The title to display in the documents
-* **category**: This is the broad category for the component, all
-  components in the same category will be written to the same page.
+* **category/categories**: This is the broad categories for the component, all
+  components in the same category will be written to the same page. It can be set to either a string or a YAML array. If you use an array, the component will be written to both pages.
   Note: There is no need to set a category if this component has a **parent**.
 * **name**: This is used for grouping components, by assigning a name, a
   component can be referenced in another component as a parent. Note that items in
