@@ -50,7 +50,10 @@ module Hologram
       current_path = Dir.pwd
       Dir.chdir(base_path)
       # Create the output directory if it doesn't exist
-      FileUtils.mkdir_p(destination) if !output_dir
+      if !output_dir
+        FileUtils.mkdir_p(destination)
+        set_dirs #need to reset output_dir post-creation for build_docs.
+      end
       # the real work happens here.
       build_docs
       Dir.chdir(current_path)
@@ -128,10 +131,12 @@ module Hologram
         if file_name.nil?
           raise NoCategoryError
         else
-          title = ""
-          if (page.has_key?(:blocks) and !page[:blocks].empty?)
-            title = page[:blocks][0][:category]
+          if page[:blocks] && page[:blocks].empty?
+            title = ''
+          else
+            title, _ = @categories.rassoc(file_name)
           end
+
           tpl_vars.set_args({:title => title, :file_name => file_name, :blocks => page[:blocks]})
           if page.has_key?(:erb)
             write_erb(file_name, page[:erb], tpl_vars.get_binding)

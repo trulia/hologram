@@ -28,6 +28,34 @@ Markdown stuff
 eos
   end
 
+  let(:multi_category_child_doc) do
+<<-eos
+/*doc
+---
+parent: multi
+name: otherStyle
+title: MultiChild
+---
+Markdown stuff
+multi-child
+*/
+eos
+  end
+
+  let(:multi_category_doc) do
+    <<-eos
+/*doc
+---
+title: MultiParent
+name: multi
+category: [Foo, Bar]
+---
+Markdown stuff
+multi-parent
+*/
+    eos
+  end
+
   let(:source_path) { 'spec/fixtures/source' }
   let(:temp_doc) { File.join(source_path, 'components', 'button', 'skin', 'testSkin.css') }
 
@@ -36,11 +64,23 @@ eos
   context '#parse' do
     let(:result) { parser.parse }
     let(:pages) { result[0] }
-    let(:categories) { result[1] }
+    let(:output_files_by_category) { result[1] }
 
-    it 'builds and returns a hash of pages and a hash of categories' do
+    it 'builds and returns a hash of pages and a hash of output_files_by_category' do
       expect(pages).to be_a Hash
-      expect(categories).to be_a Hash
+      expect(output_files_by_category).to be_a Hash
+    end
+
+    context 'when the component has two categories' do
+      around do |example|
+        File.open(temp_doc, 'a+'){ |io| io << multi_category_doc }
+        example.run
+        FileUtils.rm(temp_doc)
+      end
+
+      it 'adds two categories to output_files_by_category' do
+        expect(output_files_by_category).to eql({'Foo'=>'foo.html', 'Base CSS'=>'base_css.html', 'Bar'=>'bar.html'})
+      end
     end
 
 
@@ -87,6 +127,27 @@ eos
 
       it 'assigns the child doc a deeper header' do
         expect(pages['base_css.html'][:md]).to include '<h2 id="otherStyle">Some other style</h2>'
+      end
+    end
+
+    context 'when a source doc is the child of a multi category doc block' do
+      around do |example|
+        File.open(temp_doc, 'w'){ |io|
+          io << multi_category_doc
+          io << multi_category_child_doc
+        }
+        example.run
+        FileUtils.rm(temp_doc)
+      end
+
+      it 'should not output duplicate content' do
+        objects = expect(pages['foo.html'][:md]).not_to match(/multi-parent.*multi-child.*multi-child/m)
+        objects = expect(pages['bar.html'][:md]).not_to match(/multi-parent.*multi-child.*multi-child/m)
+      end
+
+      it 'should correctly order content in each page' do
+        objects = expect(pages['foo.html'][:md]).to match(/multi-parent.*multi-child/m)
+        objects = expect(pages['bar.html'][:md]).to match(/multi-parent.*multi-child/m)
       end
     end
   end

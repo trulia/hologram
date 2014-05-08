@@ -52,7 +52,7 @@ eos
     it 'sets up the usual attrs using the YAML and markdown text' do
       doc_block = Hologram::DocumentBlock.from_comment(doc)
       expect(doc_block.name).to eql 'otherStyle'
-      expect(doc_block.category).to eql 'Foo'
+      expect(doc_block.categories).to eql ['Foo']
       expect(doc_block.title).to eql 'Some other style'
       expect(doc_block.markdown).to eql "/*doc\n\nMarkdown stuff\n*/\n"
     end
@@ -60,15 +60,16 @@ eos
 
   context '#set_members' do
     it 'sets accessors for the the block config' do
-      config.each do |k, v|
-        expect(doc_block.send(k)).to eql v
-      end
+      expect(doc_block.send('name')).to eql 'foo'
+      expect(doc_block.send('categories')).to eql ['bar']
+      expect(doc_block.send('title')).to eql 'baz'
+      expect(doc_block.send('parent')).to eql 'pop'
     end
   end
 
   context '#get_hash' do
     let(:meta) do
-      { :name => 'foo', :category => 'bar', :title => 'baz', :parent => 'pop' }
+      { :name => 'foo', :categories => ['bar'], :title => 'baz', :parent => 'pop' }
     end
 
     it 'returns a hash of meta info' do
