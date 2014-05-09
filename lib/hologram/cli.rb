@@ -24,10 +24,18 @@ module Hologram
       end
 
       if !root.nil?
-        Dir.chdir root
+        Dir.chdir(root)
+      else
+        #Make it so that paths are relative to config file instead of
+        #the pwd
+        base_path = Pathname.new(config)
+        config = base_path.realpath.to_s
+        Dir.chdir(base_path.dirname)
       end
-
        config.nil? ? build : build(config)
+
+    rescue Errno::ENOENT
+      DisplayMessage.error("Could not load config file, try 'hologram init' to get started")
     end
 
     private
@@ -38,8 +46,6 @@ module Hologram
       builder.build
     rescue CommentLoadError, NoCategoryError => e
       DisplayMessage.error(e.message)
-    rescue Errno::ENOENT
-      DisplayMessage.error("Could not load config file, try 'hologram init' to get started")
     end
 
     def setup
