@@ -285,7 +285,9 @@ These fine people have also contributed to making hologram a better gem:
 * [Elana Koren](https://github.com/elanakoren)
 * [Ken Mayer](https://github.com/kmayer)
 * [Roberto Ostinelli](https://github.com/ostinelli)
+* [Dominick Reinhold](https://github.com/d-reinhold)
 * [Nicole Sullivan](https://github.com/stubbornella)
+* [Mike Wilkes](https://github.com/mikezx6r)
 
 
 ## License
