@@ -5,6 +5,12 @@ module Hologram
     attr :doc_assets_dir, :output_dir, :input_dir, :header_erb, :footer_erb
 
     def self.from_yaml(yaml_file)
+
+      #Change dir so that our paths are relative to the config file
+      base_path = Pathname.new(yaml_file)
+      Dir.chdir(base_path.dirname)
+      yaml_file = base_path.realpath.to_s
+
       config = YAML::load_file(yaml_file)
       raise SyntaxError if !config.is_a? Hash
 
