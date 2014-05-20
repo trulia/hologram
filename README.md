@@ -257,6 +257,9 @@ The following preprocessors/file types are supported by Hologram:
   little gem that uses guard to monitor changes to your hologram project
   and rebuilds your style guide on the fly as you make changes.
 
+- [Grunt Hologram](https://github.com/jchild3rs/grunt-hologram/) is a sweet
+  little grunt task that will generate your hologram style guide.
+
 
 ## Contributing
 
