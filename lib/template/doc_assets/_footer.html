@@ -59,8 +59,9 @@
       function getMatchesFromRules(selector, rules) {
         var cssContent = [];
         Array.prototype.forEach.call(rules, function(rule){
-          //for 'foo' match .foo | .bar, .foo, .baz | .bar, .foo | element.foo
-          regexString = '(^|, |[a-z]{1,})\\.' + selector + '(\\:[^\\s]{1,}|,|[\\s]|\\.)';
+          //for 'foo' match .foo | .bar, .foo, .baz | .bar, .foo | element.foo | .foo:hover | .foo::before
+          regexString = '(^|, |[a-z]{1,})\\.' + selector + '(\\:{1,2}[^\\s]{1,}|,|\\.|[\\s]{1,}\\{)';
+
           var regexp = new RegExp(regexString);
           // console.log('regex: ' + regexp);
           if (regexp.test(rule.cssText)) { 
