@@ -40,6 +40,19 @@ This will create a `hologram_config.yml` file  (more on this below), and
 also create a starter `_header.html` and `_footer.html` file for you.
 You can then tweak the config values and start documenting your css.
 
+Add some documentation to one of your stylesheets:
+
+    /*doc
+    ---
+    title: Alert
+    name: alert
+    category: basics
+    ---
+    ```html_example
+        <div class='alert'>Hello</div>
+    ```
+    */
+
 Building the documentation is simply:
 
 ``` hologram ```
@@ -256,6 +269,9 @@ The following preprocessors/file types are supported by Hologram:
 - [Guard Hologram](https://github.com/kmayer/guard-hologram) is a sweet
   little gem that uses guard to monitor changes to your hologram project
   and rebuilds your style guide on the fly as you make changes.
+
+- [Grunt Hologram](https://github.com/jchild3rs/grunt-hologram/) is a sweet
+  little grunt task that will generate your hologram style guide.
 
 
 ## Contributing
