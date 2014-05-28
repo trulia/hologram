@@ -3,7 +3,8 @@ module Hologram
     SUPPORTED_EXTENSIONS = ['.css', '.scss', '.less', '.sass', '.styl', '.js', '.md', '.markdown', '.erb' ]
     attr_accessor :source_path, :pages, :doc_blocks
 
-    def initialize(source_path, index_name = nil)
+    def initialize(source_path, index_name = nil, plugins)
+      @plugins = plugins
       @source_paths = Array(source_path)
       @index_name = index_name
       @pages = {}
@@ -33,6 +34,8 @@ module Hologram
 
       # hand off our properly nested collection to the output generator
       build_output(doc_block_collection.doc_blocks)
+
+      @plugins.finalize(@pages)
 
       # if we have an index category defined in our config copy that
       # page to index.html
@@ -88,8 +91,15 @@ module Hologram
       end
       return unless hologram_comments
 
+
+
       hologram_comments.each do |comment_block|
-        doc_block_collection.add_doc_block(comment_block[0], file)
+        block = doc_block_collection.add_doc_block(comment_block[0], file)
+
+        if (!block.nil?)
+          @plugins.block(block, file)
+        end
+
       end
     end
 
@@ -107,6 +117,7 @@ module Hologram
         end
         build_output(doc_block.children, nil, depth + 1)
       end
+
     end
 
     def is_supported_file_type?(file)

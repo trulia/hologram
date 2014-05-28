@@ -23,6 +23,7 @@ module Hologram
     end
 
     def set_members(config, markdown)
+      @config   = config
       @name     = config['name']
       @categories = Array(config['category'] || config['categories'])
       @title    = config['title']

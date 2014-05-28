@@ -46,6 +46,7 @@ module Hologram
       @destination = options['destination']
       @documentation_assets = options['documentation_assets']
       @config_yml = options['config_yml']
+      @plugins = Plugins.new(options.fetch('config_yml', {}))
     end
 
     def build
@@ -111,7 +112,7 @@ module Hologram
     end
 
     def build_docs
-      doc_parser = DocParser.new(input_dir, index)
+      doc_parser = DocParser.new(input_dir, index, @plugins)
       @pages, @categories = doc_parser.parse
 
       if index && !@pages.has_key?(index + '.html')
