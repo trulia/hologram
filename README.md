@@ -64,9 +64,6 @@ Hologram has a couple of command line flags:
 
 * `-c` or `--config` - specify the config file, by default hologram
   looks for `hologram_config.yml`
-* `-r` or `--root` - specify the directory to use when processing files
-  (useful if you run hologram in a different directory than your assets.
-  Defaults to current working directory)
 
 ## Details
 
