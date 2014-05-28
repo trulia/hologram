@@ -58,8 +58,14 @@ multi-parent
 
   let(:source_path) { 'spec/fixtures/source' }
   let(:temp_doc) { File.join(source_path, 'components', 'button', 'skin', 'testSkin.css') }
+  let(:plugins) {
+    plugins = double()
+    allow(plugins).to receive(:block)
+    allow(plugins).to receive(:finalize)
+    return plugins
+  }
 
-  subject(:parser) { Hologram::DocParser.new('spec/fixtures/source/components') }
+  subject(:parser) { Hologram::DocParser.new('spec/fixtures/source/components', nil, plugins) }
 
   context '#parse' do
     let(:result) { parser.parse }
@@ -72,7 +78,7 @@ multi-parent
     end
 
     context "when the source has multiple paths" do
-      subject(:parser) { Hologram::DocParser.new(['spec/fixtures/source/colors', 'spec/fixtures/source/components']) }
+      subject(:parser) { Hologram::DocParser.new(['spec/fixtures/source/colors', 'spec/fixtures/source/components'], nil, plugins) }
 
       it "parses all sources" do
         expect(pages['base_css.html'][:md]).to include 'Base colors'
@@ -94,7 +100,7 @@ multi-parent
 
 
     context 'when an index page is specified' do
-      subject(:parser) { Hologram::DocParser.new('spec/fixtures/source', 'foo') }
+      subject(:parser) { Hologram::DocParser.new('spec/fixtures/source', 'foo', plugins) }
 
       around do |example|
         File.open(temp_doc, 'a+'){ |io| io << doc }

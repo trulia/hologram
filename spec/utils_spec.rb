@@ -44,7 +44,7 @@ describe Hologram::Utils do
         it 'exits' do
           expect {
             utils.get_markdown_renderer('foo')
-          }.to raise_error SystemExit
+          }.to raise_error Errno::ENOENT
         end
       end
     end
