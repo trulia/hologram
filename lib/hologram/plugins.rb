@@ -1,12 +1,12 @@
 module Hologram
   class Plugins
 
-    attr_accessor :scope, :plugins, :config
+    attr_accessor :plugins, :config, :args
 
-    def initialize(config = {})
-      @scope = {}
+    def initialize(config = {}, args)
       @plugins = []
       @config = config
+      @args = args
 
       if config.has_key?('plugins')
         for plugin_file in config['plugins']
@@ -15,24 +15,30 @@ module Hologram
           load plugin_path
           plugin_class = Utils.get_class_name(plugin_file)
           register(plugin_class)
-          DisplayMessage.info("Loading plugin: #{plugin_class}")
         end
       end
     end
 
     def register(plugin_class)
-      @plugins.push(Object.const_get(plugin_class))
+      clazz = Object.const_get(plugin_class)
+      obj = clazz.new(@config, @args)
+      if obj.is_active?
+        DisplayMessage.info("Plugin active: #{plugin_class}")
+        @plugins.push(obj)
+      else
+        DisplayMessage.info("Plugin not active: #{plugin_class}")
+      end
     end
 
     def block(comment_block, file)
       for plugin in @plugins
-        @scope = plugin.block(@scope, @config, comment_block, file)
+        plugin.block(comment_block, file)
       end
     end
 
     def finalize(pages)
       for plugin in @plugins
-        plugin.finalize(@scope, @config, pages)
+        plugin.finalize(pages)
       end
     end
 
