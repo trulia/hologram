@@ -13,8 +13,8 @@ Gem::Specification.new do |spec|
   spec.homepage      = "http://trulia.github.io/hologram"
   spec.license       = "MIT"
 
-  spec.add_dependency "redcarpet", "~> 2.2"
-  spec.add_dependency "pygments.rb", "~> 0.4"
+  spec.add_dependency "redcarpet", "~> 3.1"
+  spec.add_dependency "pygments.rb", "~> 0.5.0"
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = ['hologram']
