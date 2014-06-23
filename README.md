@@ -182,6 +182,9 @@ in your configuration.  It will look for comments that match the following:
 
     */
 
+**NB:** Sass users who are using the `.sass` flavor of Sass should use  
+`//doc` style comments with indents to create their comment blocks.
+
 The first section of the comment is a YAML block that defines certain
 aspects of this documentation block (more on that in the next
 section). The second part is simply markdown as defined by Redcarpet.
