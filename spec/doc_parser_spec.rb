@@ -59,7 +59,7 @@ multi-parent
   let(:source_path) { 'spec/fixtures/source' }
   let(:temp_doc) { File.join(source_path, 'components', 'button', 'skin', 'testSkin.css') }
 
-  subject(:parser) { Hologram::DocParser.new('spec/fixtures/source') }
+  subject(:parser) { Hologram::DocParser.new('spec/fixtures/source/components') }
 
   context '#parse' do
     let(:result) { parser.parse }
@@ -69,6 +69,15 @@ multi-parent
     it 'builds and returns a hash of pages and a hash of output_files_by_category' do
       expect(pages).to be_a Hash
       expect(output_files_by_category).to be_a Hash
+    end
+
+    context "when the source has multiple paths" do
+      subject(:parser) { Hologram::DocParser.new(['spec/fixtures/source/colors', 'spec/fixtures/source/components']) }
+
+      it "parses all sources" do
+        expect(pages['base_css.html'][:md]).to include 'Base colors'
+        expect(pages['base_css.html'][:md]).to include 'Background Colors'
+      end
     end
 
     context 'when the component has two categories' do

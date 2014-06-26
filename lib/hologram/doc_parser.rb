@@ -4,7 +4,7 @@ module Hologram
     attr_accessor :source_path, :pages, :doc_blocks
 
     def initialize(source_path, index_name = nil)
-      @source_path = source_path
+      @source_paths = Array(source_path)
       @index_name = index_name
       @pages = {}
       @output_files_by_category = {}
@@ -16,7 +16,12 @@ module Hologram
       # comments matching the hologram doc style /*doc */ and create DocBlock
       # objects from those comments, then add those to a collection object which
       # is then returned.
-      doc_block_collection = process_dir(source_path)
+
+      doc_block_collection = DocBlockCollection.new
+
+      @source_paths.each do |source_path|
+        process_dir(source_path, doc_block_collection)
+      end
 
       # doc blocks can define parent/child relationships that will nest their
       # documentation appropriately. we can't put everything into that structure
@@ -43,9 +48,8 @@ module Hologram
 
     private
 
-    def process_dir(base_directory)
+    def process_dir(base_directory, doc_block_collection)
       #get all directories in our library folder
-      doc_block_collection = DocBlockCollection.new
       directories = Dir.glob("#{base_directory}/**/*/")
       directories.unshift(base_directory)
 
@@ -58,7 +62,6 @@ module Hologram
         files.sort!
         process_files(files, directory, doc_block_collection)
       end
-      doc_block_collection
     end
 
     def process_files(files, directory, doc_block_collection)

@@ -85,7 +85,8 @@ hologram path/to/your/config.yml`
 
 Your config file needs to contain the following key/value pairs
 
-* **source**: relative path to your source files
+* **source**: relative path(s) to your source files. Accepts either a
+  single value or an array
 
 * **destination**: relative path where you want the documentation to be
   built
@@ -136,6 +137,11 @@ Your config file needs to contain the following key/value pairs
 
     # The directory containing the source files to parse recursively
     source: ./sass
+
+    # You may alternately specify multiple directories.
+    # source:
+    #  - ./sass
+    #  - ./library-sass
 
     # The directory that hologram will build to
     destination: ./docs
@@ -307,6 +313,8 @@ These fine people have also contributed to making hologram a better gem:
 * [Dominick Reinhold](https://github.com/d-reinhold)
 * [Nicole Sullivan](https://github.com/stubbornella)
 * [Mike Wilkes](https://github.com/mikezx6r)
+* [Vanessa Sant'Anna](https://github.com/vsanta)
+* [Geoffrey Giesemann](https://github.com/geoffwa)
 
 
 ## License

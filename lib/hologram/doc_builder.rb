@@ -42,7 +42,7 @@ module Hologram
       @index = options['index']
       @base_path = options.fetch('base_path', Dir.pwd)
       @renderer = options.fetch('renderer', MarkdownRenderer)
-      @source = options['source']
+      @source = Array(options['source'])
       @destination = options['destination']
       @documentation_assets = options['documentation_assets']
       @config_yml = options['config_yml']
@@ -70,24 +70,44 @@ module Hologram
     def is_valid?
       errors.clear
       set_dirs
-      errors << "No source directory specified in the config file" if !source
-      errors << "No destination directory specified in the config" if !destination
-      errors << "No documentation assets directory specified" if !documentation_assets
-      errors << "Can not read source directory (#{source}), does it exist?" if source && !input_dir
+      validate_source
+      validate_destination
+      validate_document_assets
+
       errors.empty?
     end
 
     private
 
+    def validate_source
+      errors << "No source directory specified in the config file" if source.empty?
+      source.each do |dir|
+        next if real_path(dir)
+        errors << "Can not read source directory (#{dir}), does it exist?"
+      end
+    end
+
+    def validate_destination
+      errors << "No destination directory specified in the config" if !destination
+    end
+
+    def validate_document_assets
+      errors << "No documentation assets directory specified" if !documentation_assets
+    end
+
     def set_dirs
       @output_dir = real_path(destination)
       @doc_assets_dir = real_path(documentation_assets)
-      @input_dir = real_path(source)
+      @input_dir = multiple_paths(source)
     end
 
     def real_path(dir)
       return if !File.directory?(String(dir))
       Pathname.new(dir).realpath
+    end
+
+    def multiple_paths dirs
+      Array(dirs).map { |dir| real_path(dir) }.compact
     end
 
     def build_docs

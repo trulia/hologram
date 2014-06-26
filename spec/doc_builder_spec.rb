@@ -11,23 +11,33 @@ describe Hologram::DocBuilder do
 
   context '.from_yaml' do
     subject(:builder) { Hologram::DocBuilder }
+    let(:spec_root)   { File.expand_path('../', __FILE__) }
+    let(:tmpdir)      { @tmpdir }
+
+    around do |example|
+      Dir.mktmpdir do |tmpdir|
+        @tmpdir = tmpdir
+        current_dir = Dir.pwd
+
+        begin
+          Dir.chdir(tmpdir)
+          example.run
+        ensure
+          Dir.chdir(current_dir)
+        end
+      end
+    end
 
     context 'when passed a valid config file' do
-      let(:config_path) { File.join(Dir.pwd, 'spec/fixtures/source/config.yml') }
-      let(:config_copy_path) { File.join(Dir.pwd, 'spec/fixtures/source/config.yml.copy') }
+      let(:config_path) { File.join(spec_root, 'fixtures/source/config.yml') }
+      let(:config_copy_path) { File.join(spec_root, 'fixtures/source/config.yml.copy') }
 
-      around do |example|
-        Dir.mktmpdir do |tmpdir|
-          FileUtils.cp(config_path, config_copy_path)
-          File.open(config_copy_path, 'a'){ |io| io << "destination: #{tmpdir}" }
-          current_dir = Dir.pwd
-          Dir.chdir(tmpdir)
-
-          example.run
-
-          Dir.chdir(current_dir)
-          FileUtils.rm(config_copy_path)
-        end
+      before do
+        FileUtils.cp(config_path, config_copy_path)
+        File.open(config_copy_path, 'a'){ |io| io << "destination: #{tmpdir}" }
+      end
+      after do
+        FileUtils.rm(config_copy_path)
       end
 
       it 'returns a DocBuilder instance' do
@@ -46,6 +56,23 @@ describe Hologram::DocBuilder do
 
       it 'exits the process' do
         expect { subject.from_yaml('bad_config.yml') }.to raise_error SyntaxError
+      end
+    end
+
+    context 'when source option is an array' do
+      let(:config_path) { File.join(spec_root, 'fixtures/source/config_multi_source.yml') }
+      let(:config_copy_path) { File.join(spec_root, 'fixtures/source/config_multi_source.yml.copy') }
+
+      before do
+        FileUtils.cp(config_path, config_copy_path)
+        File.open(config_copy_path, 'a'){ |io| io << "destination: #{tmpdir}" }
+      end
+      after do
+        FileUtils.rm(config_copy_path)
+      end
+
+      it 'returns a DocBuilder instance' do
+        expect(subject.from_yaml(config_copy_path)).to be_a Hologram::DocBuilder
       end
     end
   end
@@ -128,7 +155,7 @@ describe Hologram::DocBuilder do
       end
     end
 
-    context "when the source directory does not exist" do
+    context 'when the source directory does not exist' do
       before do
         config['source'] = './foo'
       end
@@ -140,6 +167,20 @@ describe Hologram::DocBuilder do
       it 'populates errors' do
         builder.is_valid?
         expect(builder.errors.size).to eql 1
+      end
+    end
+
+    context 'when source is an array' do
+      let(:config) do
+        {
+          'source' => ['spec/fixtures/source/components', 'spec/fixtures/source/templates'],
+          'documentation_assets' => 'spec/fixtures/source/templates',
+          'base_path' => 'spec/fixtures/source/'
+        }
+      end
+
+      it 'returns true' do
+        expect(builder.is_valid?).to be_true
       end
     end
   end
