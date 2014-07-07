@@ -274,14 +274,13 @@ The following preprocessors/file types are supported by Hologram:
 - [Guard Hologram](https://github.com/kmayer/guard-hologram) is a sweet
   little gem that uses guard to monitor changes to your hologram project
   and rebuilds your style guide on the fly as you make changes.
-
 - [Grunt Hologram](https://github.com/jchild3rs/grunt-hologram/) is a sweet
   little grunt task that will generate your hologram style guide.
-
 - [Classname Clicker](https://github.com/bigethan/hologram-addons/) is a handy
-UI addition that gives the ability to see rules that apply to a classname by 
-clicking on them within hologram.
-
+  UI addition that gives the ability to see rules that apply to a classname by 
+  clicking on them within hologram.
+- [Cortana](https://github.com/Yago/Cortana) is a theme for hologram. It also 
+  includes a handy search feature.
 
 ## Contributing
 
