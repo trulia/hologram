@@ -38,7 +38,7 @@ module Hologram
     def initialize(options)
       @pages = {}
       @errors = []
-      @dependencies = options.fetch('dependencies', [])
+      @dependencies = options.fetch('dependencies', nil) || []
       @index = options['index']
       @base_path = options.fetch('base_path', Dir.pwd)
       @renderer = options.fetch('renderer', MarkdownRenderer)

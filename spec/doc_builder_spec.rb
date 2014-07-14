@@ -75,6 +75,24 @@ describe Hologram::DocBuilder do
         expect(subject.from_yaml(config_copy_path)).to be_a Hologram::DocBuilder
       end
     end
+
+    context 'when dependencies is left blank' do
+      let(:yaml) { "dependencies:\n" }
+
+      before do
+        File.open('fixable_bad_config.yml', 'w'){ |io| io << yaml }
+      end
+
+      after do
+        FileUtils.rm('fixable_bad_config.yml')
+      end
+
+      it 'deletes the empty config variable' do
+        builder = subject.from_yaml('fixable_bad_config.yml')
+        expect(builder).to be_a Hologram::DocBuilder
+        expect(builder.dependencies).to eql []
+      end
+    end
   end
 
   context '.setup_dir' do
