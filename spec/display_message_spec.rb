@@ -13,7 +13,7 @@ describe Hologram::DisplayMessage do
 
     it 'sets quiet to true' do
       display.quiet!
-      expect(display.quiet?).to be_true
+      expect(display.quiet?).to be_truthy
     end
   end
 
