@@ -6,6 +6,7 @@ require 'pathname'
 require 'erb'
 
 require 'hologram/version'
+require 'hologram/plugin'
 require 'hologram/plugins'
 require 'hologram/document_block'
 require 'hologram/doc_block_collection'
