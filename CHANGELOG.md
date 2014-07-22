@@ -1,5 +1,30 @@
 #Changelog
 
+##1.2.0 - 2014-07-22
+
+JD Cantrell
+* Replace pygments with rouge
+* Add in initial plugin support
+
+Todd Sedano
+* Update specs to use `be_truthy` and `be_falsy` (fixes deprecation
+  warnings)
+
+Carsten Zimmermann
+* Update redcarpet dependency to use newer versions of redcarpet
+
+Geoffrey Giesemann, Vanessa de Sant Anna, Nicole Sullivan
+* Add support for multiple source directories in the hologram config
+
+rishabhsrao
+* Remove the --root command line flag
+
+Marek
+* Add missing div tag in `_header.html`
+
+Todd Sedano, bigethan, August Flanagan, JD Cantrell
+* Many useful readme updates
+
 ##1.1.0 - 2014-05-13
 
 Rajan Agaskar, Dominick Reinhold, and Nicole Sullivan
