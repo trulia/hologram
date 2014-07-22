@@ -111,13 +111,13 @@ describe Hologram::DocBuilder do
     end
 
     it 'creates a config file' do
-      expect(File.exists?('hologram_config.yml')).to be_true
+      expect(File.exists?('hologram_config.yml')).to be_truthy
     end
 
     it 'creates default assets' do
       Dir.chdir('doc_assets') do
         ['_header.html', '_footer.html'].each do |asset|
-          expect(File.exists?(asset)).to be_true
+          expect(File.exists?(asset)).to be_truthy
         end
       end
     end
@@ -152,7 +152,7 @@ describe Hologram::DocBuilder do
 
     context 'when config vars are present and directories exists' do
       it 'returns true' do
-        expect(builder.is_valid?).to be_true
+        expect(builder.is_valid?).to be_truthy
       end
     end
 
@@ -163,7 +163,7 @@ describe Hologram::DocBuilder do
         end
 
         it 'returns false' do
-          expect(builder.is_valid?).to be_false
+          expect(builder.is_valid?).to be_falsy
         end
 
         it 'populates errors' do
@@ -179,7 +179,7 @@ describe Hologram::DocBuilder do
       end
 
       it 'returns false' do
-        expect(builder.is_valid?).to be_false
+        expect(builder.is_valid?).to be_falsy
       end
 
       it 'populates errors' do
@@ -198,7 +198,7 @@ describe Hologram::DocBuilder do
       end
 
       it 'returns true' do
-        expect(builder.is_valid?).to be_true
+        expect(builder.is_valid?).to be_truthy
       end
     end
   end
@@ -227,7 +227,7 @@ describe Hologram::DocBuilder do
     it 'builds a styleguide' do
       builder.build
       style_files.each_with_index do |file, index|
-        expect(FileUtils.cmp(file, processed_files[index])).to be_true
+        expect(FileUtils.cmp(file, processed_files[index])).to be_truthy
       end
     end
   end
