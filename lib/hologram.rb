@@ -1,6 +1,6 @@
 require 'redcarpet'
 require 'yaml'
-require 'pygments'
+require 'rouge'
 require 'fileutils'
 require 'pathname'
 require 'erb'
