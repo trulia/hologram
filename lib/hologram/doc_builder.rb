@@ -4,7 +4,7 @@ module Hologram
     attr_reader :errors
     attr :doc_assets_dir, :output_dir, :input_dir, :header_erb, :footer_erb
 
-    def self.from_yaml(yaml_file)
+    def self.from_yaml(yaml_file, extra_args = [])
 
       #Change dir so that our paths are relative to the config file
       base_path = Pathname.new(yaml_file)
@@ -18,7 +18,7 @@ module Hologram
         'config_yml' => config,
         'base_path' => Pathname.new(yaml_file).dirname,
         'renderer' => Utils.get_markdown_renderer(config['custom_markdown'])
-      ))
+      ), extra_args)
 
     rescue SyntaxError, ArgumentError, Psych::SyntaxError
       raise SyntaxError, "Could not load config file, check the syntax or try 'hologram init' to get started"
@@ -35,7 +35,7 @@ module Hologram
       DisplayMessage.created(new_files)
     end
 
-    def initialize(options)
+    def initialize(options, extra_args = [])
       @pages = {}
       @errors = []
       @dependencies = options.fetch('dependencies', nil) || []
@@ -46,6 +46,7 @@ module Hologram
       @destination = options['destination']
       @documentation_assets = options['documentation_assets']
       @config_yml = options['config_yml']
+      @plugins = Plugins.new(options.fetch('config_yml', {}), extra_args)
     end
 
     def build
@@ -111,7 +112,7 @@ module Hologram
     end
 
     def build_docs
-      doc_parser = DocParser.new(input_dir, index)
+      doc_parser = DocParser.new(input_dir, index, @plugins)
       @pages, @categories = doc_parser.parse
 
       if index && !@pages.has_key?(index + '.html')

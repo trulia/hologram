@@ -10,6 +10,7 @@ module Hologram
 
     def run
       return setup if args[0] == 'init'
+      extra_args = []
 
       #support passing the config file with no command line flag
       config = args[0].nil? ? 'hologram_config.yml' : args[0]
@@ -18,16 +19,21 @@ module Hologram
         opt.on_tail('-h', '--help', 'Show this message.') { puts opt; exit }
         opt.on_tail('-v', '--version', 'Show version.') { puts "hologram #{Hologram::VERSION}"; exit }
         opt.on('-c', '--config FILE', 'Path to config file. Default: hologram_config.yml') { |config_file| config = config_file }
-        opt.parse!(args)
+        begin
+          opt.parse!(args)
+        rescue OptionParser::InvalidOption => e
+          extra_args.push(e.to_s.sub(/invalid option:\s+/, ''))
+        end
+
       end
 
-      config.nil? ? build : build(config)
+      config.nil? ? build(extra_args) : build(extra_args, config)
 
     end
 
     private
-    def build(config = 'hologram_config.yml')
-      builder = DocBuilder.from_yaml(config)
+    def build(extra_args = [], config = 'hologram_config.yml')
+      builder = DocBuilder.from_yaml(config, extra_args)
       DisplayMessage.error(builder.errors.first) if !builder.is_valid?
       builder.build
     rescue CommentLoadError, NoCategoryError => e

@@ -29,7 +29,7 @@ describe Hologram::CLI do
       subject(:builder) { double(Hologram::DocBuilder, is_valid?: true, build: true) }
 
       it 'builds the documentation' do
-        expect(Hologram::DocBuilder).to receive(:from_yaml).with('test.yml').and_return(builder)
+        expect(Hologram::DocBuilder).to receive(:from_yaml).with('test.yml', []).and_return(builder)
         cli.run
       end
     end

@@ -16,6 +16,7 @@ module Hologram
       end
 
       @doc_blocks[doc_block.name] = doc_block
+      return doc_block
     end
 
     def create_nested_structure
