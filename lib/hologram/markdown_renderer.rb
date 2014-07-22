@@ -1,16 +1,19 @@
 module Hologram
   class MarkdownRenderer < Redcarpet::Render::HTML
     def block_code(code, language)
+      formatter = Rouge::Formatters::HTML.new(wrap: false)
       if language and language.include?('example')
         if language.include?('js')
+          lexer = Rouge::Lexer.find('js')
           # first actually insert the code in the docs so that it will run and make our example work.
-          '<script>' + code + '</script>
-          <div class="codeBlock jsExample">' + Pygments.highlight(code) + '</div>'
+          '<script>' + code + '</script> <div class="codeBlock jsExample"><div class="highlight"><pre>' + formatter.format(lexer.lex(code)) + '</pre></div></div>'
         else
-          '<div class="codeExample">' + '<div class="exampleOutput">' + render_html(code, language) + '</div>' + '<div class="codeBlock">' + Pygments.highlight(code, :lexer => get_lexer(language)) + '</div>' + '</div>'
+          lexer = Rouge::Lexer.find(get_lexer(language))
+          '<div class="codeExample">' + '<div class="exampleOutput">' + render_html(code, language) + '</div>' + '<div class="codeBlock"><div class="highlight"><pre>' + formatter.format(lexer.lex(code)) + '</pre></div></div>' + '</div>'
         end
       else
-        '<div class="codeBlock">' + Pygments.highlight(code) + '</div>'
+        lexer = Rouge::Lexer.find_fancy('guess', code)
+        '<div class="codeBlock"><div class="highlight"><pre>' + formatter.format(lexer.lex(code)) + '</pre></div></div>'
       end
     end
 
