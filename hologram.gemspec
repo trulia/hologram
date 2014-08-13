@@ -15,6 +15,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "redcarpet", ">= 2.2", "< 4.0"
   spec.add_dependency "rouge", ">= 1.5"
+  spec.add_dependency "slim"
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = ['hologram']

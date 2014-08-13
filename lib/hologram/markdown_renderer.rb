@@ -23,6 +23,9 @@ module Hologram
         when 'haml_example'
           safe_require('haml', language)
           return Haml::Engine.new(code.strip).render(template_rendering_scope, {})
+        when 'slim_example'
+          safe_require('slim', language)
+          return Slim::Template.new { code.strip }.render(template_rendering_scope, {})
         else
           code
       end
