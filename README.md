@@ -198,7 +198,7 @@ Notice the use of `html_example`. This tells the markdown renderer that
 it should treat the example as...well...html. If your project uses
 [haml](http://haml.info/) you can also use `haml_example`. In that case
 the output will be html for the example and the code block will show the
-haml used to generate the html.
+haml used to generate the html. Moreover if your project uses [slim](http://slim-lang.com), you can use `slim_exmaple` as well.
 
 For components that require [javascript](https://www.destroyallsoftware.com/talks/wat)
 you can use `js_example`. In addition to outputting the javascript in a
@@ -277,9 +277,9 @@ The following preprocessors/file types are supported by Hologram:
 - [Grunt Hologram](https://github.com/jchild3rs/grunt-hologram/) is a sweet
   little grunt task that will generate your hologram style guide.
 - [Classname Clicker](https://github.com/bigethan/hologram-addons/) is a handy
-  UI addition that gives the ability to see rules that apply to a classname by 
+  UI addition that gives the ability to see rules that apply to a classname by
   clicking on them within hologram.
-- [Cortana](https://github.com/Yago/Cortana) is a theme for hologram. It also 
+- [Cortana](https://github.com/Yago/Cortana) is a theme for hologram. It also
   includes a handy search feature.
 
 ## Contributing
