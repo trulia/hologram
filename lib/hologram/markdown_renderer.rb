@@ -39,6 +39,8 @@ module Hologram
       case language
         when 'haml_example'
           'haml'
+        when 'slim_example'
+          'slim'
         else
           'html'
       end

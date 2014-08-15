@@ -17,7 +17,7 @@ describe HologramMarkdownRenderer do
       expect(subject.block_code('button.btn button_text', 'slim_example')).to eq \
         '<div class="codeExample">' +
           '<div class="exampleOutput"><button class="btn">button_text</button></div>' +
-          '<div class="codeBlock"><div class="highlight"><pre>button.btn button_text</pre></div></div>' +
+          '<div class="codeBlock"><div class="highlight"><pre><span class="nt">button</span><span class="nc">.btn</span><span class="w"> </span>button_text</pre></div></div>' +
         '</div>'
     end
   end
