@@ -66,7 +66,8 @@ module Hologram
       end
     end
 
-    def code_block(code_snippet, extra_classes: [])
+    def code_block(code_snippet, opts={})
+      extra_classes = opts[:extra_classes] || []
       classes = extra_classes.insert(0, 'codeBlock')
       [
         "<div class=\"#{classes.join(' ')}\">",

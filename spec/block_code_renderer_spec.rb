@@ -4,10 +4,6 @@ require 'haml'
 
 describe Hologram::BlockCodeRenderer do
   describe '#render' do
-    def code_example(rendered_code: '', formatted_code: '')
-
-    end
-
     let(:formatter) { double(:formatter) }
     let(:lexer) { double(:lexer, lex: lexed_code) }
     let(:lexed_code) { double(:lexed_code) }
