@@ -3,10 +3,11 @@ module Hologram
     SUPPORTED_EXTENSIONS = ['.css', '.scss', '.less', '.sass', '.styl', '.js', '.md', '.markdown', '.erb' ]
     attr_accessor :source_path, :pages, :doc_blocks
 
-    def initialize(source_path, index_name = nil, plugins)
+    def initialize(source_path, index_name = nil, plugins=[], opts={})
       @plugins = plugins
       @source_paths = Array(source_path)
       @index_name = index_name
+      @include_section_nav = opts[:include_section_nav] || false
       @pages = {}
       @output_files_by_category = {}
     end
@@ -134,7 +135,7 @@ module Hologram
       end
 
       @pages[output_file][:blocks].push(doc_block.get_hash)
-      @pages[output_file][:md] << doc_block.markdown_with_heading(depth)
+      @pages[output_file][:md] << doc_block.markdown_with_heading(depth, include_section_nav: @include_section_nav)
     end
   end
 end

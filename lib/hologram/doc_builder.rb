@@ -47,6 +47,7 @@ module Hologram
       @documentation_assets = options['documentation_assets']
       @config_yml = options['config_yml']
       @plugins = Plugins.new(options.fetch('config_yml', {}), extra_args)
+      @include_section_nav = options['include_section_nav'] || false
     end
 
     def build
@@ -112,7 +113,7 @@ module Hologram
     end
 
     def build_docs
-      doc_parser = DocParser.new(input_dir, index, @plugins)
+      doc_parser = DocParser.new(input_dir, index, @plugins, include_section_nav: @include_section_nav)
       @pages, @categories = doc_parser.parse
 
       if index && !@pages.has_key?(index + '.html')
