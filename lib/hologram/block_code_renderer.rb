@@ -101,6 +101,7 @@ module Hologram
     end
 
     def haml_engine(code_snippet)
+      safe_require 'haml', markdown_language
       Haml::Engine.new(code_snippet.strip)
     end
 
@@ -118,6 +119,14 @@ module Hologram
 
     def formatter
       @_formatter ||= Rouge::Formatters::HTML.new(wrap: false)
+    end
+
+    def safe_require(templating_library, language)
+      begin
+        require templating_library
+      rescue LoadError
+        raise "#{templating_library} must be present for you to use #{language}"
+      end
     end
   end
 end
