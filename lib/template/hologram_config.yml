@@ -22,3 +22,7 @@ dependencies:
 # Alternatively, you may have an index.md in the documentation assets
 # folder instead of specifying this config.
 index: basics
+
+# To output sub navigation in each section of the styleguide set
+# `include_section_nav` to true.
+include_section_nav: false
