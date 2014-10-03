@@ -23,6 +23,7 @@ dependencies:
 # folder instead of specifying this config.
 index: basics
 
-# To output sub navigation in each section of the styleguide set
-# `include_section_nav` to true.
-include_section_nav: false
+# To additionally output navigation for top level sections, set the value to
+# 'section'. To output navigation for sub-sections,
+# set the value to `all`
+nav_level: all

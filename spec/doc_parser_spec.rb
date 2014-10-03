@@ -15,6 +15,19 @@ Markdown stuff
 eos
   end
 
+  let(:docs_child) do
+    <<-eos
+/*doc
+---
+parent: otherStyle
+title: Other Style Child
+name: otherStyleChild
+---
+Markdown stuff
+*/
+    eos
+  end
+
   let(:child_doc) do
 <<-eos
 /*doc
@@ -26,6 +39,19 @@ title: Some other style
 Markdown stuff
 */
 eos
+  end
+
+  let(:grandchild_doc) do
+    <<-eos
+/*doc
+---
+parent: otherStyle
+name: grandbaby
+title: Grandbaby
+---
+Markdown stuff
+*/
+    eos
   end
 
   let(:multi_category_child_doc) do
@@ -77,10 +103,10 @@ multi-parent
       expect(output_files_by_category).to be_a Hash
     end
 
-    context "when the source has multiple paths" do
+    context 'when the source has multiple paths' do
       subject(:parser) { Hologram::DocParser.new(['spec/fixtures/source/colors', 'spec/fixtures/source/components'], nil, plugins) }
 
-      it "parses all sources" do
+      it 'parses all sources' do
         expect(pages['base_css.html'][:md]).to include 'Base colors'
         expect(pages['base_css.html'][:md]).to include 'Background Colors'
       end
@@ -123,6 +149,30 @@ multi-parent
       it 'takes the category in a collection and treats them as the page names' do
         expect(pages.keys).to include 'foo.html'
       end
+
+      context 'when nav_level is set to section' do
+        before do
+          File.open(temp_doc, 'a+'){ |io| io << docs_child }
+          parser.nav_level = 'section'
+        end
+
+        it 'generates navigation to children from their parent' do
+          parser.parse
+          expect(pages['foo.html'][:md]).to include '<li><a href="#otherStyleChild">Other Style Child</a></li>'
+        end
+      end
+
+      context 'when nav_level is not set' do
+        before do
+          File.open(temp_doc, 'a+'){ |io| io << docs_child }
+          parser.nav_level = nil
+        end
+
+        it 'should not generate sub navigation' do
+          parser.parse
+          expect(pages['foo.html'][:md]).not_to include '<li><a href="#otherStyleChild">Other Style Child</a></li>'
+        end
+      end
     end
 
     context 'when a source doc is a child' do
@@ -132,16 +182,26 @@ multi-parent
         FileUtils.rm(temp_doc)
       end
 
-      before do
-        parser.parse
-      end
-
       it 'appends the child doc to the category page' do
+        parser.parse
         expect(pages['base_css.html'][:md]).to include 'Some other style'
       end
 
       it 'assigns the child doc a deeper header' do
+        parser.parse
         expect(pages['base_css.html'][:md]).to include '<h2 id="otherStyle" class="styleguide">Some other style</h2>'
+      end
+
+      context 'when nav_level is set to all' do
+        before do
+          File.open(temp_doc, 'a+'){ |io| io << grandchild_doc }
+          parser.nav_level = 'all'
+        end
+
+        it 'generates navigation to grandchildren from their parent' do
+          parser.parse
+          expect(pages['base_css.html'][:md]).to include '<li><a href="#grandbaby">Grandbaby</a></li>'
+        end
       end
     end
 

@@ -53,10 +53,10 @@ module Hologram
     # sets the header tag based on how deep your nesting is
 
     def markdown_with_heading(heading = 1, opts={})
-      include_section_nav = opts[:include_section_nav] || false
+      include_sub_nav = opts[:include_sub_nav] || false
 
-      output = "\n\n<h#{heading.to_s} id=\"#{@name}\" class=\"#{css_class_name}\">#{@title}</h#{heading.to_s}>"
-      if include_section_nav && !children.empty?
+      output = "\n\n<h#{heading.to_s} id=\"#{@name}\"  class=\"#{css_class_name}\">#{@title}</h#{heading.to_s}>"
+      if include_sub_nav && !children.empty?
         output += "\n<ul class=\"section-nav\">"
         children.values.each do |child|
           output += "\n  <li><a href=\"\##{child.name}\">#{child.title}</a></li>"

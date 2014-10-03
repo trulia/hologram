@@ -128,6 +128,11 @@ Your config file needs to contain the following key/value pairs
   ACTUALLY BEING DOCUMENTED IS LISTED HERE. You will also need to ensure
    that they are included on your pages. A simple way to do this is to add
    `<link>` and `<script src=>` tags to the `_header.html` file.
+   
+* **nav_level**: (optional) Sets the level of section navigation desired. 
+  `section` sets it to show sub navigation in top level sections.  
+  `all` sets it to show sub navigation for all sections. `all` can be a bit 
+  much, you'll probably want `section`.
 
 
 ##### Example config file
@@ -161,6 +166,10 @@ Your config file needs to contain the following key/value pairs
     # Alternatively, you may have an index.md in the documentation assets
     # folder instead of specifying this config.
     index: basics
+    
+	# To output navigation for top level sections, set the value to
+	# 'section'. To output navigation for sub-sections, set the value to `all`
+	nav_level: all
 
 ### Documenting your styles and components
 

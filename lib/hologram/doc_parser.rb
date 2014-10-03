@@ -1,13 +1,13 @@
 module Hologram
   class DocParser
     SUPPORTED_EXTENSIONS = ['.css', '.scss', '.less', '.sass', '.styl', '.js', '.md', '.markdown', '.erb' ]
-    attr_accessor :source_path, :pages, :doc_blocks
+    attr_accessor :source_path, :pages, :doc_blocks, :nav_level
 
     def initialize(source_path, index_name = nil, plugins=[], opts={})
       @plugins = plugins
       @source_paths = Array(source_path)
       @index_name = index_name
-      @include_section_nav = opts[:include_section_nav] || false
+      @nav_level = opts[:nav_level] || 'page'
       @pages = {}
       @output_files_by_category = {}
     end
@@ -134,8 +134,16 @@ module Hologram
         @pages[output_file] = {:md => "", :blocks => []}
       end
 
+
+      if (@nav_level == 'section' && depth == 1) || @nav_level == 'all'
+        include_sub_nav = true
+      else
+        include_sub_nav = false
+      end
+
       @pages[output_file][:blocks].push(doc_block.get_hash)
-      @pages[output_file][:md] << doc_block.markdown_with_heading(depth, include_section_nav: @include_section_nav)
+      @pages[output_file][:md] << doc_block.markdown_with_heading(depth, include_sub_nav: include_sub_nav)
     end
+
   end
 end

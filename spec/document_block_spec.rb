@@ -116,16 +116,16 @@ eos
   end
 
   context '#markdown_with_heading' do
-    context 'when include_section_nav is false' do
+    context 'when include_sub_nav is false' do
       it 'returns markdown with a specified header' do
         expect(doc_block.markdown_with_heading(2)).to eql "\n\n<h2 id=\"foo\" class=\"styleguide\">baz</h2>blah"
       end
     end
 
-    context 'when indluce_section_nav is true' do
+    context 'when include_sub_nav is true' do
       context 'when the component has no children' do
         it 'returns markdown with no nav' do
-          expect(doc_block.markdown_with_heading(2, include_section_nav: true)).to eql "\n\n<h2 id=\"foo\" class=\"styleguide\">baz</h2>blah"
+          expect(doc_block.markdown_with_heading(2, include_sub_nav: true)).to eql "\n\n<h2 id=\"foo\" class=\"styleguide\">baz</h2>blah"
         end
       end
 
@@ -146,7 +146,7 @@ eos
 </ul>
 blah
 eos
-          expect(doc_block.markdown_with_heading(2, include_section_nav: true)).to eql expected_output.rstrip
+          expect(doc_block.markdown_with_heading(2, include_sub_nav: true)).to eql expected_output.rstrip
         end
       end
     end
