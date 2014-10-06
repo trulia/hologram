@@ -204,8 +204,6 @@ describe Hologram::DocBuilder do
   end
 
   context '#build' do
-    let(:style_files) { Dir[File.expand_path('../fixtures/styleguide/**/*.*', __FILE__)] }
-    let(:processed_files) { Dir[File.join(builder.destination, '.', '**/*.*')] }
     let(:config_path) { File.join(Dir.pwd, 'spec/fixtures/source/config.yml') }
     let(:config_copy_path) { File.join(Dir.pwd, 'spec/fixtures/source/config.yml.copy') }
     let(:builder) { Hologram::DocBuilder.from_yaml(config_copy_path) }
@@ -226,9 +224,8 @@ describe Hologram::DocBuilder do
 
     it 'builds a styleguide' do
       builder.build
-      style_files.each_with_index do |file, index|
-        expect(File.read(file)).to eq File.read(processed_files[index])
-      end
+      expect(File.read(File.expand_path('../fixtures/styleguide/base_css.html', __FILE__))).to eq File.read(File.join(builder.destination, '.', 'base_css.html'))
+      expect(File.read(File.expand_path('../fixtures/styleguide/index.html', __FILE__))).to eq File.read(File.join(builder.destination, '.', 'index.html'))
     end
   end
 end
