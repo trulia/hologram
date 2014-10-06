@@ -227,7 +227,7 @@ describe Hologram::DocBuilder do
     it 'builds a styleguide' do
       builder.build
       style_files.each_with_index do |file, index|
-        expect(FileUtils.cmp(file, processed_files[index])).to be_truthy
+        expect(File.read(file)).to eq File.read(processed_files[index])
       end
     end
   end
