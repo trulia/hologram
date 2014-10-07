@@ -55,7 +55,7 @@ module Hologram
     def markdown_with_heading(heading = 1, opts={})
       include_sub_nav = opts[:include_sub_nav] || false
 
-      output = "\n\n<h#{heading.to_s} id=\"#{@name}\"  class=\"#{css_class_name}\">#{@title}</h#{heading.to_s}>"
+      output = "\n\n<h#{heading.to_s} id=\"#{@name}\" class=\"#{css_class_name}\">#{@title}</h#{heading.to_s}>"
       if include_sub_nav && !children.empty?
         output += "\n<ul class=\"section-nav\">"
         children.values.each do |child|
