@@ -204,6 +204,9 @@ For components that require [javascript](https://www.destroyallsoftware.com/talk
 you can use `js_example`. In addition to outputting the javascript in a
 `<code>` block it will also wrap it in a `<script>` tag for execution.
 
+Additionally, html elements that are generated via markdown will have a
+class `styleguide` appended to them. You can use this to apply css to
+the styleguide itself.
 
 #### Document YAML section
 
@@ -277,9 +280,9 @@ The following preprocessors/file types are supported by Hologram:
 - [Grunt Hologram](https://github.com/jchild3rs/grunt-hologram/) is a sweet
   little grunt task that will generate your hologram style guide.
 - [Classname Clicker](https://github.com/bigethan/hologram-addons/) is a handy
-  UI addition that gives the ability to see rules that apply to a classname by 
+  UI addition that gives the ability to see rules that apply to a classname by
   clicking on them within hologram.
-- [Cortana](https://github.com/Yago/Cortana) is a theme for hologram. It also 
+- [Cortana](https://github.com/Yago/Cortana) is a theme for hologram. It also
   includes a handy search feature.
 
 ## Contributing
