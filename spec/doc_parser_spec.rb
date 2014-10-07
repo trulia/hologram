@@ -141,7 +141,7 @@ multi-parent
       end
 
       it 'assigns the child doc a deeper header' do
-        expect(pages['base_css.html'][:md]).to include '<h2 id="otherStyle">Some other style</h2>'
+        expect(pages['base_css.html'][:md]).to include '<h2 id="otherStyle" class="styleguide">Some other style</h2>'
       end
     end
 

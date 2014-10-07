@@ -117,7 +117,7 @@ eos
 
   context '#markdown_with_heading' do
     it 'returns markdown with a specified header' do
-      expect(doc_block.markdown_with_heading(2)).to eql "\n\n<h2 id=\"foo\">baz</h2>blah"
+      expect(doc_block.markdown_with_heading(2)).to eql "\n\n<h2 id=\"foo\" class=\"styleguide\">baz</h2>blah"
     end
   end
 end
