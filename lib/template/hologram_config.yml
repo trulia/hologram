@@ -22,3 +22,8 @@ dependencies:
 # Alternatively, you may have an index.md in the documentation assets
 # folder instead of specifying this config.
 index: basics
+
+# To additionally output navigation for top level sections, set the value to
+# 'section'. To output navigation for sub-sections,
+# set the value to `all`
+nav_level: all
