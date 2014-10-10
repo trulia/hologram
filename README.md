@@ -217,6 +217,29 @@ Additionally, html elements that are generated via markdown will have a
 class `styleguide` appended to them. You can use this to apply css to
 the styleguide itself.
 
+#### Tabular layout for component documentation
+
+If you want the code snippet next to the rendered component, instead of below,
+render your component horizontally by applying the `html_example_table` or
+`haml_example_table` modifiers to the code block.
+
+    /*doc
+    ---
+    title: Buttons
+    name: button
+    category: Base CSS
+    ---
+
+    ```html_example_table
+    <button class="btn btnDefault">Click</button>
+
+    <a class="btn btnDefault" href="trulia.com">Trulia!</a>
+    ```
+
+    */
+
+**NB:** Components separated by a blank line will be rendered as separate table rows.
+
 #### Document YAML section
 
 The YAML in the documentation block can have any
