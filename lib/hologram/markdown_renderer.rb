@@ -1,3 +1,5 @@
+require 'hologram/block_code_renderer'
+
 include ERB::Util
 
 module Hologram
