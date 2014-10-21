@@ -1,6 +1,6 @@
 module Hologram
   class DocumentBlock
-    COMMENT_REGEX = /^\s*---\s(.*?)\s---$/m
+    COMMENT_REGEX = /^\s*---\s(.*?)\s---[\r]?$/m
 
     attr_accessor :name, :parent, :children, :title, :categories, :markdown, :config, :heading, :errors
 
