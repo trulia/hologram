@@ -134,6 +134,11 @@ Your config file needs to contain the following key/value pairs
   `all` sets it to show sub navigation for all sections. `all` can be a bit 
   much, you'll probably want `section`.
 
+* **exit_on_warnings**: (optional) Hologram displays warnings when there
+  are issues with your docs (e.g. if a component's parent is not found,
+  if the _header.html and/or _footer.html files aren't found)
+  If you want Hologram to exit on these warnings, set the value to 'true'
+  (Default value is 'false')
 
 ##### Example config file
 
@@ -166,10 +171,17 @@ Your config file needs to contain the following key/value pairs
     # Alternatively, you may have an index.md in the documentation assets
     # folder instead of specifying this config.
     index: basics
-    
-	# To output navigation for top level sections, set the value to
-	# 'section'. To output navigation for sub-sections, set the value to `all`
-	nav_level: all
+
+    # To output navigation for top level sections, set the value to
+    # 'section'. To output navigation for sub-sections, set the value to `all`
+    nav_level: all
+
+    # Hologram displays warnings when there are issues with your docs
+    # (e.g. if a component's parent is not found, if the _header.html and/or
+    #  _footer.html files aren't found)
+    # If you want Hologram to exit on these warnings, set the value to 'true'
+    # (Default value is 'false')
+    exit_on_warnings: false
 
 ### Documenting your styles and components
 
