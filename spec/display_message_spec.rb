@@ -72,8 +72,10 @@ describe Hologram::DisplayMessage do
     end
 
     context 'when .exit_on_warnings! has been called' do
-      before do
+      around do |example|
         display.exit_on_warnings!
+        example.run
+        display.continue_on_warnings!
       end
 
       it 'exits' do

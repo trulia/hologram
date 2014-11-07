@@ -21,6 +21,10 @@ module Hologram
       @@exit_on_warnings = true
     end
 
+    def self.continue_on_warnings!
+      @@exit_on_warnings = false
+    end
+
     def self.puts(str)
       return if quiet?
       super(str)
