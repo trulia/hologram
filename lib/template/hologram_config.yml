@@ -27,3 +27,10 @@ index: basics
 # 'section'. To output navigation for sub-sections,
 # set the value to `all`
 nav_level: all
+
+# Hologram displays warnings when there are issues with your docs
+# (e.g. if a component's parent is not found, if the _header.html and/or
+#  _footer.html files aren't found)
+# If you want Hologram to exit on these warnings, set the value to 'true'
+# (Default value is 'false')
+exit_on_warnings: false

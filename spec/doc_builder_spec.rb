@@ -131,6 +131,32 @@ describe Hologram::DocBuilder do
     end
   end
 
+  context '#initialize' do
+    subject { Hologram::DocBuilder.new(config) }
+
+    context 'when the "exit_on_warnings" option is passed in as true' do
+      let(:config) do
+        { 'exit_on_warnings' => true }
+      end
+
+      it 'calls DisplayMessage.exit_on_warnings!' do
+        expect(Hologram::DisplayMessage).to receive(:exit_on_warnings!)
+        subject
+      end
+    end
+
+    context 'when the "exit_on_warnings" option is not passed in' do
+      let(:config) do
+        { }
+      end
+
+      it 'does not call DisplayMessage.exit_on_warnings!' do
+        expect(Hologram::DisplayMessage).not_to receive(:exit_on_warnings!)
+        subject
+      end
+    end
+  end
+
   context '#is_valid?' do
 
     let(:config) do

@@ -1,6 +1,7 @@
 module Hologram
   module DisplayMessage
     @@quiet = false
+    @@exit_on_warnings = false
 
     def self.quiet!
       @@quiet = true
@@ -14,6 +15,14 @@ module Hologram
 
     def self.quiet?
       @@quiet
+    end
+
+    def self.exit_on_warnings!
+      @@exit_on_warnings = true
+    end
+
+    def self.continue_on_warnings!
+      @@exit_on_warnings = false
     end
 
     def self.puts(str)
@@ -45,6 +54,10 @@ module Hologram
 
     def self.warning(message)
       puts yellow("Warning: #{message}")
+      if @@exit_on_warnings
+        puts red("Exiting due to warning")
+        exit 1
+      end
     end
 
     def self.success(message)

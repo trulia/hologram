@@ -60,9 +60,27 @@ describe Hologram::DisplayMessage do
   end
 
   context '.warning' do
+    around do |example|
+      display.quiet!
+      example.run
+      display.show!
+    end
+
     it 'displays a warning message in yellow' do
       expect(display).to receive(:puts).with("\e[33mWarning: foo\e[0m")
       display.warning('foo')
+    end
+
+    context 'when .exit_on_warnings! has been called' do
+      around do |example|
+        display.exit_on_warnings!
+        example.run
+        display.continue_on_warnings!
+      end
+
+      it 'exits' do
+        expect{ display.warning('foo') }.to raise_error SystemExit
+      end
     end
   end
 
