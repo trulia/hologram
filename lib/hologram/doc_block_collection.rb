@@ -15,7 +15,11 @@ module Hologram
         return
       end
 
-      @doc_blocks[doc_block.name] = doc_block
+      if @doc_blocks.has_key?(doc_block.name)
+        DisplayMessage.warning("Multiple Hologram comments with name: #{doc_block.name}.")
+      else
+        @doc_blocks[doc_block.name] = doc_block
+      end
       return doc_block
     end
 

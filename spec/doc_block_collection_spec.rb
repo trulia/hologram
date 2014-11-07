@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Hologram::DocBlockCollection do
   let(:comment) do
-   comment = <<comment
+    <<-comment
 /*doc
 ---
 title: Buttons
@@ -47,6 +47,31 @@ comment
 
       it 'does not add a new block' do
         expect(collection.doc_blocks.size).to eql 0
+      end
+    end
+
+    context 'when the block has the same name as another block in the collection' do
+      let(:duplicate_comment) do
+        <<-comment
+/*doc
+---
+title: Imposter Buttons
+name: button
+category: Base CSS
+---
+
+Same old stuff
+*/
+comment
+      end
+
+      before do
+        collection.add_doc_block(comment, 'fake_file.sass')
+      end
+
+      it 'displays a warning' do
+        expect(Hologram::DisplayMessage).to receive(:warning)
+        collection.add_doc_block(duplicate_comment, 'fake_file.sass')
       end
     end
   end
