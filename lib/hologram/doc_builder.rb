@@ -48,6 +48,11 @@ module Hologram
       @config_yml = options['config_yml']
       @plugins = Plugins.new(options.fetch('config_yml', {}), extra_args)
       @nav_level = options['nav_level'] || 'page'
+      @exit_on_warnings = options['exit_on_warnings']
+
+      if @exit_on_warnings
+        DisplayMessage.exit_on_warnings!
+      end
     end
 
     def build
