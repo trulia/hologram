@@ -1,3 +1,5 @@
+require 'hologram/link_helper'
+
 module Hologram
   class DocBuilder
     attr_accessor :source, :destination, :documentation_assets, :dependencies, :index, :base_path, :renderer, :doc_blocks, :pages, :config_yml
@@ -174,10 +176,23 @@ module Hologram
           if page.has_key?(:erb)
             write_erb(file_name, page[:erb], tpl_vars.get_binding)
           else
-            write_page(file_name, markdown.render(page[:md]), tpl_vars.get_binding)
+            write_page(file_name, markdown.render(link_defs + "\n" + page[:md]), tpl_vars.get_binding)
           end
         end
       end
+    end
+
+    def link_defs
+      @_link_defs ||= link_helper.all_links.map { |c_name, link| "[#{c_name}]: #{link}" }.join("\n")
+    end
+
+    def link_helper
+      @_link_helper ||= LinkHelper.new(@pages.map { |page|
+        {
+          name: page[0],
+          component_names: page[1][:blocks].map { |component| component[:name] }
+        }
+      })
     end
 
     def write_erb(file_name, content, binding)

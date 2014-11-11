@@ -33,6 +33,18 @@ module Hologram
       BlockCodeRenderer.new(code, language).render
     end
 
+    def postprocess(full_document)
+      invalid_links = full_document.scan(/(?: \[ [\s\w]+ \]){2}/x)
+
+      invalid_links.each do |invalid_link|
+        component = /\[.+\]/.match(invalid_link)[1]
+        DisplayMessage.warning("Invalid reference link - #{invalid_link}." +
+                               "Presumably the component #{component} does not exist.")
+      end
+
+      full_document
+    end
+
     def css_class_name
       'styleguide'
     end
