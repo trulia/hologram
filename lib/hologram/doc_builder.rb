@@ -159,7 +159,8 @@ module Hologram
     end
 
     def write_docs
-      markdown = Redcarpet::Markdown.new(renderer, { :fenced_code_blocks => true, :tables => true })
+      renderer_instance = renderer.new(link_helper: link_helper)
+      markdown = Redcarpet::Markdown.new(renderer_instance, { :fenced_code_blocks => true, :tables => true })
       tpl_vars = TemplateVariables.new({:categories => @categories, :config => @config_yml, :pages => @pages})
       #generate html from markdown
       @pages.each do |file_name, page|
@@ -176,14 +177,10 @@ module Hologram
           if page.has_key?(:erb)
             write_erb(file_name, page[:erb], tpl_vars.get_binding)
           else
-            write_page(file_name, markdown.render(link_defs + "\n" + page[:md]), tpl_vars.get_binding)
+            write_page(file_name, markdown.render(page[:md]), tpl_vars.get_binding)
           end
         end
       end
-    end
-
-    def link_defs
-      @_link_defs ||= link_helper.all_links.map { |c_name, link| "[#{c_name}]: #{link}" }.join("\n")
     end
 
     def link_helper
