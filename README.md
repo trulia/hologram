@@ -118,7 +118,8 @@ Your config file needs to contain the following key/value pairs
 * **custom_markdown**: (optional) this is the filename of a class that
   extends RedCarpet::Render::HTML class. Use this for when you need
   additional classes or html tags for different parts of the page.  See
-  `example_markdown_renderer.rb.example` for an example of what your
+  [example_markdown_renderer.rb.example]
+  (example_markdown_renderer.rb.example) for an example of what your
   class can look like.
 
 * **index**: (optional) this is a category (see **Documenting your
