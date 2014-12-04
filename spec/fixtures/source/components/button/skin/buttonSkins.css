@@ -5,6 +5,8 @@ name: buttonSkins
 title: Button Styles
 ---
 
+For buttons, see [the buttons docs][button].
+
 Button                                            | Class             | Description
 ------------------------------------------------- | ----------------- | -----------
 <button class="btn btnDefault">Default</button>   | `btn btnDefault`  | This is what buttons look like, this is the go to button style.

@@ -1,3 +1,5 @@
+require 'hologram/link_helper'
+
 module Hologram
   class DocBuilder
     attr_accessor :source, :destination, :documentation_assets, :dependencies, :index, :base_path, :renderer, :doc_blocks, :pages, :config_yml
@@ -157,7 +159,8 @@ module Hologram
     end
 
     def write_docs
-      markdown = Redcarpet::Markdown.new(renderer, { :fenced_code_blocks => true, :tables => true })
+      renderer_instance = renderer.new(link_helper: link_helper)
+      markdown = Redcarpet::Markdown.new(renderer_instance, { :fenced_code_blocks => true, :tables => true })
       tpl_vars = TemplateVariables.new({:categories => @categories, :config => @config_yml, :pages => @pages})
       #generate html from markdown
       @pages.each do |file_name, page|
@@ -178,6 +181,15 @@ module Hologram
           end
         end
       end
+    end
+
+    def link_helper
+      @_link_helper ||= LinkHelper.new(@pages.map { |page|
+        {
+          name: page[0],
+          component_names: page[1][:blocks].map { |component| component[:name] }
+        }
+      })
     end
 
     def write_erb(file_name, content, binding)

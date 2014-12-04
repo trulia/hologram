@@ -4,6 +4,11 @@ include ERB::Util
 
 module Hologram
   class MarkdownRenderer < Redcarpet::Render::HTML
+    def initialize(opts={})
+      super(opts)
+      @link_helper = opts[:link_helper]
+    end
+
     def list(contents, list_type)
       case list_type
       when :ordered
@@ -33,8 +38,36 @@ module Hologram
       BlockCodeRenderer.new(code, language).render
     end
 
+    def preprocess(full_document)
+      if link_helper
+        link_defs + "\n" + full_document
+      else
+        full_document
+      end
+    end
+
+    def postprocess(full_document)
+      invalid_links = full_document.scan(/(?: \[ [\s\w]+ \]){2}/x)
+
+      invalid_links.each do |invalid_link|
+        component = /\[.+\]/.match(invalid_link)[1]
+        DisplayMessage.warning("Invalid reference link - #{invalid_link}." +
+                               "Presumably the component #{component} does not exist.")
+      end
+
+      full_document
+    end
+
     def css_class_name
       'styleguide'
+    end
+
+    private
+
+    attr_reader :link_helper
+
+    def link_defs
+      @_link_defs ||= link_helper.all_links.map { |c_name, link| "[#{c_name}]: #{link}" }.join("\n")
     end
   end
 end

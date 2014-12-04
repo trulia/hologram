@@ -255,6 +255,29 @@ render your component horizontally by applying the `html_example_table` or
 
 **NB:** Components separated by a blank line will be rendered as separate table rows.
 
+#### Referencing other components
+
+For some components, you may want to reference the documentation of another component.
+As an example, you may want your link components to link to the button documentation.
+
+    /*doc
+    ---
+    title: Links
+    name: links
+    category: Other Category
+    ---
+	
+	...
+
+    You may want to use a button for a link.
+    See [the button documentation][button] for more info.
+
+    */
+
+You can use a reference link of the form `[link description][component_name]`
+to link to any other component in the styleguide.
+These links will even work if the referenced component belongs to a different category.
+
 #### Document YAML section
 
 The YAML in the documentation block can have any
