@@ -26,7 +26,7 @@ module Hologram
       @config   = config
       @name     = config['name']
       @categories = Array(config['category'] || config['categories'])
-      @title    = config['title']
+      @title    = h(config['title'])
       @parent   = config['parent']
       @markdown = markdown
 
