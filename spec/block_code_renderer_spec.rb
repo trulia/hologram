@@ -238,6 +238,36 @@ describe Hologram::BlockCodeRenderer do
           "</div>",
         ].join('') }
       end
+
+      context 'jsx_example' do
+        let(:language) { 'jsx' }
+        let(:markdown_language) { 'jsx_example' }
+        let(:code) { '$(document).ready(function () { React.render(<div className="foo"></div>) });' }
+        let(:formatted_code) { 'formatted document.ready' }
+
+        it 'creates the appropriate lexer' do
+          expect(Rouge::Lexer).to receive(:find).with('html')
+          subject
+        end
+
+        it "inserts the code into the docs so that it will run and make the example work" do
+          expect(subject).to include [
+            "<script type='text/jsx'>",
+              "$(document).ready(function () { React.render(<div className=\"foo\"></div>) });",
+            "</script> ",
+          ].join('')
+        end
+
+        it { is_expected.to include [
+          "<div class=\"codeBlock jsExample\">",
+            "<div class=\"highlight\">",
+              "<pre>",
+                "formatted document.ready",
+              "</pre>",
+            "</div>",
+          "</div>",
+        ].join('') }
+      end
     end
 
     context 'unexpected language' do
