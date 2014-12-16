@@ -1,7 +1,7 @@
 module Hologram
   class BlockCodeRenderer < Struct.new(:code, :markdown_language)
     def render
-      if is_html? || is_haml?
+      if is_html? || is_haml? || is_slim?
         if is_table?
           [
             "<div class=\"codeTable\">",
@@ -56,6 +56,10 @@ module Hologram
       markdown_language && markdown_language == 'jsx_example'
     end
 
+    def is_slim?
+      markdown_language && markdown_language == 'slim_example'
+    end
+
     def is_table?
       markdown_language && markdown_language.include?('example_table')
     end
@@ -71,6 +75,8 @@ module Hologram
     def rendered_code_snippet(code_snippet)
       if is_haml?
         haml_engine(code_snippet).render(Object.new, {})
+      elsif is_slim?
+        slim_engine(code_snippet).render(Object.new, {})
       else
         code_snippet
       end
@@ -115,11 +121,18 @@ module Hologram
       Haml::Engine.new(code_snippet.strip)
     end
 
+    def slim_engine(code_snippet)
+      safe_require 'slim', markdown_language
+      Slim::Template.new { code_snippet.strip }
+    end
+
     def lexer
       @_lexer ||= if is_html?
         Rouge::Lexer.find('html')
       elsif is_haml?
         Rouge::Lexer.find('haml')
+      elsif is_slim?
+        Rouge::Lexer.find('slim')
       elsif is_js?
         Rouge::Lexer.find('js')
       elsif is_jsx?
