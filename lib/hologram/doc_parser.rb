@@ -85,7 +85,7 @@ module Hologram
       # get any comment blocks that match the patterns:
       # .sass: //doc (follow by other lines proceeded by a space)
       # other types: /*doc ... */
-      if file.end_with?('.sass')
+      if file.end_with?('.sass', '.scss')
         hologram_comments = file_str.scan(/\s*\/\/doc\s*((( [^\n]*\n)|\n)+)/)
       else
         hologram_comments = file_str.scan(/^\s*\/\*doc(.*?)\*\//m)
