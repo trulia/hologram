@@ -349,6 +349,7 @@ The following preprocessors/file types are supported by Hologram:
   and rebuilds your style guide on the fly as you make changes.
 - [Grunt Hologram](https://github.com/jchild3rs/grunt-hologram/) is a sweet
   little grunt task that will generate your hologram style guide.
+- [Hologram Plugin for Gulp](https://gist.github.com/jchild3rs/470be49a4bc4caf3ca8a) is a gulp task for hologram.
 - [Classname Clicker](https://github.com/bigethan/hologram-addons/) is a handy
   UI addition that gives the ability to see rules that apply to a classname by
   clicking on them within hologram.
