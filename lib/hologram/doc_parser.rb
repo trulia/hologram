@@ -86,9 +86,16 @@ module Hologram
       # .sass: //doc (follow by other lines proceeded by a space)
       # other types: /*doc ... */
       if file.end_with?('.sass')
-        hologram_comments = file_str.scan(/\s*\/\/doc\s*((( [^\n]*\n)|\n)+)/)
+        #For sass strip out leading white spaces after we get the
+        #comment, this fixes haml when using this comment style
+        hologram_comments = file_str.scan(/\s*\/\/doc\s*((( [^\n]*\n)|\n)+)/).map{ |arr| [arr[0].gsub(/^[ \t]{2}/,'')] }
       else
         hologram_comments = file_str.scan(/^\s*\/\*doc(.*?)\*\//m)
+
+        #check if scss file has sass comments
+        if hologram_comments.length == 0 and file.end_with?('.scss')
+          hologram_comments = file_str.scan(/\s*\/\/doc\s*((( [^\n]*\n)|\n)+)/).map{ |arr| [arr[0].gsub(/^[ \t]{2}/,'')] }
+        end
       end
       return unless hologram_comments
 
