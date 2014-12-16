@@ -139,8 +139,8 @@ module Hologram
         # ignore . and .. directories and files that start with
         # underscore
         next if item == '.' or item == '..' or item.start_with?('_')
-        `rm -rf #{output_dir}/#{item}`
-        `cp -R #{doc_assets_dir}/#{item} #{output_dir}/#{item}`
+        FileUtils.rm "#{output_dir}/#{item}", :force => true
+        FileUtils.cp_r "#{doc_assets_dir}/#{item}", "#{output_dir}/#{item}"
       end
     end
 
@@ -149,8 +149,8 @@ module Hologram
         begin
           dirpath  = Pathname.new(dir).realpath
           if File.directory?("#{dir}")
-            `rm -rf #{output_dir}/#{dirpath.basename}`
-            `cp -R #{dirpath} #{output_dir}/#{dirpath.basename}`
+            FileUtils.rm "#{output_dir}/#{dirpath.basename}", :force => true
+            FileUtils.cp_r "#{dirpath}", "#{output_dir}/#{dirpath.basename}"
           end
         rescue
           DisplayMessage.warning("Could not copy dependency: #{dir}")
