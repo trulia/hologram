@@ -185,10 +185,17 @@ module Hologram
 
     def link_helper
       @_link_helper ||= LinkHelper.new(@pages.map { |page|
+        if not page[1][:blocks].nil?
         {
           name: page[0],
           component_names: page[1][:blocks].map { |component| component[:name] }
         }
+        else
+        {
+          name: page[0],
+          component_names: {}
+        }
+        end
       })
     end
 
