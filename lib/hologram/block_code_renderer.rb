@@ -27,6 +27,12 @@ module Hologram
           code_block(code, extra_classes: ['jsExample'])
         ].join('')
 
+      elsif is_jsx?
+        [
+          "<script type='text/jsx'>#{code}</script> ",
+          code_block(code, extra_classes: ['jsExample'])
+        ].join('')
+
       else
         code_block(code)
       end
@@ -44,6 +50,10 @@ module Hologram
 
     def is_js?
       markdown_language && markdown_language == 'js_example'
+    end
+
+    def is_jsx?
+      markdown_language && markdown_language == 'jsx_example'
     end
 
     def is_table?
@@ -112,6 +122,8 @@ module Hologram
         Rouge::Lexer.find('haml')
       elsif is_js?
         Rouge::Lexer.find('js')
+      elsif is_jsx?
+        Rouge::Lexer.find('html')
       else
         Rouge::Lexer.find_fancy('guess', code)
       end
