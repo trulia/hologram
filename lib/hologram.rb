@@ -26,6 +26,7 @@ module Hologram
   INIT_TEMPLATE_FILES = [
     INIT_TEMPLATE_PATH + '/hologram_config.yml',
     INIT_TEMPLATE_PATH + '/doc_assets',
+    INIT_TEMPLATE_PATH + '/code_example_templates',
   ]
 end
 

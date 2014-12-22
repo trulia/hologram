@@ -1,7 +1,13 @@
 require 'erb'
 
 module Hologram
-  class BlockCodeRenderer < Struct.new(:code, :markdown_language)
+  class BlockCodeRenderer
+    def initialize(code, markdown_language, opts={})
+      @code = code
+      @markdown_language = markdown_language
+      @path_to_custom_example_templates = opts[:path_to_custom_example_templates]
+    end
+
     def render
       if is_html? || is_haml? || is_slim?
         if is_table?
@@ -40,24 +46,34 @@ module Hologram
 
     private
 
+    attr_reader :code, :markdown_language, :path_to_custom_example_templates
+
+    def template_filename(file)
+      if path_to_custom_example_templates && File.file?(custom_file(file))
+        custom_file(file)
+      else
+        File.join(File.dirname(__FILE__), '..', 'template', 'code_example_templates', "#{file}.html.erb")
+      end
+    end
+
+    def custom_file(file)
+      File.join(path_to_custom_example_templates, "#{file}.html.erb")
+    end
+
     def markup_example_template
-      filename = File.join(File.dirname(__FILE__), '..', 'template', 'code_example_templates', 'markup_example_template.html.erb')
-      File.read(filename).gsub(/\n */, '')
+      File.read(template_filename('markup_example_template')).gsub(/\n */, '')
     end
 
     def markup_table_template
-      filename = File.join(File.dirname(__FILE__), '..', 'template', 'code_example_templates', 'markup_table_template.html.erb')
-      File.read(filename).gsub(/\n */, '')
+      File.read(template_filename('markup_table_template')).gsub(/\n */, '')
     end
 
     def js_example_template
-      filename = File.join(File.dirname(__FILE__), '..', 'template', 'code_example_templates', 'js_example_template.html.erb')
-      File.read(filename).gsub(/\n */, '')
+      File.read(template_filename('js_example_template')).gsub(/\n */, '')
     end
 
     def jsx_example_template
-      filename = File.join(File.dirname(__FILE__), '..', 'template', 'code_example_templates', 'jsx_example_template.html.erb')
-      File.read(filename).gsub(/\n */, '')
+      File.read(template_filename('jsx_example_template')).gsub(/\n */, '')
     end
 
     def unknown_example_template
