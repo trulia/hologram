@@ -254,7 +254,7 @@ describe Hologram::BlockCodeRenderer do
           expect(subject).to include [
             "<script>",
               "$(document).ready(function() {});",
-            "</script> ",
+            "</script>",
           ].join('')
         end
 
@@ -284,7 +284,7 @@ describe Hologram::BlockCodeRenderer do
           expect(subject).to include [
             "<script type='text/jsx'>",
               "$(document).ready(function () { React.render(<div className=\"foo\"></div>) });",
-            "</script> ",
+            "</script>",
           ].join('')
         end
 

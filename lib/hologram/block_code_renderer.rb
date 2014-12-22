@@ -12,7 +12,7 @@ module Hologram
           elsif is_slim?
             examples = code.split("\n\n").map { |code_snippit| SlimExample.new(code_snippit) }
           end
-          ERB.new(code_table_template).result(binding)
+          ERB.new(markup_table_template).result(binding)
         else
           if is_html?
             example = HtmlExample.new(code)
@@ -21,7 +21,7 @@ module Hologram
           elsif is_slim?
             example = SlimExample.new(code)
           end
-          ERB.new(code_example_template).result(example.get_binding)
+          ERB.new(markup_example_template).result(example.get_binding)
         end
 
       elsif is_js?
@@ -40,76 +40,24 @@ module Hologram
 
     private
 
-    def code_example_template
-      [
-        "<div class=\"codeExample\">",
-          "<div class=\"exampleOutput\">",
-            "<%= rendered_example %>",
-          "</div>",
-          "<div class=\"codeBlock\">",
-            "<div class=\"highlight\">",
-              "<pre>",
-                "<%= code_example %>",
-              "</pre>",
-            "</div>",
-          "</div>",
-        "</div>"
-      ].join('')
+    def markup_example_template
+      filename = File.join(File.dirname(__FILE__), '..', 'template', 'code_example_templates', 'markup_example_template.html.erb')
+      File.read(filename).gsub(/\n */, '')
     end
 
-    def code_table_template
-      [
-        "<div class=\"codeTable\">",
-          "<table>",
-            "<tbody>",
-              "<% examples.each do |example| %>",
-                "<tr>",
-                  "<th>",
-                    "<div class=\"exampleOutput\">",
-                      "<%= example.rendered_example %>",
-                    "</div>",
-                  "</th>",
-                  "<td>",
-                    "<div class=\"codeBlock\">",
-                      "<div class=\"highlight\">",
-                        "<pre>",
-                          "<%= example.code_example %>",
-                        "</pre>",
-                      "</div>",
-                    "</div>",
-                  "</td>",
-                "</tr>",
-              "<% end %>",
-            "</tbody>",
-          "</table>",
-        "</div>",
-      ].join('')
+    def markup_table_template
+      filename = File.join(File.dirname(__FILE__), '..', 'template', 'code_example_templates', 'markup_table_template.html.erb')
+      File.read(filename).gsub(/\n */, '')
     end
 
     def js_example_template
-      [
-        "<script><%= rendered_example %></script> ",
-        "<div class=\"codeBlock jsExample\">",
-          "<div class=\"highlight\">",
-            "<pre>",
-              "<%= code_example %>",
-            "</pre>",
-          "</div>",
-        "</div>",
-      ].join('')
+      filename = File.join(File.dirname(__FILE__), '..', 'template', 'code_example_templates', 'js_example_template.html.erb')
+      File.read(filename).gsub(/\n */, '')
     end
 
     def jsx_example_template
-      [
-        "<script type='text/jsx'><%= rendered_example %></script> ",
-        "<div class=\"codeBlock jsExample\">",
-          "<div class=\"highlight\">",
-            "<pre>",
-              "<%= code_example %>",
-            "</pre>",
-          "</div>",
-        "</div>",
-      ].join('')
+      filename = File.join(File.dirname(__FILE__), '..', 'template', 'code_example_templates', 'jsx_example_template.html.erb')
+      File.read(filename).gsub(/\n */, '')
     end
 
     def unknown_example_template
