@@ -20,6 +20,36 @@ describe Hologram::BlockCodeRenderer do
         allow(Rouge::Lexer).to receive(:find) { lexer }
       end
 
+      context 'slim' do
+        let(:language) { 'slim' }
+        let(:code) { 'h1 Markup Example' }
+        let(:formatted_code) { 'formatted h1' }
+
+        context 'when the language is a slim_example' do
+          let(:markdown_language) { 'slim_example' }
+
+          it 'creates the appropriate lexer' do
+            expect(Rouge::Lexer).to receive(:find).with('slim')
+            subject
+          end
+
+          it { is_expected.to eq [
+            "<div class=\"codeExample\">",
+              "<div class=\"exampleOutput\">",
+                "<h1>Markup Example</h1>",
+              "</div>",
+              "<div class=\"codeBlock\">",
+                "<div class=\"highlight\">",
+                  "<pre>",
+                    "formatted h1",
+                  "</pre>",
+                "</div>",
+              "</div>",
+            "</div>",
+          ].join('') }
+        end
+      end
+
       context 'haml' do
         let(:language) { 'haml' }
         let(:code) { '%h1 ' }
