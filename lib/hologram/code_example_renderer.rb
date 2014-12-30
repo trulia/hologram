@@ -1,22 +1,18 @@
-Dir[File.join(File.dirname(__FILE__), 'code_example_renderer', '*')].each do |file|
-  require file
-end
+require 'hologram/code_example_renderer/example'
+require 'hologram/code_example_renderer/template'
 
 module Hologram
   module CodeExampleRenderer
     class << self
+      def register(example_type, args)
+        example_types[example_type] = {
+          example_class: args[:example_class]
+        }
+      end
+
       def example_class_for(example_type)
-        case example_type
-        when 'html'
-          HtmlExample
-        when 'haml'
-          HamlExample
-        when 'slim'
-          SlimExample
-        when 'js'
-          JsExample
-        when 'jsx'
-          JsxExample
+        if example_types.has_key?(example_type)
+          example_types[example_type][:example_class]
         else
           Example
         end
@@ -54,6 +50,19 @@ module Hologram
           nil
         end
       end
+
+      private
+
+      def example_types
+        @example_types ||= Hash.new
+      end
     end
   end
 end
+
+require 'hologram/code_example_renderer/factory'
+
+Dir[File.join(File.dirname(__FILE__), 'code_example_renderer', 'renderers', '*.rb')].each do |file|
+  require file
+end
+

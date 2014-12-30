@@ -22,14 +22,6 @@ module Hologram
       def lexer
         @_lexer ||= Rouge::Lexer.find_fancy('guess', code)
       end
-
-      def safe_require(templating_library, language)
-        begin
-          require templating_library
-        rescue LoadError
-          raise "#{templating_library} must be present for you to use #{language}"
-        end
-      end
     end
   end
 end
