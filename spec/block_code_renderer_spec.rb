@@ -2,6 +2,8 @@ require 'spec_helper'
 require 'hologram/block_code_renderer'
 require 'haml'
 
+Hologram::CodeExampleRenderer.load_renderers_and_templates
+
 describe Hologram::BlockCodeRenderer do
   describe '#render' do
     let(:formatter) { double(:formatter) }

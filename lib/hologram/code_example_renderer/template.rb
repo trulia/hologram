@@ -2,10 +2,12 @@ module Hologram
   module CodeExampleRenderer
     class Template < Struct.new(:template_name)
       def template
+        return nil if !template_filename
         File.read(template_filename).gsub(/\n */, '')
       end
 
       def template_filename
+        return nil if !template_name
         custom_file_exists? ? custom_file : default_file
       end
 

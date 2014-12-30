@@ -170,7 +170,7 @@ module Hologram
     end
 
     def write_docs
-      set_paths_to_custom_code_examples
+      load_code_example_templates_and_renderers
 
       renderer_instance = renderer.new(link_helper: link_helper)
       markdown = Redcarpet::Markdown.new(renderer_instance, { :fenced_code_blocks => true, :tables => true })
@@ -196,10 +196,12 @@ module Hologram
       end
     end
 
-    def set_paths_to_custom_code_examples
+    def load_code_example_templates_and_renderers
       if @code_example_templates
         CodeExampleRenderer::Template.path_to_custom_example_templates = real_path(@code_example_templates)
       end
+
+      CodeExampleRenderer.load_renderers_and_templates
     end
 
     def link_helper
