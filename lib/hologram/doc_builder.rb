@@ -170,7 +170,9 @@ module Hologram
     end
 
     def write_docs
-      renderer_instance = renderer.new(link_helper: link_helper, path_to_custom_example_templates: path_to_custom_example_templates)
+      set_paths_to_custom_code_examples
+
+      renderer_instance = renderer.new(link_helper: link_helper)
       markdown = Redcarpet::Markdown.new(renderer_instance, { :fenced_code_blocks => true, :tables => true })
       tpl_vars = TemplateVariables.new({:categories => @categories, :config => @config_yml, :pages => @pages})
       #generate html from markdown
@@ -194,8 +196,10 @@ module Hologram
       end
     end
 
-    def path_to_custom_example_templates
-      @code_example_templates ? real_path(@code_example_templates) : nil
+    def set_paths_to_custom_code_examples
+      if @code_example_templates
+        CodeExampleRenderers.path_to_custom_example_templates = real_path(@code_example_templates)
+      end
     end
 
     def link_helper

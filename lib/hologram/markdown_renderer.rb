@@ -7,7 +7,6 @@ module Hologram
     def initialize(opts={})
       super(opts)
       @link_helper = opts[:link_helper]
-      @path_to_custom_example_templates = opts[:path_to_custom_example_templates]
     end
 
     def list(contents, list_type)
@@ -36,8 +35,7 @@ module Hologram
     end
 
     def block_code(code, language)
-      opts = { path_to_custom_example_templates: path_to_custom_example_templates }
-      BlockCodeRenderer.new(code, language, opts).render
+      BlockCodeRenderer.new(code, language).render
     end
 
     def preprocess(full_document)
@@ -66,7 +64,7 @@ module Hologram
 
     private
 
-    attr_reader :link_helper, :path_to_custom_example_templates
+    attr_reader :link_helper
 
     def link_defs
       @_link_defs ||= link_helper.all_links.map { |c_name, link| "[#{c_name}]: #{link}" }.join("\n")
