@@ -25,15 +25,15 @@ module Hologram
       def example_template_for(example_type)
         case example_type
         when 'html'
-          File.read(template_filename('markup_example_template')).gsub(/\n */, '')
+          Template.new('markup_example_template').template
         when 'haml'
-          File.read(template_filename('markup_example_template')).gsub(/\n */, '')
+          Template.new('markup_example_template').template
         when 'slim'
-          File.read(template_filename('markup_example_template')).gsub(/\n */, '')
+          Template.new('markup_example_template').template
         when 'js'
-          File.read(template_filename('js_example_template')).gsub(/\n */, '')
+          Template.new('js_example_template').template
         when 'jsx'
-          File.read(template_filename('jsx_example_template')).gsub(/\n */, '')
+          Template.new('jsx_example_template').template
         else
           [
             "<div class=\"codeBlock\">",
@@ -49,31 +49,11 @@ module Hologram
 
       def table_template_for(example_type)
         if ['html', 'haml', 'slim'].include?(example_type)
-          File.read(template_filename('markup_table_template')).gsub(/\n */, '')
+          Template.new('markup_table_template').template
         else
           nil
         end
       end
-
-      attr_writer :path_to_custom_example_templates
-    end
-
-    private
-
-    class << self
-      def template_filename(file)
-        if path_to_custom_example_templates && File.file?(custom_file(file))
-          custom_file(file)
-        else
-          File.join(File.dirname(__FILE__), '..', 'template', 'code_example_templates', "#{file}.html.erb")
-        end
-      end
-
-      def custom_file(file)
-        File.join(path_to_custom_example_templates, "#{file}.html.erb")
-      end
-
-      attr_reader :path_to_custom_example_templates
     end
   end
 end
