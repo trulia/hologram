@@ -1,5 +1,5 @@
 module Hologram
-  module CodeExampleRenderers
+  module CodeExampleRenderer
     class JsxExample < Example
       private
 

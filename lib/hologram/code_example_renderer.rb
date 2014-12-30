@@ -1,9 +1,9 @@
-Dir[File.join(File.dirname(__FILE__), 'code_example_renderers', '*')].each do |file|
+Dir[File.join(File.dirname(__FILE__), 'code_example_renderer', '*')].each do |file|
   require file
 end
 
 module Hologram
-  module CodeExampleRenderers
+  module CodeExampleRenderer
     class << self
       def example_class_for(example_type)
         case example_type

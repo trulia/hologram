@@ -1,5 +1,5 @@
 module Hologram
-  module CodeExampleRenderers
+  module CodeExampleRenderer
     class Example < Struct.new(:code)
       def rendered_example
         code

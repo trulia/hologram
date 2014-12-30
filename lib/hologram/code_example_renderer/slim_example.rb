@@ -1,5 +1,5 @@
 module Hologram
-  module CodeExampleRenderers
+  module CodeExampleRenderer
     class SlimExample < Example
       def rendered_example
         slim_engine.render(Object.new, {})

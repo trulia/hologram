@@ -198,7 +198,7 @@ module Hologram
 
     def set_paths_to_custom_code_examples
       if @code_example_templates
-        CodeExampleRenderers.path_to_custom_example_templates = real_path(@code_example_templates)
+        CodeExampleRenderer.path_to_custom_example_templates = real_path(@code_example_templates)
       end
     end
 

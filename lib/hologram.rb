@@ -17,8 +17,8 @@ require 'hologram/display_message'
 require 'hologram/errors'
 require 'hologram/utils'
 require 'hologram/markdown_renderer'
-require 'hologram/code_example_renderers/example'
-require 'hologram/code_example_renderers'
+require 'hologram/code_example_renderer/example'
+require 'hologram/code_example_renderer'
 
 Encoding.default_internal = Encoding::UTF_8
 Encoding.default_external = Encoding::UTF_8

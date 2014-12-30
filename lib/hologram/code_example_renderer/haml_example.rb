@@ -1,5 +1,5 @@
 module Hologram
-  module CodeExampleRenderers
+  module CodeExampleRenderer
     class HamlExample < Example
       def rendered_example
         haml_engine.render(Object.new, {})

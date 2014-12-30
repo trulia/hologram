@@ -22,15 +22,15 @@ module Hologram
     attr_reader :code, :markdown_language
 
     def example_class
-      CodeExampleRenderers.example_class_for(example_type)
+      CodeExampleRenderer.example_class_for(example_type)
     end
 
     def example_template
-      CodeExampleRenderers.example_template_for(example_type)
+      CodeExampleRenderer.example_template_for(example_type)
     end
 
     def table_template
-      CodeExampleRenderers.table_template_for(example_type)
+      CodeExampleRenderer.table_template_for(example_type)
     end
 
     def example_type
