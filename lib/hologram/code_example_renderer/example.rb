@@ -6,7 +6,7 @@ module Hologram
       end
 
       def code_example
-        formatter.format(lexer.lex(code))
+        formatter.format(lexer.lex(code)).strip
       end
 
       def get_binding

@@ -84,11 +84,20 @@ specific components and modules on the page.</p>
 
 <h1 id="button" class="styleguide">Buttons</h1>
 <p class="styleguide">Button styles can be applied to any element. Typically you&#39;ll want to
-use either a <code class="styleguide">&lt;button&gt;</code> or an <code class="styleguide">&lt;a&gt;</code> element:</p><div class="codeExample"><div class="exampleOutput"><button class="btn btnDefault">Click</button>
+use either a <code class="styleguide">&lt;button&gt;</code> or an <code class="styleguide">&lt;a&gt;</code> element:</p><div class="codeExample">
+  <div class="exampleOutput">
+    <button class="btn btnDefault">Click</button>
 <a class="btn btnDefault" href="http://trulia.com">Don't click</a>
-</div><div class="codeBlock"><div class="highlight"><pre><span class="nt">&lt;button</span> <span class="na">class=</span><span class="s">"btn btnDefault"</span><span class="nt">&gt;</span>Click<span class="nt">&lt;/button&gt;</span>
-<span class="nt">&lt;a</span> <span class="na">class=</span><span class="s">"btn btnDefault"</span> <span class="na">href=</span><span class="s">"http://trulia.com"</span><span class="nt">&gt;</span>Don't click<span class="nt">&lt;/a&gt;</span>
-</pre></div></div></div><p class="styleguide">If your button is actually a link to another page, please use the
+
+  </div>
+  <div class="codeBlock">
+    <div class="highlight">
+      <pre><span class="nt">&lt;button</span> <span class="na">class=</span><span class="s">"btn btnDefault"</span><span class="nt">&gt;</span>Click<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;a</span> <span class="na">class=</span><span class="s">"btn btnDefault"</span> <span class="na">href=</span><span class="s">"http://trulia.com"</span><span class="nt">&gt;</span>Don't click<span class="nt">&lt;/a&gt;</span></pre>
+    </div>
+  </div>
+</div>
+<p class="styleguide">If your button is actually a link to another page, please use the
 <code class="styleguide">&lt;a&gt;</code> element, while if your button performs an action, such as submitting
 a form or triggering some javascript event, then use a <code class="styleguide">&lt;button&gt;</code> element.</p>
 <h2>Button Sizes</h2>
@@ -96,27 +105,75 @@ a form or triggering some javascript event, then use a <code class="styleguide">
 and small. Simply apply the size modifier class for the desired size.
 There is also an additional modifier that will make the button take the
 full width of the container. It may be used with the any of the button
-size and style modifiers.</p><table class="styleguide"> <tr>
-<th>Button</th>
-<th>Modifier Class</th>
-</tr>
- <tr>
-<td><button class="btn btnDefault btnLrg">Large</button></td>
-<td><code class="styleguide">btn btnDefault btnLrg</code></td>
-</tr>
-<tr>
-<td><button class="btn btnDefault">Default</button></td>
-<td><code class="styleguide">btn btnDefault</code></td>
-</tr>
-<tr>
-<td><button class="btn btnDefault btnSml">Small</button></td>
-<td><code class="styleguide">btn btnDefault btnSml</code></td>
-</tr>
-<tr>
-<td><button class="btn btnDefault btnFullWidth">Full width</button></td>
-<td><code class="styleguide">btn btnDefault btnFullWidth</code></td>
-</tr>
- </table>
+size and style modifiers.</p><div class="codeTable">
+  <table>
+    <tbody>
+      
+        <tr>
+          <th>
+            <div class="exampleOutput">
+              <button class="btn btnDefault btnLrg">Large</button>
+            </div>
+          </th>
+          <td>
+            <div class="codeBlock">
+              <div class="highlight">
+                <pre><span class="nt">button</span><span class="nc">.btn.btnDefault.btnLrg</span><span class="w"> </span>Large</pre>
+              </div>
+            </div>
+          </td>
+        </tr>
+      
+        <tr>
+          <th>
+            <div class="exampleOutput">
+              <button class="btn btnDefault">Default</button>
+            </div>
+          </th>
+          <td>
+            <div class="codeBlock">
+              <div class="highlight">
+                <pre><span class="nt">button</span><span class="nc">.btn.btnDefault</span><span class="w"> </span>Default</pre>
+              </div>
+            </div>
+          </td>
+        </tr>
+      
+        <tr>
+          <th>
+            <div class="exampleOutput">
+              <button class="btn btnDefault btnSml">Small</button>
+            </div>
+          </th>
+          <td>
+            <div class="codeBlock">
+              <div class="highlight">
+                <pre><span class="nt">button</span><span class="nc">.btn.btnDefault.btnSml</span><span class="w"> </span>Small</pre>
+              </div>
+            </div>
+          </td>
+        </tr>
+      
+        <tr>
+          <th>
+            <div class="exampleOutput">
+              <button class="btn btnDefault btnFullWidth">Full width</button>
+            </div>
+          </th>
+          <td>
+            <div class="codeBlock">
+              <div class="highlight">
+                <pre><span class="nt">button</span><span class="nc">.btn.btnDefault.btnFullWidth</span><span class="w"> </span>Full<span class="w"> </span>width</pre>
+              </div>
+            </div>
+          </td>
+        </tr>
+      
+    </tbody>
+  </table>
+</div>
+
+
 <h2 id="buttonSkins" class="styleguide">Button Styles</h2>
 <p class="styleguide">For buttons, see <a class="styleguide" href="/base_css.html#button" title="/base_css.html#button">the buttons docs</a>.</p><table class="styleguide"> <tr>
 <th>Button</th>
@@ -143,7 +200,90 @@ size and style modifiers.</p><table class="styleguide"> <tr>
 <td><code class="styleguide">btn btnDisabled</code></td>
 <td>I&#39;m afraid I can&#39;t let you do that, yet.</td>
 </tr>
- </table>      </div>
+ </table><div class="codeTable">
+  <table>
+    <tbody>
+      
+        <tr>
+          <th>
+            <div class="exampleOutput">
+              <button class='btn btnDefault'>Hi</button>
+
+            </div>
+          </th>
+          <td>
+            <div class="codeBlock">
+              <div class="highlight">
+                <pre><span class="nt">%button</span><span class="nc">.btn.btnDefault</span> Hi</pre>
+              </div>
+            </div>
+          </td>
+        </tr>
+      
+        <tr>
+          <th>
+            <div class="exampleOutput">
+              <button class='btn btnPrimary'>Hi</button>
+
+            </div>
+          </th>
+          <td>
+            <div class="codeBlock">
+              <div class="highlight">
+                <pre><span class="nt">%button</span><span class="nc">.btn.btnPrimary</span> Hi</pre>
+              </div>
+            </div>
+          </td>
+        </tr>
+      
+        <tr>
+          <th>
+            <div class="exampleOutput">
+              <button class='btn btnDanger'>Hi</button>
+
+            </div>
+          </th>
+          <td>
+            <div class="codeBlock">
+              <div class="highlight">
+                <pre><span class="nt">%button</span><span class="nc">.btn.btnDanger</span> Hi</pre>
+              </div>
+            </div>
+          </td>
+        </tr>
+      
+        <tr>
+          <th>
+            <div class="exampleOutput">
+              <button class='btn btnDisabled'>Hi</button>
+
+            </div>
+          </th>
+          <td>
+            <div class="codeBlock">
+              <div class="highlight">
+                <pre><span class="nt">%button</span><span class="nc">.btn.btnDisabled</span> Hi</pre>
+              </div>
+            </div>
+          </td>
+        </tr>
+      
+    </tbody>
+  </table>
+</div>
+
+<p class="styleguide">Here&#39;s an example combining a style with a size</p><div class="codeExample">
+  <div class="exampleOutput">
+    <button class='btn btnPrimary btnFullWidth'>Hi</button>
+
+  </div>
+  <div class="codeBlock">
+    <div class="highlight">
+      <pre><span class="nt">%button</span><span class="nc">.btn.btnPrimary.btnFullWidth</span> Hi</pre>
+    </div>
+  </div>
+</div>
+      </div>
     </div>
   </section>
   <footer>

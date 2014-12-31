@@ -3,8 +3,14 @@ module Hologram
     class Template < Struct.new(:template_name)
       def template
         return nil if !template_filename
-        File.read(template_filename).gsub(/\n */, '')
+        File.read(template_filename)
       end
+
+      class << self
+        attr_accessor :path_to_custom_example_templates
+      end
+
+      private
 
       def template_filename
         return nil if !template_name
@@ -21,10 +27,6 @@ module Hologram
 
       def default_file
         File.join(File.dirname(__FILE__), '..', '..', 'template', 'code_example_templates', "#{template_name}.html.erb")
-      end
-
-      class << self
-        attr_accessor :path_to_custom_example_templates
       end
     end
   end

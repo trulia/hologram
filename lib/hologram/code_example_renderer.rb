@@ -26,13 +26,11 @@ module Hologram
         else
           [
             "<div class=\"codeBlock\">",
-              "<div class=\"highlight\">",
-                "<pre>",
-                  "<%= code_example %>",
-                "</pre>",
-              "</div>",
+            "  <div class=\"highlight\">",
+            "    <pre><%= code_example %></pre>",
+            "  </div>",
             "</div>",
-          ].join('')
+          ].join("\n")
         end
       end
 
