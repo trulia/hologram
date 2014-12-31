@@ -12,6 +12,10 @@ module Hologram
         }
       end
 
+      def unregister(example_type)
+        example_types.delete(example_type)
+      end
+
       def example_class_for(example_type)
         if example_types.has_key?(example_type)
           example_types[example_type][:example_class]

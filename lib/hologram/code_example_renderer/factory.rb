@@ -16,8 +16,10 @@ module Hologram
 
           private
 
-          define_method :lexer do
-            definition_proxy.lexer_block.call
+          if definition_proxy.lexer_block
+            define_method :lexer do
+              definition_proxy.lexer_block.call
+            end
           end
         end
 
