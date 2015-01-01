@@ -62,6 +62,7 @@ module Hologram
       @nav_level = options['nav_level'] || 'page'
       @exit_on_warnings = options['exit_on_warnings']
       @code_example_templates = options['code_example_templates']
+      @code_example_renderers = options['code_example_renderers']
 
       if @exit_on_warnings
         DisplayMessage.exit_on_warnings!
@@ -199,6 +200,10 @@ module Hologram
     def load_code_example_templates_and_renderers
       if @code_example_templates
         CodeExampleRenderer::Template.path_to_custom_example_templates = real_path(@code_example_templates)
+      end
+
+      if @code_example_renderers
+        CodeExampleRenderer.path_to_custom_example_renderers = real_path(@code_example_renderers)
       end
 
       CodeExampleRenderer.load_renderers_and_templates

@@ -116,7 +116,7 @@ Your config file needs to contain the following key/value pairs
   **Nota Bene:** Filenames that begin with underscores will not be
   copied into the destination folder.
 
-* **code_example_templates**: Hologram uses the files in this folder to
+* **code\_example\_templates**: (optional) Hologram uses the files in this folder to
   format the code examples in the styleguide. The initializer generates 4 files:
 
   * `markup_example_template.html.erb` - used for html, haml and slim examples
@@ -137,6 +137,11 @@ Your config file needs to contain the following key/value pairs
 
   **Nota Bene:** If template files are missing, or this folder does not exist,
   hologram will use default templates.
+  
+* **code\_example\_renderers**: (optional) A folder that contains your custom 
+  code renderers. For example, if you want to have `coffee_example`s in your
+  code, write a coffeescript renderer and place it in this folder. See
+  [#custom_code_example_renders](below) for more inforamtion on this. 
 
 * **custom_markdown**: (optional) this is the filename of a class that
   extends RedCarpet::Render::HTML class. Use this for when you need
@@ -191,6 +196,12 @@ Your config file needs to contain the following key/value pairs
     # If you want to change the way code examples appear in the styleguide,
     # modify the files in this folder
     code_example_templates: ./code_example_templates
+    
+    # The folder that contains custom code example renderers.
+    # If you want to create additional renderers that are not provided
+    # by Hologram (i.e. coffeescript renderer, jade renderer, etc)
+    # place them in this folder
+    code_example_renderers: ./code_example_renderers
 
     # Any other asset folders that need to be copied to the destination
     # folder. Typically this will include the css that you are trying to
@@ -358,10 +369,85 @@ css file that styles the "pygmentized" code examples. We use
 blocks
 [here](https://github.com/trulia/hologram-example/tree/gh-pages/hologram_assets/doc_assets/css).
 
+### Custom Code Example Renderers
+
+By default, hologram supports the following code example types:
+
+- `html_example` and `html_example_table`
+- `haml_example` and `haml_example_table`
+- `slim_example` and `slim_example_table`
+- `js_example`
+- `jsx_example`
+
+Let's say you want to include coffeescript examples in your styleguide.
+You'll need to create a custom renderer for this.
+
+You can generate custom examples with the code example renderer factory:
+
+```ruby
+require 'coffee-script'
+
+Hologram::CodeExampleRenderer::Factory.define('coffee') do
+  example_template 'js_example_template'
+  table_template 'js_table_template'
+
+  lexer { Rouge::Lexer.find(:coffee) }
+
+  rendered_example do |code|
+    CoffeeScript.compile(code)
+  end
+end
+```
+
+Place this code in a ruby file in your code example renderers folder
+(i.e. `./code_example_renderers/coffee_renderer.rb`).
+Now you should be able to render coffeescript examples in our styleguide.
+
+We can render single coffeescript examples...
+
+	```coffee_example
+	$('#myDiv').click ->
+		alert 'Oh wow we are rendering coffee script'
+	```
+	
+Or we can render coffeescript tables...
+
+	```coffee_example_table
+	#code goes here
+	```
+ 
+Here's some details on the code example renderer factory:
+
+* `Hologram::CodeExampleRenderer::Factory.define(example_type, &block)` -
+  this is how we declare a custom renderer. `example_type` is the name of the
+  renderer, and determines the example name. For example, if `example_type`
+  was "foobar", in our styleguide we could create `foobar_example`s and
+  `foobar_example_table`s
+  
+* `example_template` - the name of the template used to render the example,
+  minus the `.html.erb` extension (e.g. "markpu_example_template"). It
+  should live in your **code\_example\_templates** folder
+  
+* `table_template` - (optional) the name of the template used to render examples in
+  tabular form, minus the extension (e.g. "markup_table_template").
+  
+* `lexer` - (optional) a Rogue Lexer that matches the syntax of your
+  example (i.e. `Rouge::Lexer.find(:haml)`, `Rouge::Lexer.find(:ruby)`).
+  Here's a [complete list of possible lexers](http://rouge.jayferd.us/demo).
+  If this argument is not provided, hologram will guess what the best
+  one is.
+  
+* `rendered_example` - (optional) this is the set of instructions to
+  "translate" your exaple so it can be rendered. I.e. for coffeescript
+  to be "rendered" in the browser, we need to transform it to
+  javascript (as can be seen in the block above).
+  For haml, we need to transform it to html.
+  If no block is provided, the code is rendered as is.
 
 ## Supported Preprocessors/File Types
 
 The following preprocessors/file types are supported by Hologram:
+
 - Sass (.scss, .sass)
 - Less (.less)
 - Stylus (.styl)

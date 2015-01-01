@@ -5,6 +5,7 @@ module Hologram
   module CodeExampleRenderer
     class << self
       def register(example_type, args)
+        puts "Adding renderer for #{example_type} examples"
         example_types[example_type] = {
           example_class: args[:example_class],
           example_template: args[:example_template],
@@ -52,7 +53,15 @@ module Hologram
         Dir[File.join(File.dirname(__FILE__), 'code_example_renderer', 'renderers', '*.rb')].each do |file|
           require file
         end
+
+        if path_to_custom_example_renderers
+          Dir[File.join(path_to_custom_example_renderers, '*.rb')].each do |file|
+            require file
+          end
+        end
       end
+
+      attr_accessor :path_to_custom_example_renderers
 
       private
 
@@ -62,4 +71,3 @@ module Hologram
     end
   end
 end
-
