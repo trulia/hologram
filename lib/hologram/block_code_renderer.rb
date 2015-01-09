@@ -9,7 +9,7 @@ module Hologram
 
     def render
       if is_table? && table_template
-        examples = code.split("\n\n").map { |code_snippit| example_class.new(code_snippit) }
+        examples = code.split("\n\n").map { |code_snippet| example_class.new(code_snippet) }
         ERB.new(table_template).result(binding)
       else
         example = example_class.new(code)
