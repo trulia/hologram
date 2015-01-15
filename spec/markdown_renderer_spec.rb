@@ -28,9 +28,9 @@ describe Hologram::MarkdownRenderer do
 
       it 'prepends a list of component names and links to the document' do
         expect(subject).to eq [
-          "[link]: /elements.html#link",
-          "[typography]: /elements.html#typography",
-          "[alert]: /objects.html#alert",
+          "[link]: elements.html#link",
+          "[typography]: elements.html#typography",
+          "[alert]: objects.html#alert",
           "<p>i'm a <a href='#'>proper reference link</a></p>",
           "<p>i'm similar to an [invalid reference link] [but not quite]</p>",
         ].join("\n")

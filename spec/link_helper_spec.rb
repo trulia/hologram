@@ -33,13 +33,13 @@ describe Hologram::LinkHelper do
 
     context 'when the link belongs to only one page' do
       let(:component_name) { 'whitespace' }
-      it { should == '/utilities.html#whitespace' }
+      it { should == 'utilities.html#whitespace' }
     end
 
     context 'when the link belongs to more than one page' do
       let(:component_name) { 'typography' }
       it 'creates a link to the first page the component appears on' do
-        expect(subject).to eq '/elements.html#typography'
+        expect(subject).to eq 'elements.html#typography'
       end
     end
   end
@@ -47,10 +47,10 @@ describe Hologram::LinkHelper do
   describe '#all_links' do
     it 'returns a hash from component name to link' do
       expect(link_helper.all_links).to eq ({
-        'images' => '/elements.html#images',
-        'buttons' => '/elements.html#buttons',
-        'typography' => '/elements.html#typography',
-        'whitespace' => '/utilities.html#whitespace',
+        'images' => 'elements.html#images',
+        'buttons' => 'elements.html#buttons',
+        'typography' => 'elements.html#typography',
+        'whitespace' => 'utilities.html#whitespace',
       })
     end
   end

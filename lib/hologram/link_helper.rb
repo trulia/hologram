@@ -4,7 +4,7 @@ module Hologram
       @all_links = {}
       pages.each do |page|
         page[:component_names].each do |component_name|
-          @all_links[component_name] ||= "/#{page[:name]}\##{component_name}"
+          @all_links[component_name] ||= "#{page[:name]}\##{component_name}"
         end
       end
     end
