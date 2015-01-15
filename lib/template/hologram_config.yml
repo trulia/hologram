@@ -12,6 +12,17 @@ destination: ./docs
 # You may put doc related assets here too: images, css, etc.
 documentation_assets: ./doc_assets
 
+# The folder that contains templates for rendering code examples.
+# If you want to change the way code examples appear in the styleguide,
+# modify the files in this folder
+code_example_templates: ./code_example_templates
+
+# The folder that contains custom code example renderers.
+# If you want to create additional renderers that are not provided
+# by Hologram (i.e. coffeescript renderer, jade renderer, etc)
+# place them in this folder
+code_example_renderers: ./code_example_renderers
+
 # Any other asset folders that need to be copied to the destination
 # folder. Typically this will include the css that you are trying to
 # document. May also include additional folders as needed.

@@ -24,13 +24,15 @@ There is also an additional modifier that will make the button take the
 full width of the container. It may be used with the any of the button
 size and style modifiers.
 
-Button                                                            | Modifier Class
------------------------------------------------------------------ | -----------------
-<button class="btn btnDefault btnLrg">Large</button>              | `btn btnDefault btnLrg`
-<button class="btn btnDefault">Default</button>                   | `btn btnDefault`
-<button class="btn btnDefault btnSml">Small</button>              | `btn btnDefault btnSml`
-<button class="btn btnDefault btnFullWidth">Full width</button>   | `btn btnDefault btnFullWidth`
+```slim_example_table
+button.btn.btnDefault.btnLrg Large
 
+button.btn.btnDefault Default
+
+button.btn.btnDefault.btnSml Small
+
+button.btn.btnDefault.btnFullWidth Full width
+```
 */
 
 button {

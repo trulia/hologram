@@ -14,6 +14,21 @@ Button                                            | Class             | Descript
 <button class="btn btnDanger">Delete</button>     | `btn btnDanger`   | This button is for delete actions, these actions should also have a confirmation dialog
 <button class="btn btnDisabled">Disabled</button> | `btn btnDisabled` | I'm afraid I can't let you do that, yet.
 
+```haml_example_table
+%button.btn.btnDefault Hi
+
+%button.btn.btnPrimary Hi
+
+%button.btn.btnDanger Hi
+
+%button.btn.btnDisabled Hi
+```
+
+Here's an example combining a style with a size
+
+```haml_example
+%button.btn.btnPrimary.btnFullWidth Hi
+```
 */
 
 .btnDefault,

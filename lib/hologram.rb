@@ -17,6 +17,7 @@ require 'hologram/display_message'
 require 'hologram/errors'
 require 'hologram/utils'
 require 'hologram/markdown_renderer'
+require 'hologram/code_example_renderer'
 
 Encoding.default_internal = Encoding::UTF_8
 Encoding.default_external = Encoding::UTF_8
@@ -26,6 +27,7 @@ module Hologram
   INIT_TEMPLATE_FILES = [
     INIT_TEMPLATE_PATH + '/hologram_config.yml',
     INIT_TEMPLATE_PATH + '/doc_assets',
+    INIT_TEMPLATE_PATH + '/code_example_templates',
   ]
 end
 

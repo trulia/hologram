@@ -1,157 +1,45 @@
+require 'erb'
+
 module Hologram
-  class BlockCodeRenderer < Struct.new(:code, :markdown_language)
+  class BlockCodeRenderer
+    def initialize(code, markdown_language)
+      @code = code
+      @markdown_language = markdown_language
+    end
+
     def render
-      if is_html? || is_haml? || is_slim?
-        if is_table?
-          [
-            "<div class=\"codeTable\">",
-              "<table>",
-                "<tbody>",
-                  code_example_rows,
-                "</tbody>",
-              "</table>",
-            "</div>",
-          ].join('')
-        else
-          [
-            "<div class=\"codeExample\">",
-              example_output(code),
-              code_block(code),
-            "</div>"
-          ].join('')
-        end
-
-      elsif is_js?
-        [
-          "<script>#{code}</script> ",
-          code_block(code, extra_classes: ['jsExample'])
-        ].join('')
-
-      elsif is_jsx?
-        [
-          "<script type='text/jsx'>#{code}</script> ",
-          code_block(code, extra_classes: ['jsExample'])
-        ].join('')
-
+      if is_table? && table_template
+        examples = code.split("\n\n").map { |code_snippet| example_class.new(code_snippet) }
+        ERB.new(table_template).result(binding)
       else
-        code_block(code)
+        example = example_class.new(code)
+        ERB.new(example_template).result(example.get_binding)
       end
     end
 
     private
 
-    def is_haml?
-      markdown_language && markdown_language.include?('haml_example')
+    attr_reader :code, :markdown_language
+
+    def example_class
+      CodeExampleRenderer.example_class_for(example_type)
     end
 
-    def is_html?
-      markdown_language && markdown_language.include?('html_example')
+    def example_template
+      CodeExampleRenderer.example_template_for(example_type)
     end
 
-    def is_js?
-      markdown_language && markdown_language == 'js_example'
+    def table_template
+      CodeExampleRenderer.table_template_for(example_type)
     end
 
-    def is_jsx?
-      markdown_language && markdown_language == 'jsx_example'
-    end
-
-    def is_slim?
-      markdown_language && markdown_language == 'slim_example'
+    def example_type
+      match = /(\w+)_example/.match(markdown_language)
+      match ? match.captures.first : nil
     end
 
     def is_table?
       markdown_language && markdown_language.include?('example_table')
-    end
-
-    def example_output(code_snippet)
-      [
-        "<div class=\"exampleOutput\">",
-          rendered_code_snippet(code_snippet),
-        "</div>",
-      ].join('')
-    end
-
-    def rendered_code_snippet(code_snippet)
-      if is_haml?
-        haml_engine(code_snippet).render(Object.new, {})
-      elsif is_slim?
-        slim_engine(code_snippet).render(Object.new, {})
-      else
-        code_snippet
-      end
-    end
-
-    def code_block(code_snippet, opts={})
-      extra_classes = opts[:extra_classes] || []
-      classes = extra_classes.insert(0, 'codeBlock')
-      [
-        "<div class=\"#{classes.join(' ')}\">",
-          "<div class=\"highlight\">",
-            "<pre>",
-              "#{formatter.format(lexer.lex(code_snippet))}",
-            "</pre>",
-          "</div>",
-        "</div>",
-      ].join('')
-    end
-
-    def code_example_rows
-      rows = code.split("\n\n")
-      rows.inject("") do |res, row|
-        res + code_example_row(row)
-      end
-    end
-
-    def code_example_row(code_snippet)
-      [
-        "<tr>",
-          "<th>",
-            example_output(code_snippet),
-          "</th>",
-          "<td>",
-            code_block(code_snippet),
-          "</td>",
-        "</tr>",
-      ].join('')
-    end
-
-    def haml_engine(code_snippet)
-      safe_require 'haml', markdown_language
-      Haml::Engine.new(code_snippet.strip)
-    end
-
-    def slim_engine(code_snippet)
-      safe_require 'slim', markdown_language
-      Slim::Template.new { code_snippet.strip }
-    end
-
-    def lexer
-      @_lexer ||= if is_html?
-        Rouge::Lexer.find('html')
-      elsif is_haml?
-        Rouge::Lexer.find('haml')
-      elsif is_slim?
-        Rouge::Lexer.find('slim')
-      elsif is_js?
-        Rouge::Lexer.find('js')
-      elsif is_jsx?
-        Rouge::Lexer.find('html')
-      else
-        Rouge::Lexer.find_fancy('guess', code)
-      end
-    end
-
-    def formatter
-      @_formatter ||= Rouge::Formatters::HTML.new(wrap: false)
-    end
-
-    def safe_require(templating_library, language)
-      begin
-        require templating_library
-      rescue LoadError
-        raise "#{templating_library} must be present for you to use #{language}"
-      end
     end
   end
 end

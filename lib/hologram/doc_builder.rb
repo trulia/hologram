@@ -33,7 +33,17 @@ module Hologram
       end
 
       FileUtils.cp_r INIT_TEMPLATE_FILES, Dir.pwd
-      new_files = ["hologram_config.yml", "doc_assets/", "doc_assets/_header.html", "doc_assets/_footer.html"]
+      new_files = [
+        "hologram_config.yml",
+        "doc_assets/",
+        "doc_assets/_header.html",
+        "doc_assets/_footer.html",
+        "code_example_templates/",
+        "code_example_templates/markdown_example_template.html.erb",
+        "code_example_templates/markdown_table_template.html.erb",
+        "code_example_templates/js_example_template.html.erb",
+        "code_example_templates/jsx_example_template.html.erb",
+      ]
       DisplayMessage.created(new_files)
     end
 
@@ -51,6 +61,8 @@ module Hologram
       @plugins = Plugins.new(options.fetch('config_yml', {}), extra_args)
       @nav_level = options['nav_level'] || 'page'
       @exit_on_warnings = options['exit_on_warnings']
+      @code_example_templates = options['code_example_templates']
+      @code_example_renderers = options['code_example_renderers']
 
       if @exit_on_warnings
         DisplayMessage.exit_on_warnings!
@@ -159,6 +171,8 @@ module Hologram
     end
 
     def write_docs
+      load_code_example_templates_and_renderers
+
       renderer_instance = renderer.new(link_helper: link_helper)
       markdown = Redcarpet::Markdown.new(renderer_instance, { :fenced_code_blocks => true, :tables => true })
       tpl_vars = TemplateVariables.new({:categories => @categories, :config => @config_yml, :pages => @pages})
@@ -181,6 +195,18 @@ module Hologram
           end
         end
       end
+    end
+
+    def load_code_example_templates_and_renderers
+      if @code_example_templates
+        CodeExampleRenderer::Template.path_to_custom_example_templates = real_path(@code_example_templates)
+      end
+
+      if @code_example_renderers
+        CodeExampleRenderer.path_to_custom_example_renderers = real_path(@code_example_renderers)
+      end
+
+      CodeExampleRenderer.load_renderers_and_templates
     end
 
     def link_helper
