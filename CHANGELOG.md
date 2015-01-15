@@ -1,5 +1,42 @@
 #Changelog
 
+##1.3.0 - 2015-01-15
+
+Spencer Hurst, Beatrice Peng, and Geoff Pleiss
+* Overhaul the code examples code to allow easier customization
+
+Nicole Sullivan and Geoff Pleiss
+* Add class styleguide to generated markdown documentation
+* Add nav_level config and section navigation
+* Tabular code examples (ie html_example_table, haml_example_table, etc)
+
+Paul Meskers and Nicole Sullivan
+* Add code example support for JSX
+
+Geoff Pleiss
+* Add config to exit on warnings
+* Add internal reference links for linking to other sections within
+  hologram's generated documentation
+
+Jonathan Dexter
+* Fix document comment block regex to work with CR
+
+Beatrice Peng
+* Warn when multiple components have the same name
+
+Chris Holmes
+* Documentation updates
+
+Antoine - a5e
+* Escape title in documentation block
+
+JD Cantrell
+* Try .sass style comments when a .scss file has no doc blocks
+* Remove all backtick commands with FileUtils call (better support on
+  non-linux/osx machines)
+* Add code example support for slim
+
+
 ##1.2.0 - 2014-07-22
 
 JD Cantrell
