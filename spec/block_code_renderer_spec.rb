@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'hologram/block_code_renderer'
 require 'haml'
+require 'securerandom'
 
 Hologram::CodeExampleRenderer.load_renderers_and_templates
 
@@ -9,6 +10,39 @@ describe Hologram::BlockCodeRenderer do
     subject { Hologram::BlockCodeRenderer.new(code, markdown_language).render.strip }
 
     context 'expected language' do
+      context 'react' do
+        let(:language) { 'react' }
+        let(:code) { '<ReactExample property="value">Example</ReactExample>' }
+
+        context 'when the language is a react_example' do
+          let(:markdown_language) { 'react_example' }
+          let(:div_id) { 'randomId' }
+
+          before :each do
+            SecureRandom.stub('hex').and_return(div_id);
+          end
+
+          it { is_expected.to eq [
+            "<div class=\"codeExample\">",
+            "  <div class=\"exampleOutput\">",
+            "    <div id=\"#{div_id}\"></div>",
+            "<script type=\"text/jsx\">",
+            "  React.render(",
+            "    <ReactExample property=\"value\">Example</ReactExample>,",
+            "    document.getElementById('#{div_id}')",
+            "  );",
+            "</script>",
+            "  </div>",
+            "  <div class=\"codeBlock\">",
+            "    <div class=\"highlight\">",
+            "      <pre><span class=\"nt\">&lt;ReactExample</span> <span class=\"na\">property=</span><span class=\"s\">\"value\"</span><span class=\"nt\">&gt;</span>Example<span class=\"nt\">&lt;/ReactExample&gt;</span></pre>",
+            "    </div>",
+            "  </div>",
+            "</div>"
+          ].join("\n") }
+        end
+      end
+
       context 'slim' do
         let(:language) { 'slim' }
         let(:code) { 'h1 Markup Example' }
