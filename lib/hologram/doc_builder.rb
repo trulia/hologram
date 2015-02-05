@@ -161,7 +161,7 @@ module Hologram
         begin
           dirpath  = Pathname.new(dir).realpath
           if File.directory?("#{dir}")
-            FileUtils.rm "#{output_dir}/#{dirpath.basename}", :force => true
+            FileUtils.rm_r "#{output_dir}/#{dirpath.basename}", :force => true
             FileUtils.cp_r "#{dirpath}", "#{output_dir}/#{dirpath.basename}"
           end
         rescue
