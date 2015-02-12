@@ -213,7 +213,7 @@ Your config file needs to contain the following key/value pairs
       - ./build
 
     # Mark which category should be the index page
-    # Alternatively, you may have an index.md in the documentation assets
+    # Alternatively, you may have an index.md in the source directory root
     # folder instead of specifying this config.
     index: basics
 
