@@ -71,12 +71,22 @@ module Hologram
     def process_files(files, directory, doc_block_collection)
       files.each do |input_file|
         if input_file.end_with?('md')
-          @pages[File.basename(input_file, '.md') + '.html'] = {:md => File.read("#{directory}/#{input_file}"), :blocks => []}
+          process_markdown_file("#{directory}/#{input_file}", doc_block_collection)
         elsif input_file.end_with?('erb')
           @pages[File.basename(input_file, '.erb')] = {:erb => File.read("#{directory}/#{input_file}")}
         else
           process_file("#{directory}/#{input_file}", doc_block_collection)
         end
+      end
+    end
+
+    def process_markdown_file(file, doc_block_collection)
+      file_str = File.read(file)
+
+      if file_str.match(/^-{3}\n\w+:\s.*-{3}/m)
+        doc_block_collection.add_doc_block(file_str, file)
+      else
+        @pages[File.basename(file, '.md') + '.html'] = {:md => file_str, :blocks => []}
       end
     end
 
