@@ -142,7 +142,7 @@ module Hologram
       warn_missing_doc_assets
       write_docs
       copy_dependencies
-      sets
+      copy_assets
     end
 
     def copy_assets
