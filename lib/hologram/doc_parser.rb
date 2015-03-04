@@ -83,7 +83,7 @@ module Hologram
     def process_markdown_file(file, doc_block_collection)
       file_str = File.read(file)
 
-      if file_str.match(/^-{3}\n\w+:\s.*-{3}/m)
+      if file_str.match(/^-{3}\n.*hologram:\s*true.*-{3}/m)
         doc_block_collection.add_doc_block(file_str, file)
       else
         @pages[File.basename(file, '.md') + '.html'] = {:md => file_str, :blocks => []}

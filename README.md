@@ -337,6 +337,10 @@ following keys:
   component. If this is set, the current component will be displayed as
   a section within the **parent**'s documentation, but only if it specifies
   the same **category**, or allows the **category** to be inherited from its **parent**.
+* **hologram**: (markdown only) To avoid conflicts with Jekyll and
+  other YAML+markdown formats, Markdown (`.md`) files must include a
+  `hologram: true` key/value pair in the YAML block to indicate that
+  it is intended to be processed by Hologram.
 
 For example, you might have a component with the **name** *buttons* and
 another component named *buttonSkins*. You could set the **parent** for

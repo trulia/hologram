@@ -1,4 +1,5 @@
 ---
+hologram: true
 title: BEM-like class naming
 name: bem
 category: Code
