@@ -152,7 +152,7 @@ module Hologram
         # underscore
         next if item == '.' or item == '..' or item.start_with?('_')
         FileUtils.rm "#{output_dir}/#{item}", :force => true
-        FileUtils.cp_r "#{doc_assets_dir}/#{item}", "#{output_dir}/#{item}"
+        FileUtils.cp_r "#{doc_assets_dir}/#{item}/.", "#{output_dir}/#{item}"
       end
     end
 
