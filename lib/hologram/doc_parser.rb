@@ -12,6 +12,7 @@ module Hologram
       @output_files_by_category = {}
       @supported_extensions = DEFAULT_SUPPORTED_EXTENSIONS
       @supported_extensions += opts[:custom_extensions] if opts[:custom_extensions]
+      @ignore_paths = opts[:ignore_paths] || []
     end
 
     def parse
@@ -73,7 +74,16 @@ module Hologram
     end
 
     def process_files(files, directory, doc_block_collection)
-      files.each do |input_file|
+
+      if !@ignore_paths.empty?
+        valid_files = files.select { |input_file|
+          @ignore_paths.select { |glob| File.fnmatch(glob, input_file) }.empty?
+        }
+      else
+        valid_files = files
+      end
+
+      valid_files.each do |input_file|
         if input_file.end_with?('md')
           process_markdown_file("#{directory}/#{input_file}", doc_block_collection)
         elsif input_file.end_with?('erb')

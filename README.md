@@ -163,6 +163,10 @@ Your config file needs to contain the following key/value pairs
    that they are included on your pages. A simple way to do this is to add
    `<link>` and `<script src=>` tags to the `_header.html` file.
 
+* **ignore_paths**: (optional) a **list** of paths to ignore. This can be a file
+  name or a glob. Be sure to wrap globs in double quotes to keep yaml
+  from getting too upset (ie good:"*.erb" vs bad:*.erb).
+
 * **nav_level**: (optional) Sets the level of section navigation desired.
   `section` sets it to show sub navigation in top level sections.
   `all` sets it to show sub navigation for all sections. `all` can be a bit
