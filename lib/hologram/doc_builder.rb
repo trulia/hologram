@@ -153,7 +153,8 @@ module Hologram
         # ignore . and .. directories and files that start with
         # underscore
         next if item == '.' or item == '..' or item.start_with?('_')
-        FileUtils.rm "#{output_dir}/#{item}", :force => true
+        FileUtils.rm "#{output_dir}/#{item}", :force => true if File.file?("#{output_dir}/#{item}")
+        FileUtils.rm_rf "#{output_dir}/#{item}" if File.directory?("#{output_dir}/#{item}")
         FileUtils.cp_r "#{doc_assets_dir}/#{item}", "#{output_dir}/#{item}"
       end
     end
