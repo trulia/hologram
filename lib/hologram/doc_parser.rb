@@ -1,6 +1,6 @@
 module Hologram
   class DocParser
-    SUPPORTED_EXTENSIONS = ['.css', '.scss', '.less', '.sass', '.styl', '.js', '.md', '.markdown', '.erb' ]
+    DEFAULT_SUPPORTED_EXTENSIONS = ['.css', '.scss', '.less', '.sass', '.styl', '.js', '.md', '.markdown', '.erb' ]
     attr_accessor :source_path, :pages, :doc_blocks, :nav_level
 
     def initialize(source_path, index_name = nil, plugins=[], opts={})
@@ -10,6 +10,8 @@ module Hologram
       @nav_level = opts[:nav_level] || 'page'
       @pages = {}
       @output_files_by_category = {}
+      @supported_extensions = DEFAULT_SUPPORTED_EXTENSIONS
+      @supported_extensions += opts[:custom_extensions] if opts[:custom_extensions]
     end
 
     def parse
@@ -139,7 +141,7 @@ module Hologram
     end
 
     def is_supported_file_type?(file)
-      SUPPORTED_EXTENSIONS.include?(File.extname(file)) and !Dir.exists?(file)
+      @supported_extensions.include?(File.extname(file)) and !Dir.exists?(file)
     end
 
     def get_file_name(str)

@@ -168,6 +168,11 @@ Your config file needs to contain the following key/value pairs
   `all` sets it to show sub navigation for all sections. `all` can be a bit
   much, you'll probably want `section`.
 
+* **custom_extensions**: (optional) Additional file extensions that will be
+  included in the parse. Accepts both a single value and an array. The
+  current supported file extensions are `.css`, `.scss`, `.less`, `.sass`,
+  `.styl`, `.js`, `.md`, `.markdown` and `.erb`.
+
 * **exit_on_warnings**: (optional) Hologram displays warnings when there
   are issues with your docs (e.g. if a component's parent is not found,
   if the _header.html and/or _footer.html files aren't found)

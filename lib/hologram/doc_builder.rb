@@ -63,6 +63,7 @@ module Hologram
       @exit_on_warnings = options['exit_on_warnings']
       @code_example_templates = options['code_example_templates']
       @code_example_renderers = options['code_example_renderers']
+      @custom_extensions = Array(options['custom_extensions'])
 
       if @exit_on_warnings
         DisplayMessage.exit_on_warnings!
@@ -132,7 +133,8 @@ module Hologram
     end
 
     def build_docs
-      doc_parser = DocParser.new(input_dir, index, @plugins, nav_level: @nav_level)
+      doc_parser = DocParser.new(input_dir, index, @plugins, nav_level: @nav_level,
+                                                             custom_extensions: @custom_extensions)
       @pages, @categories = doc_parser.parse
 
       if index && !@pages.has_key?(index + '.html')
