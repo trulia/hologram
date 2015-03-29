@@ -1,5 +1,31 @@
 #Changelog
 
+##1.4.0 - 2015-03-29
+
+New Features:
+
+Joe Bartlett
+* Allow markdown files to contain hologram yaml
+
+Anthony Chen
+* Add config option for allowing additional file extensions to be
+  processed
+
+JD Cantrell
+* Add config option to ignore specific paths and files.
+
+Bug fixes:
+
+Noppanit Charassinvichai and Ryan Mathews
+* Correctly copy assets
+
+JD Cantrell
+* Use correct title for index category pages
+* Make scss regex behave like sass regex
+* Template variables for erb files no longer vary based on when the erb
+  is processed.
+
+
 ##1.3.0 - 2015-01-15
 
 Spencer Hurst, Beatrice Peng, and Geoff Pleiss
