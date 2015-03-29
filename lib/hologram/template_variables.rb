@@ -10,7 +10,7 @@ module Hologram
 
     def set_args(args)
       args.each do |k,v|
-        instance_variable_set("@#{k}", v) unless v.nil?
+        instance_variable_set("@#{k}", v)
       end
     end
 
