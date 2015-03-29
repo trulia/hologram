@@ -46,6 +46,8 @@ module Hologram
         name = @index_name + '.html'
         if @pages.has_key?(name)
           @pages['index.html'] = @pages[name]
+          title, _ = @output_files_by_category.rassoc(name)
+          @output_files_by_category[title] = 'index.html'
         end
       end
 
