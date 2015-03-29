@@ -102,7 +102,7 @@ module Hologram
         #comment, this fixes haml when using this comment style
         hologram_comments = file_str.scan(/\s*\/\/doc\s*((( [^\n]*\n)|\n)+)/).map{ |arr| [arr[0].gsub(/^[ \t]{2}/,'')] }
       else
-        hologram_comments = file_str.scan(/^\s*\/\*doc(.*?)\*\//m)
+        hologram_comments = file_str.scan(/\s*\/\*doc(.*?)\*\//m)
 
         #check if scss file has sass comments
         if hologram_comments.length == 0 and file.end_with?('.scss')
