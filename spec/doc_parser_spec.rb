@@ -120,7 +120,7 @@ multi-parent
       end
 
       it 'adds two categories to output_files_by_category' do
-        expect(output_files_by_category).to eql({'Foo'=>'foo.html', 'Base CSS'=>'base_css.html', 'Bar'=>'bar.html'})
+        expect(output_files_by_category).to eql({'Foo'=>'foo.html', 'Base CSS'=>'base_css.html', 'Bar'=>'bar.html', 'Code'=>'code.html'})
       end
     end
 

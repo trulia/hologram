@@ -252,6 +252,8 @@ describe Hologram::DocBuilder do
       builder.build
       expect(File.read(File.expand_path('../fixtures/styleguide/base_css.html', __FILE__))).to eq File.read(File.join(builder.destination, '.', 'base_css.html'))
       expect(File.read(File.expand_path('../fixtures/styleguide/index.html', __FILE__))).to eq File.read(File.join(builder.destination, '.', 'index.html'))
+      expect(File.read(File.expand_path('../fixtures/styleguide/code.html', __FILE__))).to eq File.read(File.join(builder.destination, '.', 'code.html'))
+      expect(File.read(File.expand_path('../fixtures/styleguide/jekyll.html', __FILE__))).to eq File.read(File.join(builder.destination, '.', 'jekyll.html'))
     end
   end
 end
