@@ -532,6 +532,7 @@ The following preprocessors/file types are supported by Hologram:
   clicking on them within hologram.
 - [Cortana](https://github.com/Yago/Cortana) is a theme for hologram. It also
   includes a handy search feature.
+- [Hologram Github Theme](https://github.com/wearecube/hologram-github-theme) is a Github Styleguide inspired theme for hologram.
 
 ## Contributing
 
