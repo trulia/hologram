@@ -46,7 +46,7 @@ module Hologram
       if @index_name
         name = @index_name + '.html'
         if @pages.has_key?(name)
-          @pages['index.html'] = @pages[name]
+          @pages['index.html'] = Marshal.load(Marshal.dump(@pages[name]))
           title, _ = @output_files_by_category.rassoc(name)
           @output_files_by_category[title] = 'index.html'
         end
