@@ -3,6 +3,7 @@
 [![Build Status](https://img.shields.io/travis/trulia/hologram.svg)](https://travis-ci.org/trulia/hologram)
 [![Code Climate](https://img.shields.io/codeclimate/github/trulia/hologram.svg)](https://codeclimate.com/github/trulia/hologram)
 [![Dependency Status](https://img.shields.io/gemnasium/trulia/hologram.svg)](https://gemnasium.com/trulia/hologram)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.txt)
 
 Hologram is a Ruby gem that parses comments in your CSS and helps you
 turn them into a beautiful style guide.
