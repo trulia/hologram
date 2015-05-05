@@ -1,8 +1,8 @@
 # Hologram
-[![Gem Version](https://badge.fury.io/rb/hologram.png)](https://rubygems.org/gems/hologram)
-[![Build Status](https://travis-ci.org/trulia/hologram.png)](https://travis-ci.org/trulia/hologram)
-[![Code Climate](https://codeclimate.com/github/trulia/hologram.png)](https://codeclimate.com/github/trulia/hologram)
-[![Dependency Status](https://gemnasium.com/trulia/hologram.png)](https://gemnasium.com/trulia/hologram)
+[![Gem Version](https://img.shields.io/gem/v/hologram.svg)](https://rubygems.org/gems/hologram)
+[![Build Status](https://img.shields.io/travis/trulia/hologram.svg)](https://travis-ci.org/trulia/hologram)
+[![Code Climate](https://img.shields.io/codeclimate/github/trulia/hologram.svg)](https://codeclimate.com/github/trulia/hologram)
+[![Dependency Status](https://img.shields.io/gemnasium/trulia/hologram.svg)](https://gemnasium.com/trulia/hologram)
 
 Hologram is a Ruby gem that parses comments in your CSS and helps you
 turn them into a beautiful style guide.
