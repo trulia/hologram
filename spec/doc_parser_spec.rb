@@ -82,8 +82,23 @@ multi-parent
     eos
   end
 
+  let(:scss_sass_doc) do
+    <<-eos
+//doc
+//  ---
+//  title: sass documentation
+//  name: sass_doc
+//  category: Foo
+//  ---
+//
+//  Some description
+//  on multiple lines
+    eos
+  end
+
   let(:source_path) { 'spec/fixtures/source' }
   let(:temp_doc) { File.join(source_path, 'components', 'button', 'skin', 'testSkin.css') }
+  let(:scss_temp_doc) { File.join(source_path, 'components', 'button', 'skin', 'scssComponents.scss') }
   let(:plugins) {
     plugins = double()
     allow(plugins).to receive(:block)
@@ -223,6 +238,18 @@ multi-parent
       it 'should correctly order content in each page' do
         objects = expect(pages['foo.html'][:md]).to match(/multi-parent.*multi-child/m)
         objects = expect(pages['bar.html'][:md]).to match(/multi-parent.*multi-child/m)
+      end
+    end
+
+    context 'when a scss file contains a sass documentation block' do
+      around do |example|
+        File.open(scss_temp_doc, 'w'){ |io| io << scss_sass_doc }
+        example.run
+        FileUtils.rm(scss_temp_doc)
+      end
+
+      it 'should parse the comment properly' do
+        objects = expect(pages['foo.html'][:md]).to include 'Some description'
       end
     end
   end

@@ -118,7 +118,7 @@ module Hologram
 
         #check if scss file has sass comments
         if hologram_comments.length == 0 and file.end_with?('.scss')
-          hologram_comments = file_str.scan(/\s*\/\/doc\s*((( [^\n]*\n)|\n)+)/).map{ |arr| [arr[0].gsub(/^[ \t]{2}/,'')] }
+          hologram_comments = file_str.scan(/\s*\/\/doc\s*((([\/ \t]{2}[^\n]*\n)|\n)+)/).map{ |arr| [arr[0].gsub(/[ \t]{2}/,'').gsub(/^\/\//, '')] }
         end
       end
       return unless hologram_comments
