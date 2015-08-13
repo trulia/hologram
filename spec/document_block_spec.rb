@@ -69,7 +69,7 @@ eos
 
   context '#get_hash' do
     let(:meta) do
-      { :name => 'foo', :categories => ['bar'], :title => 'baz', :parent => 'pop' }
+      { name: 'foo', categories: ['bar'], title: 'baz', parent: 'pop' }
     end
 
     it 'returns a hash of meta info' do
@@ -86,7 +86,7 @@ eos
 
     context 'when name is not present' do
       let(:invalid_doc_block) do
-        subject.class.new(config.merge(:name => nil))
+        subject.class.new(config.merge(name: nil))
       end
 
       it 'returns false' do

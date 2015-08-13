@@ -155,7 +155,7 @@ module Hologram
         # ignore . and .. directories and files that start with
         # underscore
         next if item == '.' or item == '..' or item.start_with?('_')
-        FileUtils.rm "#{output_dir}/#{item}", :force => true if File.file?("#{output_dir}/#{item}")
+        FileUtils.rm "#{output_dir}/#{item}", force: true if File.file?("#{output_dir}/#{item}")
         FileUtils.rm_rf "#{output_dir}/#{item}" if File.directory?("#{output_dir}/#{item}")
         FileUtils.cp_r "#{doc_assets_dir}/#{item}", "#{output_dir}/#{item}"
       end
@@ -166,7 +166,7 @@ module Hologram
         begin
           dirpath  = Pathname.new(dir).realpath
           if File.directory?("#{dir}")
-            FileUtils.rm_r "#{output_dir}/#{dirpath.basename}", :force => true
+            FileUtils.rm_r "#{output_dir}/#{dirpath.basename}", force: true
             FileUtils.cp_r "#{dirpath}", "#{output_dir}/#{dirpath.basename}"
           end
         rescue
@@ -179,8 +179,8 @@ module Hologram
       load_code_example_templates_and_renderers
 
       renderer_instance = renderer.new(link_helper: link_helper)
-      markdown = Redcarpet::Markdown.new(renderer_instance, { :fenced_code_blocks => true, :tables => true })
-      tpl_vars = TemplateVariables.new({:categories => @categories, :config => @config_yml, :pages => @pages})
+      markdown = Redcarpet::Markdown.new(renderer_instance, { fenced_code_blocks: true, tables: true })
+      tpl_vars = TemplateVariables.new({categories: @categories, config: @config_yml, pages: @pages})
       #generate html from markdown
       @pages.each do |file_name, page|
         if file_name.nil?
@@ -192,7 +192,7 @@ module Hologram
             title, _ = @categories.rassoc(file_name)
           end
 
-          tpl_vars.set_args({:title => title, :file_name => file_name, :blocks => page[:blocks]})
+          tpl_vars.set_args({title: title, file_name: file_name, blocks: page[:blocks]})
           if page.has_key?(:erb)
             write_erb(file_name, page[:erb], tpl_vars.get_binding)
           else

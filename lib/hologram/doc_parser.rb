@@ -87,7 +87,7 @@ module Hologram
         if input_file.end_with?('md')
           process_markdown_file("#{directory}/#{input_file}", doc_block_collection)
         elsif input_file.end_with?('erb')
-          @pages[File.basename(input_file, '.erb')] = {:erb => File.read("#{directory}/#{input_file}")}
+          @pages[File.basename(input_file, '.erb')] = {erb: File.read("#{directory}/#{input_file}")}
         else
           process_file("#{directory}/#{input_file}", doc_block_collection)
         end
@@ -100,7 +100,7 @@ module Hologram
       if file_str.match(/^-{3}\n.*hologram:\s*true.*-{3}/m)
         doc_block_collection.add_doc_block(file_str, file)
       else
-        @pages[File.basename(file, '.md') + '.html'] = {:md => file_str, :blocks => []}
+        @pages[File.basename(file, '.md') + '.html'] = {md: file_str, blocks: []}
       end
     end
 
@@ -162,7 +162,7 @@ module Hologram
 
     def add_doc_block_to_page(depth, doc_block, output_file)
       if !@pages.has_key?(output_file)
-        @pages[output_file] = {:md => "", :blocks => []}
+        @pages[output_file] = {md: "", blocks: []}
       end
 
 
