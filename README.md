@@ -384,7 +384,7 @@ you probably want to include in your documentation assets folder is a
 css file that styles the "pygmentized" code examples. We use
 `github.css` which can be found along with the css we use to style code
 blocks
-[here](https://github.com/trulia/hologram-example/tree/gh-pages/hologram_assets/doc_assets/css).
+[here](https://github.com/trulia/hologram-example/tree/gh-pages/static/css).
 
 ### Custom Code Example Renderers
 
