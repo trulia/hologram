@@ -143,7 +143,7 @@ Your config file needs to contain the following key/value pairs
   hologram will use default templates.
 
 * **code\_example\_renderers**: (optional) A folder that contains your custom
-  code renderers. For example, if you want to have `coffee_example`s in your
+  code renderers. For example, if you want to have `coffee_examples` in your
   code, write a coffeescript renderer and place it in this folder. See
   [#custom_code_example_renders](below) for more inforamtion on this.
 
