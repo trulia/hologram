@@ -1,0 +1,140 @@
+// OUTRAGEOUS
+$green: #5eab1f
+$teal: #00ae89
+$lightblue: #9afce4
+$darkGrey: #06cee8
+$black: #333
+$darkGrey: #ababab
+$grey: #e9e9e9
+$lightGrey: #f4f4f4
+$white: #fff
+
+@mixin transition($duration, $property: all, $delay:0)
+  transition: $duration $property
+  -webkit-transition: $duration $property
+  -moz-transition: $duration $property
+  -ms-transition: $duration $property
+  -o-transition: $duration $property
+  transition-delay: $delay
+  -webkit-transition-delay: $delay
+  -moz-transition-delay: $delay
+  -ms-transition-delay: $delay
+  -o-transition-delay: $delay
+
+@mixin animation-delay($delay)
+  -webkit-animation-delay: $delay
+  -moz-animation-delay: $delay
+  -o-animation-delay: $delay
+  -ms-animation-delay: $delay
+  animation-delay: $delay
+
+$body-type: 'Hind', sans-serif
+$code-type: 'Ubuntu Mono', monospace
+
+body
+  margin: 0
+  font-size: 18px
+  font-weight: 300
+  line-height: 1.6em
+  background: $white
+  color: $black
+  font-family: $body-type
+  text-align: center
+
+a
+  text-decoration: none
+  color: $teal
+  @include transition(0.3s, color)
+
+  &:hover
+    color: $black
+
+header
+  padding: 3em 0 8em
+  background: $teal
+  color: $white
+
+  h1
+    font-size: 3em
+    text-shadow: 0 2px 0 darken($teal, 5%)
+
+  h2
+    color: $lightblue
+    font-size: 1.5em
+    font-weight: 300
+
+nav
+  height: 50px
+  padding-top: 5px
+
+  ul
+
+    li
+      list-style-type: none
+      float: left
+      margin-right: 1em
+      &:last-child
+        margin-right: 0
+
+.container
+  margin: 0 auto
+  max-width: 700px
+
+  section
+    margin: 1em 0 0
+    padding-bottom: 12em
+    clear: both
+    background: url('../images/gems-row.png') no-repeat bottom center
+    background-size: auto 150px
+
+    #hero
+      margin-top: -7em
+      margin-bottom: 1.5em
+
+    h2, p, pre
+      text-align: left
+      margin: 1em auto
+      max-width: 500px
+      word-wrap: break-word
+
+    h2
+      margin-top: 2em
+
+    pre
+      font-family: $code-type
+      background: $black
+      color: $lightblue
+      font-size: 14px
+      padding: 1.5em 7em
+      border-radius: 2px
+
+    code
+      background: $grey
+      font-size: 0.88em
+      padding: 2px 6px 4px
+      border-radius: 2px
+
+    img
+      max-width: 100%
+
+footer
+  background-color: $black
+  color: $lightGrey
+  padding: 2em 0 2.5em
+  p
+    margin: 0 auto
+    text-align: center
+  a
+    color: $lightblue
+    &:hover
+      color: $white
+
+@media screen and (max-width:550px)
+  .container
+    h1, h2
+      padding: 0 1em
+    p
+      padding: 0 1.5em
+    section
+      pre
+        padding: 1.5em
