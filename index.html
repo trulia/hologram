@@ -28,11 +28,10 @@
 
     <section>
 
-      <img id="hero" src="images/screenshot.png" alt="Screenshot of Trulia OOCSS Library">
+      <img id="hero" src="images/screenshot-hero.png" alt="Screenshot of Trulia OOCSS Library">
 
       <p>
-        Hologram is a Ruby gem that parses comments in your CSS and
-        turns them into a beautiful styleguide.
+        Hologram is a Ruby gem that parses comments in your CSS and turns them into a beautiful styleguide.
       </p>
       <p>
         <img src="images/gems-ruby.png" height="60px" align="right">
@@ -42,16 +41,22 @@
         <br>
         And then: <code>hologram init</code>
       </p>
+      <p>
+        <br>
+        <a href="http://github.com/trulia/hologram" class="button">View on Github</a>
+        <br>
+        <br>
+      </p>
 
       <h2>
         Why would I use it?
       </h2>
       <p>
-        Hologram was written to make building a styleguide as easy as maintaining your CSS. It is similar to <a
+        Hologram makes building a styleguide as easy as maintaining your CSS. It is similar to <a
         href="https://github.com/kneath/kss">Kneath Style Sheets</a> and <a href="http://jacobrask.github.io/styledocco/">Styledocco.</a>
       </p>
       <p>
-        Your documentation is written in your production CSS files using a combination of YAML and Markdown. By using Markdown, you can easily format your docs however you wish and fall back to raw HTML for those tricky parts every styleguide has.
+        Your documentation is written in your production CSS using a combination of YAML and Markdown. Markdown easily formats your docs and allows you to fall back to raw HTML for tricky parts of the styleguide.
       </p>
       <p>
         <img src="images/gems-multi.png" height="120px" align="right">
@@ -59,14 +64,10 @@
 
       <h2>How does it work?</h2>
       <p>
-        Hologram makes this easy by extending Markdown code blocks that
-        can be marked as examples. The block will then be rendered
-        twice, once as the actual HTML output and once as the HTML in
-        order to show how the example was coded.
+        Hologram makes this easy by extending Markdown code blocks that can be marked as examples. The block will then be rendered twice: Once as the actual HTML output and once again as HTML code.
       </p>
       <p>
-        Here is an example documentation block from Trulia's CSS library
-        as well as the corresponding output.
+        Here is an example documentation block from Trulia's Experience Language which outputs buttons.
       </p>
 
       <pre>/*doc
@@ -76,8 +77,7 @@ name: button
 category: Base CSS
 ---
 
-Button styles can be applied to any element. Typically you'll want to
-use either a `&lt;button&gt;` or an `&lt;a&gt;` element:
+Button styles can be applied to any element. Typically you'll want to use either a `&lt;button&gt;` or an `&lt;a&gt;` element:
 
 ```html_example
 &lt;button class="btn btnDefault"&gt;Click&lt;/button&gt;
@@ -86,22 +86,26 @@ use either a `&lt;button&gt;` or an `&lt;a&gt;` element:
 
 */ </pre>
 
-        <img src="images/buttons.png" alt="Trulia badges example"/>
+        <img src="images/screenshot-buttons.png" alt="Trulia badges example" id="example">
 
         <h2>
           Where can I get it?
         </h2>
         <p>
-          For usage instructions review the <a href="http://github.com/trulia/hologram">README.</a>
+          For full usage instructions, review the <a href="http://github.com/trulia/hologram">README.</a>
           <br>
           You can also check out the <a href="https://github.com/trulia/hologram-example">example project.</a>
         </p>
         <p>
-          Hologram is open source (MIT
-          License) and can be found on <a href="http://github.com/trulia/hologram">GitHub.</a>
+          Hologram is open source under the MIT
+          License.
         </p>
         <p>
           Feel free to open any pull requests or issues (-:
+        </p>
+        <p>
+          <br>
+          <a href="http://github.com/trulia/hologram" class="button">Fork on Github</a>
         </p>
       </section>
     </div>
