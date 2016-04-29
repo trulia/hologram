@@ -36,10 +36,10 @@ module Hologram
     end
 
     def get_hash
-      {:name => @name,
-       :parent => @parent,
-       :categories => @categories,
-       :title => @title
+      {name: @name,
+       parent: @parent,
+       categories: @categories,
+       title: @title
       }
     end
 
