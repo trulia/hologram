@@ -11,7 +11,7 @@ Hologram::CodeExampleRenderer::Factory.define 'react' do
     [
       "<div id=\"#{div_id}\"></div>",
       "<script type=\"text/jsx\">",
-      "  React.render(",
+      "  ReactDOM.render(",
       "    #{code.strip},",
       "    document.getElementById('#{div_id}')",
       "  );",

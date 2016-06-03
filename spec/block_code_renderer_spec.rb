@@ -27,7 +27,7 @@ describe Hologram::BlockCodeRenderer do
             "  <div class=\"exampleOutput\">",
             "    <div id=\"#{div_id}\"></div>",
             "<script type=\"text/jsx\">",
-            "  React.render(",
+            "  ReactDOM.render(",
             "    <ReactExample property=\"value\">Example</ReactExample>,",
             "    document.getElementById('#{div_id}')",
             "  );",
