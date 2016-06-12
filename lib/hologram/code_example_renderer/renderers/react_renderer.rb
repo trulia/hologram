@@ -10,7 +10,7 @@ Hologram::CodeExampleRenderer::Factory.define 'react' do
     div_id = SecureRandom.hex(10)
     [
       "<div id=\"#{div_id}\"></div>",
-      "<script type=\"text/jsx\">",
+      "<script type=\"text/babel\">",
       "  ReactDOM.render(",
       "    #{code.strip},",
       "    document.getElementById('#{div_id}')",
