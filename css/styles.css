@@ -62,7 +62,8 @@ nav {
       text-align: left;
       margin: 1em auto;
       max-width: 500px;
-      word-wrap: break-word; }
+      word-wrap: break-word;
+      white-space: pre-line; }
     .container section h2 {
       margin-top: 2em; }
     .container section pre {
