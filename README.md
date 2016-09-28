@@ -535,6 +535,8 @@ The following preprocessors/file types are supported by Hologram:
   includes a handy search feature.
 - [Hologram Github Theme](https://github.com/wearecube/hologram-github-theme) is a Github Styleguide inspired theme for hologram.
 - [Voxel Hologram](https://github.com/rishabhsrao/voxel-hologram) is a minimal theme for Hologram.
+- [Acme Styleguide](https://github.com/mattrothenberg/styleguide-boilerplate) is a starter project that helps
+  [Pivotal Labs Designers](https://pivotal.io/labs) build living styleguides with Sass and Hologram.
 
 ## Contributing
 
