@@ -62,7 +62,7 @@ Building the documentation is simply:
 ``` hologram ```
 
 
-###Command line flags
+### Command line flags
 
 Hologram has a couple of command line flags:
 
