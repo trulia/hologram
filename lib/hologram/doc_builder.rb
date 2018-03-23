@@ -86,7 +86,7 @@ module Hologram
       # the real work happens here.
       build_docs
       Dir.chdir(current_path)
-      DisplayMessage.success("Build completed. (-: ")
+      DisplayMessage.success("Hologram build completed.")
       true
     end
 
