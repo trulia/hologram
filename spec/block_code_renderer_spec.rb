@@ -26,8 +26,8 @@ describe Hologram::BlockCodeRenderer do
             "<div class=\"codeExample\">",
             "  <div class=\"exampleOutput\">",
             "    <div id=\"#{div_id}\"></div>",
-            "<script type=\"text/jsx\">",
-            "  React.render(",
+            "<script type=\"text/babel\">",
+            "  ReactDOM.render(",
             "    <ReactExample property=\"value\">Example</ReactExample>,",
             "    document.getElementById('#{div_id}')",
             "  );",
@@ -237,7 +237,7 @@ describe Hologram::BlockCodeRenderer do
         let(:code) { '$(document).ready(function () { React.render(<div className="foo"></div>) });' }
 
         it "inserts the code into the docs so that it will run and make the example work" do
-          expect(subject).to include "<script type='text/jsx'>$(document).ready(function () { React.render(<div className=\"foo\"></div>) });</script>"
+          expect(subject).to include "<script type='text/babel'>$(document).ready(function () { React.render(<div className=\"foo\"></div>) });</script>"
         end
 
         it { is_expected.to include [
