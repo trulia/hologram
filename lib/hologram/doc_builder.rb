@@ -27,7 +27,7 @@ module Hologram
     end
 
     def self.setup_dir
-      if File.exists?("hologram_config.yml")
+      if File.exist?("hologram_config.yml")
         DisplayMessage.warning("Cowardly refusing to overwrite existing hologram_config.yml")
         return
       end
@@ -250,18 +250,18 @@ module Hologram
     def set_header_footer
       # load the markdown renderer we are going to use
 
-      if File.exists?("#{doc_assets_dir}/_header.html")
+      if File.exist?("#{doc_assets_dir}/_header.html")
         @header_erb = ERB.new(File.read("#{doc_assets_dir}/_header.html"))
-      elsif File.exists?("#{doc_assets_dir}/header.html")
+      elsif File.exist?("#{doc_assets_dir}/header.html")
         @header_erb = ERB.new(File.read("#{doc_assets_dir}/header.html"))
       else
         @header_erb = nil
         DisplayMessage.warning("No _header.html found in documentation assets. Without this your css/header will not be included on the generated pages.")
       end
 
-      if File.exists?("#{doc_assets_dir}/_footer.html")
+      if File.exist?("#{doc_assets_dir}/_footer.html")
         @footer_erb = ERB.new(File.read("#{doc_assets_dir}/_footer.html"))
-      elsif File.exists?("#{doc_assets_dir}/footer.html")
+      elsif File.exist?("#{doc_assets_dir}/footer.html")
         @footer_erb = ERB.new(File.read("#{doc_assets_dir}/footer.html"))
       else
         @footer_erb = nil
