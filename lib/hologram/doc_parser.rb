@@ -153,7 +153,7 @@ module Hologram
     end
 
     def is_supported_file_type?(file)
-      @supported_extensions.include?(File.extname(file)) and !Dir.exists?(file)
+      @supported_extensions.include?(File.extname(file)) and !Dir.exist?(file)
     end
 
     def get_file_name(str)

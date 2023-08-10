@@ -111,13 +111,13 @@ describe Hologram::DocBuilder do
     end
 
     it 'creates a config file' do
-      expect(File.exists?('hologram_config.yml')).to be_truthy
+      expect(File.exist?('hologram_config.yml')).to be_truthy
     end
 
     it 'creates default assets' do
       Dir.chdir('doc_assets') do
         ['_header.html', '_footer.html'].each do |asset|
-          expect(File.exists?(asset)).to be_truthy
+          expect(File.exist?(asset)).to be_truthy
         end
       end
     end
